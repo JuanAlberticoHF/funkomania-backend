@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: funkomania-api
+
+  # Configuración Spring Data JPA
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      # - none: No se realizará ninguna acción sobre la base de datos. Se asume que la estructura ya está creada.
+      # - create-drop: Crea la estructura de la base de datos al iniciar la aplicación y la elimina al detenerla.
+      ddl-auto: none
+
+    show-sql: true # Muestra las consultas SQL generadas por Hibernate en la consola.
+
+  sql:
+    init:
+      mode: always
+      separator: $$
+
+# Configuración JWT
+jwt:
+  secret: ${JWT_SECRET} # Clave secreta para firmar los tokens JWT, se debe configurar en las variables de entorno.
+  expiration: 3600000 # Tiempo de expiración del token en milisegundos (1 hora).
