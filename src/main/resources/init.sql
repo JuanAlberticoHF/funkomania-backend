@@ -1,7 +1,9 @@
-CREATE DATABASE IF NOT EXISTS funkomania_db$$
+CREATE DATABASE IF NOT EXISTS funkomania_db;
+
+USE funkomania_db;
 
 CREATE TABLE IF NOT EXISTS Usuario (
-    idUsuario INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    idUsuario BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     passwordHash VARCHAR(255) NOT NULL,
     Nombre VARCHAR(50) NOT NULL,
@@ -12,22 +14,21 @@ CREATE TABLE IF NOT EXISTS Usuario (
     UltimoLogin DATETIME NULL,
     Rol ENUM('cliente', 'admin') NOT NULL DEFAULT 'cliente',
     Activo TINYINT(1) NOT NULL DEFAULT 1
-)$$
-
+);
 
 CREATE TABLE IF NOT EXISTS Carrito (
-    idCarrito INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    idUsuario INT UNSIGNED NOT NULL UNIQUE,
+    idCarrito BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    idUsuario BIGINT UNSIGNED NOT NULL UNIQUE,
     FechaCreacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FechaActualizacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     Estado ENUM('activo', 'abandonado') NOT NULL DEFAULT 'activo',
 
     CONSTRAINT fk_carrito_usuario FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario)  ON DELETE CASCADE
-)$$
+);
 
 CREATE TABLE IF NOT EXISTS Direccion (
-    idDireccion INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    idUsuario INT UNSIGNED NOT NULL,
+    idDireccion BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    idUsuario BIGINT UNSIGNED NOT NULL,
     Calle VARCHAR(120) NOT NULL,
     Numero VARCHAR(10) NOT NULL,
     Piso VARCHAR(10) NULL,
@@ -39,47 +40,47 @@ CREATE TABLE IF NOT EXISTS Direccion (
     Activo TINYINT(1) NOT NULL DEFAULT 1,
 
     CONSTRAINT fk_direccion_usuario FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
-)$$
+);
 
 CREATE TABLE IF NOT EXISTS Metodo_Pago (
-    idMetodoPago INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    idMetodoPago BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(50) UNIQUE NOT NULL,
     Activo TINYINT(1) NOT NULL DEFAULT 1
-)$$
+);
 
 CREATE TABLE IF NOT EXISTS Pedido (
-    idPedido INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    idPedido BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     CodigoPedido VARCHAR(30) NOT NULL UNIQUE,
-    idUsuario INT UNSIGNED NOT NULL,
+    idUsuario BIGINT UNSIGNED NOT NULL,
     FechaPedido DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     EstadoPedido ENUM('pendiente', 'procesando', 'enviado', 'entregado', 'cancelado') NOT NULL DEFAULT 'pendiente',
     EstadoPago ENUM('pendiente', 'pagado', 'rechazado') NOT NULL DEFAULT 'pendiente',
-    idDireccion INT UNSIGNED NOT NULL,
-    idMetodoPago INT UNSIGNED NOT NULL,
+    idDireccion BIGINT UNSIGNED NOT NULL,
+    idMetodoPago BIGINT UNSIGNED NOT NULL,
     Comentarios TEXT NULL,
     UltimaModif DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_pedido_usuario FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE RESTRICT,
     CONSTRAINT fk_pedido_direccion FOREIGN KEY (idDireccion) REFERENCES Direccion(idDireccion) ON DELETE RESTRICT,
     CONSTRAINT fk_pedido_metodo_pago FOREIGN KEY (idMetodoPago) REFERENCES Metodo_Pago(idMetodoPago) ON DELETE RESTRICT
-)$$
+);
 
 CREATE TABLE IF NOT EXISTS Categoria (
-    idCategoria INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    idCategoria BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(50) NOT NULL,
-    CategoriaPadre INT UNSIGNED NULL,
+    CategoriaPadre BIGINT UNSIGNED NULL,
 
     CONSTRAINT fk_categoria_padre FOREIGN KEY (CategoriaPadre) REFERENCES Categoria(idCategoria) ON DELETE SET NULL
-)$$
+);
 
 CREATE TABLE IF NOT EXISTS Producto (
-    idProducto INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    idProducto BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(150) NOT NULL,
     Precio DECIMAL(10,2) NOT NULL,
     Stock INT NOT NULL DEFAULT 0,
     Image VARCHAR(255) NULL,
     Descripcion TEXT NULL,
-    idCategoria INT UNSIGNED NOT NULL,
+    idCategoria BIGINT UNSIGNED NOT NULL,
     iva DECIMAL(5,2) NOT NULL,
     Activo TINYINT(1) NOT NULL DEFAULT 1,
     EnOferta TINYINT(1) NOT NULL DEFAULT 0,
@@ -91,20 +92,20 @@ CREATE TABLE IF NOT EXISTS Producto (
     CONSTRAINT productoPrecio CHECK (Precio >= 0),
     CONSTRAINT producto_iva CHECK (iva >= 0 AND iva < 100),
     CONSTRAINT producto_descuento CHECK (Descuento >= 0 AND Descuento <= 90)
-)$$
+);
 
 CREATE TABLE IF NOT EXISTS Lista_Deseos (
-    idUsuario INT UNSIGNED NOT NULL,
-    idProducto INT UNSIGNED NOT NULL,
+    idUsuario BIGINT UNSIGNED NOT NULL,
+    idProducto BIGINT UNSIGNED NOT NULL,
 
     PRIMARY KEY (idUsuario, idProducto),
     CONSTRAINT fk_listaDeseo_usuario  FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE,
     CONSTRAINT fk_listaDeseo_producto FOREIGN KEY (idProducto) REFERENCES Producto(idProducto) ON DELETE CASCADE
-)$$
+);
 
 CREATE TABLE IF NOT EXISTS Detalle_Pedido (
-    idPedido INT UNSIGNED NOT NULL,
-    idProducto INT UNSIGNED NOT NULL,
+    idPedido BIGINT UNSIGNED NOT NULL,
+    idProducto BIGINT UNSIGNED NOT NULL,
     precioUnitario DECIMAL(10,2) NOT NULL,
     cantidad INT NOT NULL,
     iva DECIMAL(5,2) NOT NULL,
@@ -112,34 +113,34 @@ CREATE TABLE IF NOT EXISTS Detalle_Pedido (
     PRIMARY KEY (idPedido, idProducto),
     CONSTRAINT fk_detalle_pedido_pedido FOREIGN KEY (idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE,
     CONSTRAINT fk_detalle_pedido_producto FOREIGN KEY (idProducto) REFERENCES Producto(idProducto) ON DELETE RESTRICT
-)$$
+);
 
 CREATE TABLE IF NOT EXISTS Detalle_Carrito (
-    idCarrito INT UNSIGNED NOT NULL,
-    idProducto INT UNSIGNED NOT NULL,
+    idCarrito BIGINT UNSIGNED NOT NULL,
+    idProducto BIGINT UNSIGNED NOT NULL,
     cantidad INT NOT NULL DEFAULT 1,
 
     PRIMARY KEY (idCarrito, idProducto),
     CONSTRAINT fk_detalle_carrito_carrito FOREIGN KEY (idCarrito) REFERENCES Carrito(idCarrito) ON DELETE CASCADE,
     CONSTRAINT fk_detalle_carrito_producto FOREIGN KEY (idProducto) REFERENCES Producto(idProducto) ON DELETE RESTRICT,
     CONSTRAINT detalle_carrito_cantidad CHECK (cantidad >= 1)
-)$$
+);
 
 CREATE TABLE IF NOT EXISTS Notificacion (
-    idNotificacion INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    idUsuario INT UNSIGNED NOT NULL,
+    idNotificacion BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    idUsuario BIGINT UNSIGNED NOT NULL,
     tipo ENUM('registro', 'compra', 'estado_pedido', 'carrito_abandonado', 'pago_error', 'wishlist_stock', 'bienvenida') NOT NULL,
     estado ENUM('pendiente', 'enviada', 'leida') NOT NULL DEFAULT 'pendiente',
 
     CONSTRAINT fk_notificacion_usuario FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
-    )$$
-
-
+    );
 
 -- Formulas
-DROP FUNCTION IF EXISTS fn_precio_con_iva$$
-DROP FUNCTION IF EXISTS fn_subtotal_linea$$
-DROP FUNCTION IF EXISTS fn_precio_con_descuento$$
+DROP FUNCTION IF EXISTS fn_precio_con_iva;
+DROP FUNCTION IF EXISTS fn_subtotal_linea;
+DROP FUNCTION IF EXISTS fn_precio_con_descuento;
+
+DELIMITER //
 
 CREATE FUNCTION fn_precio_con_iva(
     p_precio DECIMAL(10,2),
@@ -149,7 +150,7 @@ CREATE FUNCTION fn_precio_con_iva(
     DETERMINISTIC
 BEGIN
 RETURN p_precio * (1 + p_iva / 100);
-END $$
+END //
 
 CREATE FUNCTION fn_subtotal_linea(
     p_precio DECIMAL(10,2),
@@ -160,7 +161,7 @@ CREATE FUNCTION fn_subtotal_linea(
     DETERMINISTIC
 BEGIN
     RETURN (p_precio * p_cantidad) * (1 + p_iva / 100);
-END $$
+END //
 
 CREATE FUNCTION fn_precio_con_descuento(
     p_precio DECIMAL(10,2),
@@ -175,7 +176,10 @@ BEGIN
     THEN RETURN ROUND(p_precio - (p_precio * p_descuento / 100), 2);
     END IF;
     RETURN p_precio;
-END $$
+END //
+
+DELIMITER ;
+
 
 
 -- View
@@ -200,7 +204,7 @@ SELECT
      JOIN Pedido p ON dp.idPedido = p.idPedido
      WHERE p.idUsuario = u.idUsuario AND p.EstadoPago = 'pagado') AS TotalGastado
 FROM Usuario u
-WHERE u.Activo = 1 AND u.Rol = 'cliente'$$
+WHERE u.Activo = 1 AND u.Rol = 'cliente';
 
 -- ---------------Carrito------------------
 
@@ -225,7 +229,7 @@ SELECT
 FROM Detalle_Carrito dc
          JOIN Producto p ON dc.idProducto = p.idProducto
          JOIN Carrito c ON dc.idCarrito = c.idCarrito
-WHERE c.Estado = 'activo'$$
+WHERE c.Estado = 'activo';
 
 
 CREATE OR REPLACE VIEW VCarrito_Totales AS
@@ -237,7 +241,9 @@ SELECT
     ROUND(SUM(PrecioUnitario_SinIVA * cantidad), 2) AS Base_Imponible,
     ROUND(SUM(Subtotal_Posicion), 2) AS Total_A_Pagar
 FROM VCarrito_Contenido
-GROUP BY idCarrito, idUsuario$$
+GROUP BY idCarrito, idUsuario;
+
+
 
 
 
@@ -264,7 +270,7 @@ SELECT
      FROM Detalle_Pedido dp WHERE dp.idPedido = p.idPedido) AS TotalPedido
 FROM Pedido p
          JOIN Metodo_Pago mp ON p.idMetodoPago = mp.idMetodoPago
-         JOIN Direccion d ON p.idDireccion = d.idDireccion$$
+         JOIN Direccion d ON p.idDireccion = d.idDireccion;
 
 CREATE OR REPLACE VIEW VDetalle_Pedido AS
 SELECT
@@ -278,7 +284,7 @@ SELECT
     ROUND(fn_subtotal_linea(dp.precioUnitario, dp.cantidad, dp.iva), 2) AS Subtotal_Linea
 FROM Detalle_Pedido dp
          JOIN Producto p ON dp.idProducto = p.idProducto
-         JOIN Pedido pe ON dp.idPedido = pe.idPedido$$
+         JOIN Pedido pe ON dp.idPedido = pe.idPedido;
 
 CREATE OR REPLACE VIEW VPedido_Totales AS
 SELECT
@@ -290,7 +296,7 @@ SELECT
     ROUND(SUM(fn_subtotal_linea(dp.precioUnitario, dp.cantidad, dp.iva)), 2) AS Total_Con_IVA
 FROM Pedido p
          JOIN Detalle_Pedido dp ON p.idPedido = dp.idPedido
-GROUP BY p.idPedido, p.idUsuario$$
+GROUP BY p.idPedido, p.idUsuario;
 
 CREATE OR REPLACE VIEW VPedidos_Admin AS
 SELECT
@@ -304,7 +310,7 @@ SELECT
     mp.Nombre AS Metodo_Pago
 FROM Pedido p
          JOIN Usuario u ON p.idUsuario = u.idUsuario
-         JOIN Metodo_Pago mp ON p.idMetodoPago = mp.idMetodoPago$$
+         JOIN Metodo_Pago mp ON p.idMetodoPago = mp.idMetodoPago;
 
 -- ---------------------- Producto ---------------------------
 
@@ -329,11 +335,11 @@ SELECT
     c2.Nombre AS NombreCategoriaPadre
 FROM Producto p
          JOIN Categoria c1 ON p.idCategoria = c1.idCategoria
-         LEFT JOIN Categoria c2 ON c1.CategoriaPadre = c2.idCategoria$$
+         LEFT JOIN Categoria c2 ON c1.CategoriaPadre = c2.idCategoria;
 
 CREATE OR REPLACE VIEW VProductos_Ofertas AS
 SELECT * FROM VProductos_Catalogo
-WHERE EnOferta = 1 AND Descuento > 0 AND (FechaFinOferta IS NULL OR FechaFinOferta >= NOW()) AND Activo = 1$$
+WHERE EnOferta = 1 AND Descuento > 0 AND (FechaFinOferta IS NULL OR FechaFinOferta >= NOW()) AND Activo = 1;
 
 CREATE OR REPLACE VIEW VAdmin_Alertas_Stock AS
 SELECT
@@ -347,8 +353,7 @@ SELECT
         ELSE 'Bajo'
         END AS Prioridad
 FROM Producto
-WHERE Stock <= 10 AND Activo = 1$$
-
+WHERE Stock <= 10 AND Activo = 1;
 
 -- ---------------------- Notificaciones ---------------------------
 
@@ -377,12 +382,14 @@ SELECT
             CONCAT('Hola, ', u.Nombre, '. Tienes una nueva notificación en tu cuenta.')
         END AS Mensaje
 FROM Notificacion n
-         JOIN Usuario u ON n.idUsuario = u.idUsuario$$
+         JOIN Usuario u ON n.idUsuario = u.idUsuario;
 
 
 -- --------------------------PROCEDURE---------------------------
 
-DROP PROCEDURE IF EXISTS sp_crear_pedido_desde_carrito$$
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS sp_crear_pedido_desde_carrito//
 
 CREATE PROCEDURE sp_crear_pedido_desde_carrito(
     IN p_idUsuario INT UNSIGNED,
@@ -483,14 +490,12 @@ VALUES ( p_idUsuario, 'compra', 'pendiente');
 COMMIT;
 
 SELECT v_idPedido AS idPedidoCreado, v_codigoPedido AS Codigo;
-END $$
+END //
 
 
 
 
-
-
-DROP PROCEDURE IF EXISTS sp_cancelar_pedido$$
+DROP PROCEDURE IF EXISTS sp_cancelar_pedido//
 
 CREATE PROCEDURE sp_cancelar_pedido(
     IN p_idPedido INT UNSIGNED
@@ -551,13 +556,12 @@ SELECT
     p_idPedido AS idPedidoCancelado,
     'cancelado' AS NuevoEstado,
     'Stock devuelto correctamente' AS Mensaje;
-END $$
+END //
 
 
 
 
-
-DROP PROCEDURE IF EXISTS sp_activar_direccion_usuario$$
+DROP PROCEDURE IF EXISTS sp_activar_direccion_usuario//
 
 CREATE PROCEDURE sp_activar_direccion_usuario(
     IN p_idUsuario INT UNSIGNED,
@@ -605,12 +609,12 @@ COMMIT;
 SELECT
     p_idUsuario AS idUsuario,
     p_idDireccion AS idDireccionActiva;
-END $$
+END //
 
 
 
 
-DROP PROCEDURE IF EXISTS sp_agregar_producto_carrito$$
+DROP PROCEDURE IF EXISTS sp_agregar_producto_carrito//
 
 CREATE PROCEDURE sp_agregar_producto_carrito(
     IN p_idUsuario INT UNSIGNED,
@@ -720,22 +724,23 @@ SELECT
     v_idCarrito AS idCarrito,
     p_idProducto AS idProducto,
     v_nuevaCantidad AS CantidadFinal;
-END $$
+END //
 
+DELIMITER ;
 
 
 -- --------------------------INDEXES---------------------------
 
 -- Producto: catálogo y disponibilidad
-CREATE INDEX idx_producto_activo_stock ON Producto(Activo, Stock)$$
-CREATE INDEX idx_producto_nombre ON Producto(Nombre)$$
+CREATE INDEX idx_producto_activo_stock ON Producto(Activo, Stock);
+CREATE INDEX idx_producto_nombre ON Producto(Nombre);
 
 -- Pedido: historial de usuario y panel admin
-CREATE INDEX idx_pedido_usuario_fecha ON Pedido(idUsuario, FechaPedido)$$
-CREATE INDEX idx_pedido_estado_fecha ON Pedido(EstadoPedido, FechaPedido)$$
+CREATE INDEX idx_pedido_usuario_fecha ON Pedido(idUsuario, FechaPedido);
+CREATE INDEX idx_pedido_estado_fecha ON Pedido(EstadoPedido, FechaPedido);
 
 -- Direccion: dirección activa del usuario
-CREATE INDEX idx_direccion_usuario_activo ON Direccion(idUsuario, Activo)$$
+CREATE INDEX idx_direccion_usuario_activo ON Direccion(idUsuario, Activo);
 
 -- Notificacion: notificaciones por usuario y estado
-CREATE INDEX idx_notificacion_usuario_estado ON Notificacion(idUsuario, estado)$$
+CREATE INDEX idx_notificacion_usuario_estado ON Notificacion(idUsuario, estado);
