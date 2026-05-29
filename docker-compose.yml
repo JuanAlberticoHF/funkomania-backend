@@ -1,14 +1,14 @@
 version: '3.8'
 services:
   funkomania-db: # servicio base de datos MySQL.
-    image: mysql
+    image: mysql:8.0.46
     ports:
       - "3307:3306" # <<puerto Host (3307)>>:<<puerto contenedor (3306)>> (para evitar conflictos con MySQL local)
     environment: # variables de entorno usuario administrador MySQL.
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes: # volumen para persistir los datos de la base de datos y montar el script de inicialización.
       - funkomania-db-volume:/var/lib/mysql
-      - "./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "./src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql"
     healthcheck: # Definimos una verificación de salud para el servicio de MySQL, lo que permite que otros servicios dependientes esperen a que MySQL esté listo antes de intentar conectarse.
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
       interval: 5s
