@@ -3,24 +3,24 @@
 Funkomania es proyecto de e-commerce de figuras Funko Pop! desarrollado con Spring Boot y MySQL. El proyecto en general
 incluye tanto el backend como el frontend, pero este repositorio se centra exclusivamente en el desarrollo del backend.
 
-### ¿Que incluye Funkomania Backend?
+## ¿Qué incluye Funkomania Backend?
 
-- API REST para gestionar productos, usuarios, pedidos y autenticación.
+Actualmente, Funkomania Backend `v0.1.0-SNAPSHOT-1` incluye las siguientes funcionalidades:
+
+- API REST para registrar usuarios.
 - Integración con MySQL para almacenamiento de datos.
 - Configuración de seguridad con Spring Security.
 - Documentación de la API con SpringDoc OpenAPI.
 - Dockerización para facilitar el despliegue.
-- Pruebas unitarias y de integración para asegurar la calidad del código.
 
-### Descarga y ejecución del proyecto
-
+## Instalación y Ejecución
 Para descargar y ejecutar el proyecto, sigue estos pasos:
-1. Descargar el proyecto desde GitHub o abrir el terminal y clonar el repositorio usando Git en un directorio:
+1. Descargar el proyecto abriendo un terminal y clonar el repositorio usando Git en un directorio:
    ```bash
    git clone https://github.com/JuanAlberticoHF/funkomania-backend.git --branch feature/auth-core
    ```
    - Esto descargará el proyecto en tu máquina local de la rama `feature/auth-core`, que es la rama de desarrollo actual.
-2. Navegar al directorio del proyecto:
+2. Acceder al directorio del proyecto:
    ```bash
    cd funkomania-backend
    ```
