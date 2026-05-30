@@ -13,6 +13,13 @@ Actualmente, Funkomania Backend `v0.1.0-SNAPSHOT-1` incluye las siguientes funci
 - Documentación de la API con SpringDoc OpenAPI.
 - Dockerización para facilitar el despliegue.
 
+## Documentación de la API
+La API REST de Funkomania Backend está documentada utilizando SpringDoc OpenAPI, lo que permite a los desarrolladores 
+entender y utilizar fácilmente los endpoints disponibles. La documentación se puede acceder a través de la URL 
+`/swagger-ui.html` una vez que el backend esté en funcionamiento y se puede realizar pruebas desde la misma página.
+
+- Acceso a la documentación: http://localhost:8080/swagger-ui/index.html
+
 ## Instalación y Ejecución
 Para descargar y ejecutar el proyecto, sigue estos pasos:
 1. Descargar el proyecto abriendo un terminal y clonar el repositorio usando Git en un directorio:
@@ -49,5 +56,4 @@ Para descargar y ejecutar el proyecto, sigue estos pasos:
    ```
    - Esto levantará tanto el contenedor de MySQL como el contenedor del backend de Funkomania.
    - El backend estará disponible en `http://localhost:8080` y la base de datos MySQL en el puerto 3307 para evitar conflictos con la instalación local.
-   - La base de datos MySQL estará disponible en `localhost:3306` con el nombre `funkomania_db`.
-   - La documentación de Swagger estará disponible en `http://localhost:8080/swagger-ui/index.html`.
+   - La base de datos MySQL en Docker estará disponible en `localhost:3306` con el nombre `funkomania_db`.
