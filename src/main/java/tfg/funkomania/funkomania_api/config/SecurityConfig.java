@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * <p>Esta clase define la configuración de seguridad utilizando Spring Security y el password encoder</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1
+ * @version 0.1.0
  * @since 0.1.0
  */
 @Configuration

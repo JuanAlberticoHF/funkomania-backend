@@ -7,7 +7,7 @@ import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
  * Define los métodos para realizar operaciones de registro de un usuario.
  *
  * @author JuanAlbeticoHF
- * @version 0.1
+ * @version 0.1.0
  * @since 0.1.0
  */
 public interface AuthService {

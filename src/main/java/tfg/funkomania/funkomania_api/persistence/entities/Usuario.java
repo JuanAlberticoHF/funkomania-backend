@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * <p>La entidad mapea tabla {@code usuario} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1
+ * @version 0.1.0
  * @since 0.1.0
  */
 @Entity

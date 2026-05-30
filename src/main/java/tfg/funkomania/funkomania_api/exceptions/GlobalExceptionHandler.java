@@ -13,7 +13,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioAlready
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1
+ * @version 0.1.0
  * @since 0.1.0
  */
 @RestControllerAdvice

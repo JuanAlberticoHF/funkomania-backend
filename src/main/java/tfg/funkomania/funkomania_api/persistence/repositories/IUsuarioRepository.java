@@ -7,7 +7,7 @@ import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
  * Interfaz de repositorio para la entidad Usuario.
  *
  * @author JuanAlbeticoHF
- * @version 0.1
+ * @version 0.1.0
  * @since 0.1.0
  */
 public interface IUsuarioRepository extends JpaRepository<Usuario, Long> {

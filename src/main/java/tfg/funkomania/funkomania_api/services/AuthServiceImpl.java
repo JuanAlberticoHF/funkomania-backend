@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * <p>Implementa la lógica de negocio de los métodos definidos en la interfaz AuthService, la inyección de dependencias del IUsuarioRepository y PasswordEncoder.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1
+ * @version 0.1.0
  * @since 0.1.0
  */
 @Service

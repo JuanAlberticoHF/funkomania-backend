@@ -22,7 +22,7 @@ import tfg.funkomania.funkomania_api.services.AuthServiceImpl;
  * <p>Proporciona endpoints para el registro de un usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1
+ * @version 0.1.0
  * @since 0.1.0
  */
 @RestController

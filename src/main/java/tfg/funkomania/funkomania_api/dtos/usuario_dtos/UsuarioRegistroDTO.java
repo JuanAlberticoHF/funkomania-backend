@@ -12,7 +12,7 @@ import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
  * DTO para el registro de un nuevo usuario. Contiene los campos necesarios para crear una cuenta de usuario.
  *
  * @author JuanAlbeticoHF
- * @version 1.0
+ * @version 1.0.0
  * @since 0.1.0
  *
  * @see Usuario

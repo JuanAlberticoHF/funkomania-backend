@@ -6,7 +6,7 @@ package tfg.funkomania.funkomania_api.enums;
  * <li>{@code ADMIN}: Representa a un usuario con privilegios administrativos en la aplicación.</li>
  *
  * @author JuanAlbeticoHF
- * @version 1.0
+ * @version 1.0.0
  * @since 0.1.0
  */
 public enum RoleEnum {
