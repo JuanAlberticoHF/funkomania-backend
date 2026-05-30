@@ -1,11 +1,16 @@
 package tfg.funkomania.funkomania_api.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,11 +27,12 @@ import tfg.funkomania.funkomania_api.services.AuthServiceImpl;
  * <p>Proporciona endpoints para el registro de un usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1.0
+ * @version 0.1.1
  * @since 0.1.0
  */
 @RestController
 @RequestMapping("/auth")
+@Validated
 @Tag(name = "Gestor de Autenticación", description = "Endpoints para gestionar la autenticación de usuarios, incluyendo el registro.")
 public class AuthController {
 
@@ -39,12 +45,33 @@ public class AuthController {
 
     @Operation(summary = "Registrar un nuevo usuario", description = "Registra un nuevo usuario en la base de datos. Retorna el objeto creado con su ID generado automáticamente.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario registrado exitosamente"),
+            @ApiResponse(responseCode = "201", description = "Usuario registrado exitosamente", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = UsuarioDTOId.class)
+            )),
             @ApiResponse(responseCode = "400", description = "El cuerpo de la petición no es valido o no cumple con las validaciones"),
             @ApiResponse(responseCode = "409", description = "Conflicto: El email del usuario ya existe en la base de datos")
     })
     @PostMapping("/register")
-    public ResponseEntity<UsuarioDTOId> register(@RequestBody UsuarioRegistroDTO usuarioRegistroDTO) {
+    public ResponseEntity<UsuarioDTOId> register(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Objeto JSON con los datos necesarios para registrar un nuevo usuario. El campo 'email' debe ser único en la base de datos.",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UsuarioRegistroDTO.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                         {
+                                            "nombre": "Funkomania",
+                                            "email": "Funkomania@gmail.com",
+                                            "password": "Funkomania123"
+                                         }
+                                         """
+                            )
+                    )
+            )
+            @Valid @RequestBody UsuarioRegistroDTO usuarioRegistroDTO) {
         Usuario usuarioRes = authService.registerUsuario(new Usuario(usuarioRegistroDTO));
         return ResponseEntity.status(HttpStatus.CREATED).body(new UsuarioDTOId(usuarioRes));
     }
