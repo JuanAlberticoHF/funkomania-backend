@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * <p>Implementa la lógica de negocio de los métodos definidos en la interfaz AuthService, la inyección de dependencias del IUsuarioRepository y PasswordEncoder.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1.0
+ * @version 0.1.1
  * @since 0.1.0
  */
 @Service
@@ -32,7 +32,7 @@ public class AuthServiceImpl implements AuthService{
     public Usuario registerUsuario(Usuario usuario) {
         // Comprobar si el email ya existe
         if (existsUsuarioByEmail(usuario.getEmail())) {
-            throw new UsuarioAlreadyExistsException("El email ya está registrado");
+            throw new UsuarioAlreadyExistsException("El email "+usuario.getEmail()+" ya está registrado en el sistema.");
         }
         // Encriptación de la contraseña
         String passwordHash = passwordEncoder.encode(usuario.getPassword());
