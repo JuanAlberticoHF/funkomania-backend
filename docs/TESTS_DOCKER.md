@@ -9,11 +9,17 @@ Guia para ejecutar tests usando un MySQL levantado con Docker Compose y un scrip
 
 ## Tests creados
 
-- `AuthControllerIntegrationTest.java`: pruebas de integracion del endpoint de registro con MockMvc (alta correcta, conflicto por email duplicado y validacion de cuerpo invalido).
-- `AuthServiceImplTest.java`: pruebas unitarias del servicio de autenticacion (registro, excepcion por email duplicado y verificacion de existencia).
+- `AuthControllerIntegrationTest.java`: pruebas de integracion de los endpoints de autenticacion con MockMvc (registro, login con token valido, validacion de cuerpo invalido y conflicto por email duplicado).
+- `AuthServiceImplTest.java`: pruebas unitarias del servicio de autenticacion (registro, excepcion por email duplicado, verificacion de existencia y login con token).
 - `IUsuarioRepositoryTest.java`: pruebas de integracion del repositorio para `existsByEmail`.
 - `UsuarioTest.java`: prueba unitaria del constructor de `Usuario` desde `UsuarioRegistroDTO`.
 - `UsuarioDTOIdTest.java`: prueba unitaria del mapeo de entidad a `UsuarioDTOId`.
+- `UsuarioRegistroDTOTest.java`: pruebas unitarias de getters/setters y validaciones del DTO de registro.
+- `LoginRequestTest.java`: pruebas unitarias de validacion y constructor del DTO de login.
+- `TokenResponseTest.java`: pruebas unitarias de validacion y constructor del DTO de respuesta de login.
+- `JwtUtilsTest.java`: pruebas unitarias de generacion y validacion de tokens JWT.
+- `GlobalExceptionHandlerTest.java`: pruebas unitarias del manejador de excepciones de conflicto.
+- `CommonExceptionHandlerTest.java`: pruebas unitarias de manejadores de validacion y errores comunes.
 - `FunkomaniaApiApplicationTests.java`: prueba de carga del contexto de Spring Boot.
 
 ## 1) Levantar MySQL para tests (con inicializacion)
