@@ -15,16 +15,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.TokenInvalidoException;
 import tfg.funkomania.funkomania_api.security.filters.JwtAuthorizationFilter;
 import tfg.funkomania.funkomania_api.services.InMemoryTokenBlackListService;
 import tfg.funkomania.funkomania_api.services.UserDetailServiceImpl;
+import tfg.funkomania.funkomania_api.utils.JwtUtils;
 
 /**
  * Configuración de seguridad para la API de Funkomania.
  * <p>Esta clase define la configuración de seguridad utilizando Spring Security y el password encoder</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.1.0
  */
 @Configuration
@@ -36,11 +38,13 @@ public class SecurityConfig {
 
     /** Bean de servicio para añadir tokens a la lista negra. */
     private final InMemoryTokenBlackListService tokenBlackListService;
+    private final JwtUtils jwtUtils;
 
     public SecurityConfig(JwtAuthorizationFilter jwtAuthorizationFilter,
-                          InMemoryTokenBlackListService tokenBlackListService) {
+                          InMemoryTokenBlackListService tokenBlackListService, JwtUtils jwtUtils) {
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
         this.tokenBlackListService = tokenBlackListService;
+        this.jwtUtils = jwtUtils;
     }
 
     /**
@@ -129,11 +133,16 @@ public class SecurityConfig {
      */
     private void logout (final String token){
         if (token == null || !token.startsWith("Bearer ")){
-            throw new IllegalArgumentException("Invalid token");
+            throw new TokenInvalidoException("El token de autenticación es inválido o no se proporcionó.");
         }
 
         // Extrae el token JWT del encabezado de autorización.
         final String jwt = token.substring(7);
+
+        // Verifica si el token JWT es válido antes de agregarlo a la lista negra.
+        if (!jwtUtils.isTokenValid(jwt)){
+            throw new TokenInvalidoException("El token proporcionado no es válido.");
+        }
 
         // Agrega el token JWT a la lista negra para invalidarlo.
         tokenBlackListService.addToken(jwt);
