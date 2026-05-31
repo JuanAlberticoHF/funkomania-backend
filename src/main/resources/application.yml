@@ -5,6 +5,11 @@ spring:
   application:
     name: funkomania-api
 
+  # Configuración para habilitar Problem Details en las respuestas de error
+  mvc:
+    problemdetails:
+      enabled: true
+
   # Configuración Spring Data JPA
   datasource:
     url: ${SPRING_DATASOURCE_URL_DOCKER}
@@ -16,14 +21,14 @@ spring:
     hibernate:
       # - none: No se realizará ninguna acción sobre la base de datos. Se asume que la estructura ya está creada.
       # - create-drop: Crea la estructura de la base de datos al iniciar la aplicación y la elimina al detenerla.
-      ddl-auto: none
+      # - validate: Valida que la estructura de la base de datos coincida con las entidades, pero no realiza cambios.
+      ddl-auto: validate
+      # Configuración para mostrar las consultas SQL generadas por Hibernate en la consola.
+      naming:
+        # Desactiva la conversión automática de nombres (para evitar problemas con mayúsculas y minúsculas en MySQL).
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
     show-sql: true # Muestra las consultas SQL generadas por Hibernate en la consola.
-
-  sql:
-    init:
-      mode: always
-      separator: $$
 
 # Configuración JWT
 jwt:
