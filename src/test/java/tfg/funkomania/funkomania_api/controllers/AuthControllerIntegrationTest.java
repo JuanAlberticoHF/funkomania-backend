@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
 import tfg.funkomania.funkomania_api.persistence.repositories.IUsuarioRepository;
 import tfg.funkomania.funkomania_api.testutils.UsuarioTestFactory;
+import tfg.funkomania.funkomania_api.utils.JwtUtils;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -44,6 +45,9 @@ class AuthControllerIntegrationTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtUtils jwtUtils;
+
     @BeforeEach
     void limpiarBaseDeDatos() {
         usuarioRepository.deleteAll();
@@ -52,7 +56,7 @@ class AuthControllerIntegrationTest {
     /**
      * Debe crear un usuario cuando el email no existe y el cuerpo es válido.
      *
-     * @throws Exception si falla la ejecución de la petición MockMvc
+     * @throws Exception sí falla la ejecución de la petición MockMvc
      */
     @Test
     void registrar_deberiaCrearUsuario() throws Exception {
@@ -70,7 +74,7 @@ class AuthControllerIntegrationTest {
     /**
      * Debe responder conflicto cuando el email ya existe en el sistema.
      *
-     * @throws Exception si falla la ejecución de la petición MockMvc
+     * @throws Exception sí falla la ejecución de la petición MockMvc
      */
     @Test
     void registrar_deberiaResponderConflictoCuandoEmailExiste() throws Exception {
@@ -89,7 +93,7 @@ class AuthControllerIntegrationTest {
     /**
      * Debe responder bad request cuando el cuerpo de la petición es inválido.
      *
-     * @throws Exception si falla la ejecución de la petición MockMvc
+     * @throws Exception sí falla la ejecución de la petición MockMvc
      */
     @Test
     void registrar_deberiaResponderBadRequestCuandoCuerpoInvalido() throws Exception {
@@ -102,27 +106,48 @@ class AuthControllerIntegrationTest {
                 .andExpect(jsonPath("$.title").isNotEmpty());
     }
 
-    private String obtenerTokenValido() throws Exception {
+    /**
+     * Debe iniciar sesión y devolver un token JWT válido.
+     *
+     * @throws Exception sí falla la ejecución de la petición MockMvc
+     */
+    @Test
+    void login_deberiaRetornarTokenValido() throws Exception {
         Usuario existing = UsuarioTestFactory.usuarioPersistible(
-                "logout@example.com",
+                "login@example.com",
                 passwordEncoder.encode("Password123")
         );
         usuarioRepository.save(existing);
 
-        LoginRequest loginRequest = new LoginRequest("logout@example.com", "Password123");
+        LoginRequest loginRequest = new LoginRequest("login@example.com", "Password123");
 
         String response = mockMvc.perform(post("/auth/login")
                         .contentType(String.valueOf(MediaType.APPLICATION_JSON))
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").isNotEmpty())
+                .andExpect(jsonPath("$.email").value("login@example.com"))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        TokenResponse tokenResponse = objectMapper.readValue(response, TokenResponse.class);
-        return tokenResponse.token();
+        String token = objectMapper.readValue(response, TokenResponse.class).token();
+        assertThat(jwtUtils.isTokenValid(token)).isTrue();
+    }
+
+    /**
+     * Debe responder bad request cuando el cuerpo del login es inválido.
+     *
+     * @throws Exception sí falla la ejecución de la petición MockMvc
+     */
+    @Test
+    void login_deberiaResponderBadRequestCuandoCuerpoInvalido() throws Exception {
+        LoginRequest loginRequest = new LoginRequest("", "");
+
+        mockMvc.perform(post("/auth/login")
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title").isNotEmpty());
     }
 }
-
-
-
