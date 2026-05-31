@@ -1,6 +1,5 @@
  package tfg.funkomania.funkomania_api.exceptions;
 
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Pruebas unitarias para CommonExceptionHandler.
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.1.0
  */
 class CommonExceptionHandlerTest {
@@ -70,7 +69,7 @@ class CommonExceptionHandlerTest {
         CommonExceptionHandler handler = new CommonExceptionHandler();
         ConstraintViolationException exception = new ConstraintViolationException(
                 "validation error",
-                Collections.<ConstraintViolation<?>>emptySet()
+                Collections.emptySet()
         );
 
         ProblemDetail problemDetail = handler.constraintViolationException(exception);
@@ -96,9 +95,5 @@ class CommonExceptionHandlerTest {
     private MethodParameter obtenerParametroMetodo() throws Exception {
         Method method = CommonExceptionHandlerTest.class.getDeclaredMethod("metodoEjemplo", String.class);
         return new MethodParameter(method, 0);
-    }
-
-    private void metodoEjemplo(String value) {
-        // Metodo auxiliar para construir MethodParameter.
     }
 }

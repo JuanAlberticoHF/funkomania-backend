@@ -12,9 +12,9 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Pruebas unitarias para la validacion de LoginRequest.
+ * Pruebas unitarias para la validación de LoginRequest.
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.1.0
  */
 class LoginRequestTest {
@@ -23,7 +23,7 @@ class LoginRequestTest {
 
     @BeforeEach
     void configurarValidador() {
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory();) {
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             validator = factory.getValidator();
         }
     }

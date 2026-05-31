@@ -13,9 +13,9 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Pruebas unitarias para la validacion de UsuarioRegistroDTO.
+ * Pruebas unitarias para la validación de UsuarioRegistroDTO.
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.1.0
  */
 class UsuarioRegistroDTOTest {
@@ -24,7 +24,7 @@ class UsuarioRegistroDTOTest {
 
     @BeforeEach
     void configurarValidador() {
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory();) {
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             validator = factory.getValidator();
         }
     }
