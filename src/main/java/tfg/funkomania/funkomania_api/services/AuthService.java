@@ -31,7 +31,7 @@ public interface AuthService {
      * Realiza el proceso de autenticación de un usuario y genera un token JWT si las credenciales son válidas.
      * @param loginRequest El objeto de tipo LoginRequest que contiene el correo electrónico y la contraseña del usuario
      *                     que intenta iniciar sesión.
-     * @return Un objeto de tipo TokenResponse que contiene el token JWT generado para el usuario autenticado, email y
+     * @return Un objeto de tipo TokenResponse que contiene el token JWT generado para el usuario autenticado, username y
      * su nombre.
      */
     TokenResponse login(LoginRequest loginRequest);

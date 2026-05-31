@@ -129,7 +129,7 @@ class AuthControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").isNotEmpty())
-                .andExpect(jsonPath("$.email").value("login@example.com"))
+                .andExpect(jsonPath("$.username").value("login@example.com"))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();

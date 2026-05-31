@@ -101,7 +101,7 @@ public class AuthServiceImpl implements AuthService{
 
         // Obtener el usuario autenticado
         Usuario usuario = IUsuarioRepository.findUsuarioByEmail(loginRequest.username())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con username: " + loginRequest.username()));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + loginRequest.username()));
 
         // Generar el token JWT
         String tokenJWT = jwtUtils.generateAccessToken(usuario.getEmail());

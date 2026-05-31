@@ -35,8 +35,8 @@ class TokenResponseTest {
         TokenResponse response = new TokenResponse("token", "user@example.com", "Nombre");
 
         assertThat(response.token()).isEqualTo("token");
-        assertThat(response.email()).isEqualTo("user@example.com");
-        assertThat(response.username()).isEqualTo("Nombre");
+        assertThat(response.username()).isEqualTo("user@example.com");
+        assertThat(response.name()).isEqualTo("Nombre");
     }
 
     /**
@@ -50,8 +50,8 @@ class TokenResponseTest {
 
         assertThat(violations).isNotEmpty();
         assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals("token"));
-        assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals("email"));
         assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals("username"));
+        assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals("name"));
     }
 }
 

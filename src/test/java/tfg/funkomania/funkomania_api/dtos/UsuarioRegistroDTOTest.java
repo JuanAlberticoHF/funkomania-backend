@@ -60,7 +60,7 @@ class UsuarioRegistroDTOTest {
     }
 
     /**
-     * Debe validar la longitud maxima de email, password y nombre.
+     * Debe validar la longitud maxima de email, password y name.
      */
     @Test
     void validar_longitudesMaximas_deberiaDetectarExcesos() {

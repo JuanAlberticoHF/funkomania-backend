@@ -120,8 +120,8 @@ class AuthServiceImplTest {
         TokenResponse response = authService.login(loginRequest);
 
         assertThat(response.token()).isEqualTo("jwt-token");
-        assertThat(response.email()).isEqualTo("user@example.com");
-        assertThat(response.username()).isEqualTo("Nombre");
+        assertThat(response.username()).isEqualTo("user@example.com");
+        assertThat(response.name()).isEqualTo("Nombre");
         verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(
                 "user@example.com",
                 "Password123"

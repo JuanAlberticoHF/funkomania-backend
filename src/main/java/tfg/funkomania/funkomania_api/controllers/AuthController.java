@@ -48,12 +48,12 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "El usuario ha sido registrado satisfactoriamente"),
             @ApiResponse(responseCode = "400", description = "El cuerpo de la petición no es valido o no cumple con las validaciones"),
-            @ApiResponse(responseCode = "409", description = "Conflicto: El username del usuario ya existe en la base de datos")
+            @ApiResponse(responseCode = "409", description = "Conflicto: El email del usuario ya existe en la base de datos")
     })
     @PostMapping("/register")
     public ResponseEntity<Void> register(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Objeto JSON con los datos necesarios para registrar un nuevo usuario. El campo 'username' debe ser único en la base de datos.",
+                    description = "Objeto JSON con los datos necesarios para registrar un nuevo usuario. El campo 'email' debe ser único en la base de datos.",
                     required = true,
                     content = @Content(
                             mediaType = "application/json",
