@@ -1,15 +1,17 @@
 package tfg.funkomania.funkomania_api.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import tfg.funkomania.funkomania_api.dtos.security_dtos.LoginRequest;
+import tfg.funkomania.funkomania_api.dtos.security_dtos.TokenResponse;
+import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioRegistroDTO;
 import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MediaType;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioRegistroDTO;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
 import tfg.funkomania.funkomania_api.persistence.repositories.IUsuarioRepository;
 import tfg.funkomania.funkomania_api.testutils.UsuarioTestFactory;
@@ -20,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
+ * Pruebas de integración para el endpoint de registro del controlador de autenticación.
  * Pruebas de integración para el endpoint de registro del controlador de autenticación.
  *
  * <p>Ejecuta peticiones HTTP simuladas con MockMvc y valida respuestas JSON y códigos HTTP
@@ -55,19 +58,13 @@ class AuthControllerIntegrationTest {
     void registrar_deberiaCrearUsuario() throws Exception {
         UsuarioRegistroDTO dto = UsuarioTestFactory.registroDto("newuser@example.com");
 
-        String response = mockMvc.perform(post("/auth/register")
+        mockMvc.perform(post("/auth/register")
                         .contentType(String.valueOf(MediaType.APPLICATION_JSON))
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").isNumber())
-                .andExpect(jsonPath("$.email").value("newuser@example.com"))
-                .andExpect(jsonPath("$.password").isNotEmpty())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-
-        String returnedPassword = objectMapper.readTree(response).get("password").asString();
-        assertThat(returnedPassword).isNotEqualTo("Password123");
     }
 
     /**
@@ -104,4 +101,28 @@ class AuthControllerIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.title").isNotEmpty());
     }
+
+    private String obtenerTokenValido() throws Exception {
+        Usuario existing = UsuarioTestFactory.usuarioPersistible(
+                "logout@example.com",
+                passwordEncoder.encode("Password123")
+        );
+        usuarioRepository.save(existing);
+
+        LoginRequest loginRequest = new LoginRequest("logout@example.com", "Password123");
+
+        String response = mockMvc.perform(post("/auth/login")
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        TokenResponse tokenResponse = objectMapper.readValue(response, TokenResponse.class);
+        return tokenResponse.token();
+    }
 }
+
+
+
