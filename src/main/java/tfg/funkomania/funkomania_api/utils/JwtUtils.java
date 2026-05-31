@@ -30,7 +30,7 @@ public class JwtUtils {
     @Value("${jwt.secret}")
     private String secretKey;
     /** Tiempo de expiración del token. */
-    @Value("${jwt.time.expiration}")
+    @Value("${jwt.expiration}")
     private String timeExpiration;
 
     /**
