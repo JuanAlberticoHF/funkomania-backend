@@ -7,6 +7,10 @@ import jakarta.validation.constraints.NotBlank;
  * por medio de una petición HTTP.
  * @param username El usuario que se desea autenticar.
  * @param password La contraseña del usuario.
+ *
+ * @author JuanAlbeticoHF
+ * @version 1.0.0
+ * @since 0.1.0
  */
 public record LoginRequest (
         @NotBlank String username,
