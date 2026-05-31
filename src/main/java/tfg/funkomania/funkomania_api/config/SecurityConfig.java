@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * <p>Esta clase define la configuración de seguridad utilizando Spring Security y el password encoder</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1.0
+ * @version 0.1.1
  * @since 0.1.0
  */
 @Configuration
@@ -24,7 +24,7 @@ public class SecurityConfig {
 
     /**
      * Configuración de la cadena de filtros ejecutada en cada petición HTTP.
-     * @param httpSecurity Objeto que permite configurar la seguridad HTTP
+     * @param httpSecurity Objeto que permite configurar la seguridad HTTP.
      * @return Un bean de tipo SecurityFilterChain que define la configuración de seguridad para las solicitudes HTTP.
      */
     @Bean
@@ -40,8 +40,8 @@ public class SecurityConfig {
                         // Permite el acceso a los endpoints de autenticación sin necesidad de autenticación previa.
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        // Deniega el acceso a los endpoints para cualquier otra solicitud.
-                        .anyRequest().denyAll()
+                        // El acceso a los endpoints para cualquier otra solicitud necesita autenticación.
+                        .anyRequest().authenticated()
                 )
                 .build();
     }
