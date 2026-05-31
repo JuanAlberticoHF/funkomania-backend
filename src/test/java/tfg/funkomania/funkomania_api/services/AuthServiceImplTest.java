@@ -52,7 +52,7 @@ class AuthServiceImplTest {
         when(passwordEncoder.encode("plain-pass")).thenReturn("hashed-pass");
         when(usuarioRepository.save(any(Usuario.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Usuario result = authService.registerUsuario(usuario);
+        Usuario result = authService.register(usuario);
 
         assertThat(result.getPassword()).isEqualTo("hashed-pass");
         assertThat(result.getRol()).isEqualTo(RoleEnum.CLIENTE);
@@ -71,7 +71,7 @@ class AuthServiceImplTest {
 
         when(usuarioRepository.existsByEmail("user@example.com")).thenReturn(true);
 
-        assertThatThrownBy(() -> authService.registerUsuario(usuario))
+        assertThatThrownBy(() -> authService.register(usuario))
                 .isInstanceOf(UsuarioAlreadyExistsException.class);
         verify(usuarioRepository, never()).save(any(Usuario.class));
     }

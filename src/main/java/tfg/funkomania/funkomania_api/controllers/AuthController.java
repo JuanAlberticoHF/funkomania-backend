@@ -74,5 +74,6 @@ public class AuthController {
             @Valid @RequestBody UsuarioRegistroDTO usuarioRegistroDTO) {
         Usuario usuarioRes = authService.registerUsuario(new Usuario(usuarioRegistroDTO));
         return ResponseEntity.status(HttpStatus.CREATED).body(new UsuarioDTOId(usuarioRes));
+        authService.register(new Usuario(usuarioRegistroDTO));
     }
 }
