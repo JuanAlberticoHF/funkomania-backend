@@ -1,5 +1,7 @@
 package tfg.funkomania.funkomania_api.services;
 
+import tfg.funkomania.funkomania_api.dtos.security_dtos.LoginRequest;
+import tfg.funkomania.funkomania_api.dtos.security_dtos.TokenResponse;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
 
 /**
@@ -7,7 +9,7 @@ import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
  * Define los métodos para realizar operaciones de registro de un usuario.
  *
  * @author JuanAlbeticoHF
- * @version 0.2.1
+ * @version 1.0.0
  * @since 0.1.0
  */
 public interface AuthService {
@@ -24,4 +26,13 @@ public interface AuthService {
      * @return {@code true} si existe un usuario con el correo electrónico proporcionado, {@code false} en caso contrario.
      */
     boolean existsUsuarioByEmail(String email);
+
+    /**
+     * Realiza el proceso de autenticación de un usuario y genera un token JWT si las credenciales son válidas.
+     * @param loginRequest El objeto de tipo LoginRequest que contiene el correo electrónico y la contraseña del usuario
+     *                     que intenta iniciar sesión.
+     * @return Un objeto de tipo TokenResponse que contiene el token JWT generado para el usuario autenticado, email y
+     * su nombre.
+     */
+    TokenResponse login(LoginRequest loginRequest);
 }
