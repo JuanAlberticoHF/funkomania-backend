@@ -1,5 +1,6 @@
 package tfg.funkomania.funkomania_api.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tfg.funkomania.funkomania_api.enums.RoleEnum;
@@ -14,10 +15,11 @@ import java.time.LocalDateTime;
  * <p>Implementa la lógica de negocio de los métodos definidos en la interfaz AuthService, la inyección de dependencias del IUsuarioRepository y PasswordEncoder.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1.2
+ * @version 0.1.3
  * @since 0.1.0
  */
 @Service
+@Slf4j
 public class AuthServiceImpl implements AuthService{
 
     private final IUsuarioRepository IUsuarioRepository;
@@ -29,12 +31,13 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public Usuario registerUsuario(Usuario usuario) {
     public Usuario register(Usuario usuario) {
+        log.info("Iniciando registro de usuario: {} - {}", usuario.getEmail(), usuario.getNombre());
         // Comprobar si el email ya existe
         if (existsUsuarioByEmail(usuario.getEmail())) {
             throw new UsuarioAlreadyExistsException("El email "+usuario.getEmail()+" ya está registrado en el sistema.");
         }
+
         // Encriptación de la contraseña
         String passwordHash = passwordEncoder.encode(usuario.getPassword());
         usuario.setPassword(passwordHash);
@@ -46,6 +49,7 @@ public class AuthServiceImpl implements AuthService{
         usuario.setActivo(true);
 
         // Guardar el usuario en la base de datos
+        log.info("Registrando usuario: {} - {}", usuario.getEmail(),  usuario.getNombre());
         return IUsuarioRepository.save(usuario);
     }
 
