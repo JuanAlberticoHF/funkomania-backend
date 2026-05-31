@@ -1,5 +1,6 @@
 package tfg.funkomania.funkomania_api.services;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,11 +35,14 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     /**
      * Obtener la información de un usuario base a su nombre de usuario.
+     *
+     * <p>Marcado como {@code @NullMarked} para indicar que el metodo no acepta valores nulos ni devuelve valores nulos.</p>
      * @param username El nombre de usuario (en este caso, el email) del usuario a buscar.
      * @return Un objeto UserDetails que contiene la información del usuario y sus autoridades (roles).
      * @throws UsernameNotFoundException Si no se encuentra un usuario con el nombre de usuario proporcionado.
      */
     @Override
+    @NullMarked
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         // Obtener el usuario de la base de datos, si no lanzar excepción.
