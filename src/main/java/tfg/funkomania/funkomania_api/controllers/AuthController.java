@@ -27,7 +27,7 @@ import tfg.funkomania.funkomania_api.services.AuthServiceImpl;
  * <p>Proporciona endpoints para el registro de un usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1.1
+ * @version 0.1.2
  * @since 0.1.0
  */
 @RestController
@@ -45,17 +45,14 @@ public class AuthController {
 
     @Operation(summary = "Registrar un nuevo usuario", description = "Registra un nuevo usuario en la base de datos. Retorna el objeto creado con su ID generado automáticamente.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario registrado exitosamente", content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = UsuarioDTOId.class)
-            )),
+            @ApiResponse(responseCode = "201", description = "El usuario ha sido registrado satisfactoriamente"),
             @ApiResponse(responseCode = "400", description = "El cuerpo de la petición no es valido o no cumple con las validaciones"),
-            @ApiResponse(responseCode = "409", description = "Conflicto: El email del usuario ya existe en la base de datos")
+            @ApiResponse(responseCode = "409", description = "Conflicto: El username del usuario ya existe en la base de datos")
     })
     @PostMapping("/register")
-    public ResponseEntity<UsuarioDTOId> register(
+    public ResponseEntity<Void> register(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Objeto JSON con los datos necesarios para registrar un nuevo usuario. El campo 'email' debe ser único en la base de datos.",
+                    description = "Objeto JSON con los datos necesarios para registrar un nuevo usuario. El campo 'username' debe ser único en la base de datos.",
                     required = true,
                     content = @Content(
                             mediaType = "application/json",
@@ -72,8 +69,7 @@ public class AuthController {
                     )
             )
             @Valid @RequestBody UsuarioRegistroDTO usuarioRegistroDTO) {
-        Usuario usuarioRes = authService.registerUsuario(new Usuario(usuarioRegistroDTO));
-        return ResponseEntity.status(HttpStatus.CREATED).body(new UsuarioDTOId(usuarioRes));
         authService.register(new Usuario(usuarioRegistroDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
