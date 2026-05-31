@@ -1,26 +1,28 @@
 version: '3.8'
 services:
   funkomania-db: # servicio base de datos MySQL.
-    image: mysql
+    image: mysql:8.0.46
     ports:
-      - "3307:3306" # <<puerto Host (3307)>>:<<puerto contenedor (3306)>>
+      - "3307:3306" # <<puerto Host (3307)>>:<<puerto contenedor (3306)>> (para evitar conflictos con MySQL local)
     environment: # variables de entorno usuario administrador MySQL.
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes: # volumen para persistir los datos de la base de datos y montar el script de inicialización.
       - funkomania-db-volume:/var/lib/mysql
-      - "./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "./src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql"
     healthcheck: # Definimos una verificación de salud para el servicio de MySQL, lo que permite que otros servicios dependientes esperen a que MySQL esté listo antes de intentar conectarse.
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123456" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
       interval: 5s
       timeout: 5s
       retries: 10
 
   funkomania-api: # servicio api (backend) de SpringBoot.
-    build: . # imagen construida a partir del Dockerfile ubicado en el directorio actual.
+    build: . # imagen construida a partir del Dockerfile en la raíz del proyecto.
     ports:
       - "8080:8080" # <<puerto host (8080)>>:<<puerto contenedor (8080)>>
     links: # enlace entre el servicio de la api y el servicio de MySQL
       - funkomania-db
+    env_file: # archivo de variables de entorno para la configuración de la aplicación SpringBoot
+      - .env
     depends_on: # dependencia entre el servicio de MySQL y la API, garantizando que MySQL se inicie antes que la aplicación de SpringBoot.
       funkomania-db:
         condition: service_healthy # service_healthy asegura que la API inicie cuando MySQL esté listo
