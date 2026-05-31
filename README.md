@@ -5,7 +5,7 @@ incluye tanto el backend como el frontend, pero este repositorio se centra exclu
 
 ## ¿Qué incluye Funkomania Backend?
 
-Actualmente, Funkomania Backend `v0.1.0-SNAPSHOT-2` incluye las siguientes funcionalidades:
+Actualmente, Funkomania Backend `v0.1.0-RELEASE-1` incluye las siguientes funcionalidades:
 
 - API REST para registrar usuarios.
 - Integración con MySQL para almacenamiento de datos.
@@ -24,9 +24,9 @@ entender y utilizar fácilmente los endpoints disponibles. La documentación se 
 Para descargar y ejecutar el proyecto, sigue estos pasos:
 1. Descargar el proyecto abriendo un terminal y clonar el repositorio usando Git en un directorio:
    ```bash
-   git clone https://github.com/JuanAlberticoHF/funkomania-backend.git --branch feature/auth-core
+   git clone https://github.com/JuanAlberticoHF/funkomania-backend.git --branch develop
    ```
-   - Esto descargará el proyecto en tu máquina local de la rama `feature/auth-core`, que es la rama de desarrollo actual.
+   - Esto descargará el proyecto en tu máquina local de la rama `develop`, que es la rama de desarrollo actual.
 2. Acceder al directorio del proyecto:
    ```bash
    cd funkomania-backend
