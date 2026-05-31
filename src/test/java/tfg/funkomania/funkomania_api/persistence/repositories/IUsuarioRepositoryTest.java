@@ -14,6 +14,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * <p>Comprueba el comportamiento del metodo de consulta por email contra la base de datos
  * de pruebas configurada para el proyecto.</p>
+ *
+ * @version 1.0.0
+ * @since 0.1.0
  */
 @SpringBootTest
 @Transactional

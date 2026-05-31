@@ -19,6 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Pruebas unitarias para CommonExceptionHandler.
+ *
+ * @version 1.0.0
+ * @since 0.1.0
  */
 class CommonExceptionHandlerTest {
 

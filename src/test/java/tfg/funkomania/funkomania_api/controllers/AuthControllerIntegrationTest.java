@@ -28,6 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * <p>Ejecuta peticiones HTTP simuladas con MockMvc y valida respuestas JSON y códigos HTTP
  * contra el contexto real de Spring Boot.</p>
+ *
+ * @version 1.0.0
+ * @since 0.1.0
  */
 @SpringBootTest
 @AutoConfigureMockMvc

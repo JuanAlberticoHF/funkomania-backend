@@ -14,6 +14,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * <p>Comprueba que el constructor que recibe una entidad mapea todos los campos
  * al objeto de transferencia correctamente.</p>
+ *
+ * @version 1.0.0
+ * @since 0.1.0
  */
 class UsuarioDTOIdTest {
 

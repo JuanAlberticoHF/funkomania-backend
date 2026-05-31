@@ -10,6 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * <p>Verifica que el constructor basado en DTO copia correctamente los campos
  * esperados y deja sin inicializar los valores opcionales.</p>
+ *
+ * @version 1.0.0
+ * @since 0.1.0
  */
 class UsuarioTest {
 

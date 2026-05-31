@@ -31,6 +31,9 @@ import static org.mockito.Mockito.when;
  *
  * <p>Se valida el comportamiento del registro de usuarios y la comprobación
  * de existencia por email mediante mocks de repositorio y codificador de contraseña.</p>
+ *
+ * @version 1.0.0
+ * @since 0.1.0
  */
 @ExtendWith(MockitoExtension.class)
 class AuthServiceImplTest {

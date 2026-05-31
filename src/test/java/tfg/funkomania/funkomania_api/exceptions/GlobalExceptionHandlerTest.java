@@ -9,6 +9,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Pruebas unitarias para GlobalExceptionHandler.
+ *
+ * @version 1.0.0
  */
 class GlobalExceptionHandlerTest {
 
