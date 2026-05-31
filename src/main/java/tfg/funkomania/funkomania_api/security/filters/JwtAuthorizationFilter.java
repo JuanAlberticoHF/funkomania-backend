@@ -29,6 +29,7 @@ import java.io.IOException;
  * @version 1.0.0
  * @since 0.1.0
  */
+@Slf4j
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
@@ -62,6 +63,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+
+        if (request.getServletPath().contains("/auth")) {
+            log.info("Endpoint de autenticación detectado, omitiendo filtro de autorización JWT");
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         // Obtener el token JWT de la cabecera Authorization de la petición HTTP.
         String tokenHeader = request.getHeader("Authorization");
