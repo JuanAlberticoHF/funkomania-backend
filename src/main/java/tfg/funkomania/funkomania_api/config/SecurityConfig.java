@@ -40,7 +40,7 @@ public class SecurityConfig {
                         // Permite el acceso a los endpoints de autenticación sin necesidad de autenticación previa.
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        // Requiere autenticación para cualquier otra solicitud.
+                        // Deniega el acceso a los endpoints para cualquier otra solicitud.
                         .anyRequest().denyAll()
                 )
                 .build();
