@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tfg.funkomania.funkomania_api.services.InMemoryTokenBlackListService;
 import tfg.funkomania.funkomania_api.services.UserDetailServiceImpl;
 import tfg.funkomania.funkomania_api.utils.JwtUtils;
 
@@ -36,9 +37,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     /** Bean de servicio para cargar los detalles del usuario a partir del token JWT. */
     private final UserDetailServiceImpl userDetailService;
 
-    public JwtAuthorizationFilter(JwtUtils jwtUtils, UserDetailServiceImpl userDetailService) {
+    /** Bean de servicio para añadir tokens a la lista negra. */
+    private final InMemoryTokenBlackListService tokenBlackListService;
+
+    public JwtAuthorizationFilter(JwtUtils jwtUtils,
+                                  UserDetailServiceImpl userDetailService,
+                                  InMemoryTokenBlackListService tokenBlackListService) {
         this.jwtUtils = jwtUtils;
         this.userDetailService = userDetailService;
+        this.tokenBlackListService = tokenBlackListService;
     }
 
     /**
@@ -64,7 +71,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String token = tokenHeader.substring(7);
 
             // Si el token es válido, obtenemos el usuario y sus permisos.
-            if (jwtUtils.isTokenValid(token)) {
+            if (jwtUtils.isTokenValid(token) || tokenBlackListService.isTokenValid(token)) {
                 // Obtenemos el sujeto del token (email)
                 String username = jwtUtils.getUsernameFromToken(token);
                 // Obtenemos el usuario y sus permisos
