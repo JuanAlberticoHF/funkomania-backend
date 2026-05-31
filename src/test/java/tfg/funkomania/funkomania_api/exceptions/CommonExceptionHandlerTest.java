@@ -96,4 +96,8 @@ class CommonExceptionHandlerTest {
         Method method = CommonExceptionHandlerTest.class.getDeclaredMethod("metodoEjemplo", String.class);
         return new MethodParameter(method, 0);
     }
+
+    private void metodoEjemplo(String value) {
+        // Metodo auxiliar para construir MethodParameter.
+    }
 }
