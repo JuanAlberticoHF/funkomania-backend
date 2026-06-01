@@ -57,3 +57,12 @@ Para descargar y ejecutar el proyecto, sigue estos pasos:
    - Esto levantará tanto el contenedor de MySQL como el contenedor del backend de Funkomania.
    - El backend estará disponible en `http://localhost:8080` y la base de datos MySQL en el puerto 3307 para evitar conflictos con la instalación local.
    - La base de datos MySQL en Docker estará disponible en `localhost:3306` con el nombre `funkomania_db`.
+6. Apagar los contenedores cuando hayas terminado:
+   1. Para apagar los contenedores sin eliminar los datos:
+      ```bash
+      docker-compose down
+      ```
+   2. Para apagar los contenedores y eliminar los datos:
+      ```bash
+      docker-compose down -v
+      ```
