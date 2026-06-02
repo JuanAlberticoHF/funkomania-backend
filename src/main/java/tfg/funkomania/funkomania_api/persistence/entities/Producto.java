@@ -78,7 +78,7 @@ public class Producto {
     @Digits(integer = 5, fraction = 2, message = "El iva debe ser un número con hasta 5 dígitos enteros y 2 decimales.")
     @DecimalMax(value = "100.00", message = "El iva del producto no puede exceder el 100%.")
     @PositiveOrZero(message = "El iva del producto debe ser un número positivo o cero.")
-    @Column(name = "Iva", nullable = false, precision = 7, scale = 2)
+    @Column(name = "iva", nullable = false, precision = 7, scale = 2)
     private BigDecimal iva;
 
     /**
