@@ -89,6 +89,8 @@ public class AuthController {
                                     """
                     )
             )),
+            @ApiResponse(responseCode = "400", description = "El cuerpo de la petición no es válido o no cumple con las validaciones"),
+            @ApiResponse(responseCode = "403", description = "Credenciales incorrectas: El correo electrónico o la contraseña proporcionados son incorrectos. (BadCredentialsException o UsernameNotFoundException")
     })
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> authenticate(
