@@ -5,7 +5,7 @@ incluye tanto el backend como el frontend, pero este repositorio se centra exclu
 
 ## ¿Qué incluye Funkomania Backend?
 
-Actualmente, Funkomania Backend `v0.2.0-SNAPSHOT-1` incluye las siguientes funcionalidades:
+Actualmente, Funkomania Backend `v0.2.0-SNAPSHOT-2` incluye las siguientes funcionalidades:
 
 - API REST para registrar usuarios, inicio de sesión y cierre de sesión de un usuario.
 - Integración con MySQL para almacenamiento de datos.
