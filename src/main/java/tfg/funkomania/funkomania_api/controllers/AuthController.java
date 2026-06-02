@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +29,7 @@ import tfg.funkomania.funkomania_api.services.AuthServiceImpl;
  * <p>Proporciona endpoints para el registro de un usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.2.0
+ * @version 0.2.2
  * @since 0.1.0
  */
 @RestController
@@ -47,8 +48,14 @@ public class AuthController {
     @Operation(summary = "Registrar un nuevo usuario", description = "Registra un nuevo usuario en la base de datos. Retorna el objeto creado con su ID generado automáticamente.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "El usuario ha sido registrado satisfactoriamente"),
-            @ApiResponse(responseCode = "400", description = "El cuerpo de la petición no es valido o no cumple con las validaciones"),
-            @ApiResponse(responseCode = "409", description = "Conflicto: El email del usuario ya existe en la base de datos")
+            @ApiResponse(responseCode = "400", description = "El cuerpo de la petición no es valido o no cumple con las validaciones", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "409", description = "Conflicto: El email del usuario ya existe en la base de datos", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
     })
     @PostMapping("/register")
     public ResponseEntity<Void> register(
@@ -89,8 +96,14 @@ public class AuthController {
                                     """
                     )
             )),
-            @ApiResponse(responseCode = "400", description = "El cuerpo de la petición no es válido o no cumple con las validaciones"),
-            @ApiResponse(responseCode = "403", description = "Credenciales incorrectas: El correo electrónico o la contraseña proporcionados son incorrectos. (BadCredentialsException o UsernameNotFoundException")
+            @ApiResponse(responseCode = "400", description = "El cuerpo de la petición no es válido o no cumple con las validaciones" , content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Credenciales incorrectas: El correo electrónico o la contraseña proporcionados son incorrectos. (BadCredentialsException o UsernameNotFoundException", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
     })
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> authenticate(
