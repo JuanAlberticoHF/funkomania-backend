@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
  * <p>La entidad mapea tabla {@code producto} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.2.0
  */
 @Entity
@@ -47,7 +48,7 @@ public class Producto {
     @Digits(integer = 10, fraction = 2, message = "El precio debe ser un número con hasta 10 dígitos enteros y 2 decimales.")
     @PositiveOrZero(message = "El precio del producto debe ser un número positivo o cero.")
     @Column (name = "Precio", nullable = false)
-    private Double precio;
+    private BigDecimal precio;
 
     /**
      * Stock disponible del producto.
@@ -77,8 +78,8 @@ public class Producto {
     @Digits(integer = 5, fraction = 2, message = "El iva debe ser un número con hasta 5 dígitos enteros y 2 decimales.")
     @DecimalMax(value = "100.00", message = "El iva del producto no puede exceder el 100%.")
     @PositiveOrZero(message = "El iva del producto debe ser un número positivo o cero.")
-    @Column(name = "Iva", nullable = false, precision = 5, scale = 2)
-    private Double iva;
+    @Column(name = "Iva", nullable = false, precision = 7, scale = 2)
+    private BigDecimal iva;
 
     /**
      * Producto activado o inactivo
@@ -101,8 +102,8 @@ public class Producto {
     @Digits(integer = 5, fraction = 2, message = "El descuento debe ser un número con hasta 5 dígitos enteros y 2 decimales.")
     @DecimalMax(value = "90.00", message = "El descuento del producto no puede exceder el 90%.")
     @PositiveOrZero(message = "El descuento del producto debe ser un número positivo o cero.")
-    @Column(name = "Descuento", nullable = false, precision = 5, scale = 2)
-    private Double descuento;
+    @Column(name = "Descuento", nullable = false, precision = 7, scale = 2)
+    private BigDecimal descuento;
 
     /**
      * Fecha de creación del producto.
