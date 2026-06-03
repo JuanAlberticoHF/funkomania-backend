@@ -66,3 +66,28 @@ Para descargar y ejecutar el proyecto, sigue estos pasos:
       ```bash
       docker-compose down -v
       ```
+
+### Actualizar imagen de Docker
+Si descargas nuevas versiones, debes actualizar la imagen de Docker. Para ello puedes seguir estos pasos:
+1. Detener los contenedores actuales:
+   1. Para apagar los contenedores sin eliminar los datos:
+      ```bash
+      docker-compose down
+      ```
+   2. Para apagar los contenedores y eliminar los datos:
+      ```bash
+      docker-compose down -v
+      ```
+2. Eliminar la imagen antigua del backend:
+   ```bash
+   docker rmi funkomaniabackend-funkomania-api
+   ```
+3. Volver a empaquetar el proyecto para generar un nuevo archivo JAR:
+   ```bash
+   ./mvnw package -D maven.test.skip
+   ```
+4. Levantar los contenedores nuevamente para construir la nueva imagen:
+   ```bash
+   docker-compose up --build
+   ```
+- Esto reconstruirá la imagen del backend con los cambios realizados en el código y levantará los contenedores nuevamente.
