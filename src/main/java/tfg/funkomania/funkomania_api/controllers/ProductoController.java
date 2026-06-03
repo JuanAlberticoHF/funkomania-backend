@@ -27,7 +27,7 @@ import tfg.funkomania.funkomania_api.services.ProductoServiceImpl;
  * <p>Proporciona un endpoint para obtener todos los productos disponibles en el sistema.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.2.0
  */
 @RestController
@@ -110,7 +110,7 @@ public class ProductoController {
             @ParameterObject @PageableDefault(size = 20) Pageable pageable,
             @Parameter(
                     description = "Texto para buscar por nombre o descripción",
-                    example = "Armadura"
+                    example = "vibranium"
             )
             @RequestParam(required = false) String search,
             @Parameter(
@@ -210,7 +210,7 @@ public class ProductoController {
             @ParameterObject @PageableDefault(size = 20) Pageable pageable,
             @Parameter(
                     description = "Texto para buscar por nombre o descripción",
-                    example = "Armadura"
+                    example = "vibranium"
             )
             @RequestParam(required = false) String search,
             @Parameter(
