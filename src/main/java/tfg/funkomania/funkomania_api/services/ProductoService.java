@@ -9,7 +9,7 @@ import tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDT
  * Define los métodos para gestionar los productos en el catálogo.
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.1.0
  * @since 0.2.0
  */
 public interface ProductoService {
@@ -35,4 +35,11 @@ public interface ProductoService {
      * @return Una página de objetos VistaProductosCatalogoDTOId que representan los productos en oferta disponibles en el catálogo.
      */
     Page<VistaProductosCatalogoDTOId> getAllProductosEnOfertaActivos(String search, Long idCategoria, Double precioMin, Double precioMax, Pageable pageable);
+
+    /**
+     * Obtiene un producto por su ID.
+     * @param id El ID del producto que se desea obtener.
+     * @return Un objeto Producto que representa el producto con el ID especificado, o lanza excepción si no se encuentra el producto.
+     */
+    VistaProductosCatalogoDTOId getProductoById(Long id);
 }

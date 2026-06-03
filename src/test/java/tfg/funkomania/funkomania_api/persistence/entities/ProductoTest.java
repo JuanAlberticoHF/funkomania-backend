@@ -38,8 +38,8 @@ class ProductoTest {
                         .nombre("C")
                         .build();
 
-        tfg.funkomania.funkomania_api.persistence.entities.Producto p =
-                tfg.funkomania.funkomania_api.persistence.entities.Producto.builder()
+        Producto p =
+                Producto.builder()
                         .nombre("Prod")
                         .precio(BigDecimal.valueOf(10))
                         .stock(1)
@@ -63,8 +63,8 @@ class ProductoTest {
                         .nombre("C2")
                         .build();
 
-        tfg.funkomania.funkomania_api.persistence.entities.Producto p =
-                tfg.funkomania.funkomania_api.persistence.entities.Producto.builder()
+        Producto p =
+                Producto.builder()
                         .nombre("Prod2")
                         .precio(BigDecimal.valueOf(5))
                         .stock(0)
@@ -83,9 +83,9 @@ class ProductoTest {
      */
     @Test
     void validar_deberiaDetectarCamposObligatorios() {
-        tfg.funkomania.funkomania_api.persistence.entities.Producto p =
-                new tfg.funkomania.funkomania_api.persistence.entities.Producto();
-        Set<ConstraintViolation<tfg.funkomania.funkomania_api.persistence.entities.Producto>> violations = validator.validate(p);
+        Producto p =
+                new Producto();
+        Set<ConstraintViolation<Producto>> violations = validator.validate(p);
         assertFalse(violations.isEmpty());
     }
 }

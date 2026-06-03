@@ -15,10 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId;
 import tfg.funkomania.funkomania_api.services.ProductoServiceImpl;
 
@@ -27,7 +24,7 @@ import tfg.funkomania.funkomania_api.services.ProductoServiceImpl;
  * <p>Proporciona un endpoint para obtener todos los productos disponibles en el sistema.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.1.1
+ * @version 1.2.0
  * @since 0.2.0
  */
 @RestController
@@ -234,5 +231,55 @@ public class ProductoController {
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(productoService.getAllProductosEnOfertaActivos(
                 search, idCategoria, precioMin, precioMax, pageable));
+    }
+
+    @Operation(summary = "Obtener un producto por su identificador.", description = "Retorna un producto específico del catálogo utilizando su identificador. El producto debe existir en el sistema para ser retornado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Objeto JSON con los datos del producto solicitado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = VistaProductosCatalogoDTOId.class),
+                    examples = @ExampleObject(
+                            value = """
+                                    {
+                                        "activo": true,
+                                        "descripcion": "Figura Funko Pop Original de Funkomania",
+                                        "descuento": 10.00,
+                                        "enOferta": true,
+                                        "fechaFinOferta": "2026-12-31T00:00:00",
+                                        "id": 1,
+                                        "idCategoria": 1,
+                                        "imagen": "funko_funkomania.jpg",
+                                        "iva": 21.00,
+                                        "nombre": "Figura Funkomania",
+                                        "nombreCategoria": "Originales",
+                                        "nombreCategoriaPadre": null,
+                                        "precioFinalConIVA": 16.32,
+                                        "precioFinalSinIVA": 13.49,
+                                        "precioOriginalConIVA": 18.14,
+                                        "precioOriginalSinIVA": 14.99,
+                                        "stock": 120
+                                    }
+                                    """
+                    )
+            )),
+            @ApiResponse(responseCode = "400", description = "Los parámetros de la solicitud no son validos.", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "404", description = "El id proporcionado no corresponde a ningún producto existente.", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<VistaProductosCatalogoDTOId> getProductoById(
+            @Parameter(
+                    description = "Identificador del producto a obtener.",
+                    example = "1",
+                    schema = @Schema(type = "integer", format = "int64", minimum = "1")
+            )
+            @PathVariable long id
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(productoService.getProductoById(id));
     }
 }
