@@ -10,13 +10,14 @@ import tfg.funkomania.funkomania_api.persistence.entities.Categoria;
  * <p>DTO que representa un categoria con su id en el sistema de Funkomania.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.2.0
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class CategoriaDTOId {
     @Positive(message = "El ID de la categoría no puede ser nulo.")
     private Long id;
