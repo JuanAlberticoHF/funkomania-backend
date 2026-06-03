@@ -7,7 +7,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+    defer-datasource-initialization: true
     show-sql: false
+
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      encoding: UTF-8
+      schema-locations: classpath:init.sql
 
 jwt:
   secret: ZmFrZV9qd3Rfc2VjcmV0X2tleV9mb3JfdGVzdHNfMzI=

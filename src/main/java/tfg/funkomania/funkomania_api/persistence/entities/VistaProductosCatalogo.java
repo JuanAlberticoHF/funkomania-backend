@@ -2,11 +2,10 @@ package tfg.funkomania.funkomania_api.persistence.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Subselect;
+import org.hibernate.annotations.Synchronize;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
  * <p>Entidad que representa una vista de productos en el catálogo de Funkomania.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.1
+ * @version 1.0.2
  * @since 0.2.0
  */
 @Entity
@@ -23,8 +22,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @ToString
+@Builder
 @Immutable
-@Table(name = "VProductos_Catalogo")
+@Subselect("SELECT * FROM VProductos_Catalogo")
+@Synchronize({"producto", "categoria"})
 public class VistaProductosCatalogo {
     /**
      * Identificador único del producto.

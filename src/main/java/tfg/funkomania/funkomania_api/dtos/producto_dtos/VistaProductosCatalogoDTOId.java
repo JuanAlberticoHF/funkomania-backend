@@ -12,12 +12,14 @@ import java.time.LocalDateTime;
  * <p>DTO que representa una vista de productos en el catálogo de Funkomania con ID.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.2.0
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
+@Builder
 public class VistaProductosCatalogoDTOId {
     /**
      * Identificador único del producto.
@@ -28,7 +30,7 @@ public class VistaProductosCatalogoDTOId {
      * Nombre del producto.
      */
     @NotNull(message = "El nombre del producto no puede ser nulo.")
-    @Max(value = 150, message = "El nombre del producto no puede exceder los 150 caracteres.")
+    @Size(max = 150, message = "El nombre del producto no puede exceder los 150 caracteres.")
     private String nombre;
 
     /**
