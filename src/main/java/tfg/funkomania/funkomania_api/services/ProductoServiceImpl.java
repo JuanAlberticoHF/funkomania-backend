@@ -5,8 +5,9 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import tfg.funkomania.funkomania_api.persistence.specifications.VistaProductosCatalogoSpecification;
 import tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.ProductoNotFoundException;
+import tfg.funkomania.funkomania_api.persistence.specifications.VistaProductosCatalogoSpecification;
 import tfg.funkomania.funkomania_api.persistence.entities.VistaProductosCatalogo;
 import tfg.funkomania.funkomania_api.persistence.repositories.IVistaProductosCatalogoRepository;
 
@@ -16,7 +17,7 @@ import tfg.funkomania.funkomania_api.persistence.repositories.IVistaProductosCat
  * relacionadas con los productos en el catálogo.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.1.0
  * @since 0.2.0
  */
 @Service
@@ -61,6 +62,13 @@ public class ProductoServiceImpl implements ProductoService {
             return productoRepository.findAllEnOfertaVigenteYActivo(pageable)
                     .map(VistaProductosCatalogoDTOId::new);
         }
+    }
+
+    @Override
+    public VistaProductosCatalogoDTOId getProductoById(Long id) {
+        return productoRepository.findById(id)
+                .map(VistaProductosCatalogoDTOId::new)
+                .orElseThrow(() -> new ProductoNotFoundException("Producto solicitado no encontrado con ID: " + id));
     }
 
     /**

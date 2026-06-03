@@ -2,6 +2,9 @@ package tfg.funkomania.funkomania_api.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import jakarta.persistence.EntityManager;
 
@@ -18,15 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
+import tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId;
 import tfg.funkomania.funkomania_api.persistence.entities.Categoria;
 import tfg.funkomania.funkomania_api.persistence.entities.Producto;
 import tfg.funkomania.funkomania_api.persistence.repositories.ICategoriaRepository;
 import tfg.funkomania.funkomania_api.persistence.repositories.IProductoRepository;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId;
+import tfg.funkomania.funkomania_api.services.ProductoServiceImpl;
 
 /**
  * Pruebas de integración para el controlador de productos.
@@ -115,7 +117,7 @@ class ProductoControllerIntegrationTest {
                 .build();
         categoria = categoriaRepository.save(categoria);
 
-        productoRepository.saveAndFlush(tfg.funkomania.funkomania_api.persistence.entities.Producto.builder()
+        productoRepository.saveAndFlush(Producto.builder()
                 .nombre("AlphaProduct")
                 .precio(BigDecimal.valueOf(11))
                 .stock(2)
@@ -126,7 +128,7 @@ class ProductoControllerIntegrationTest {
                 .categoria(categoria)
                 .build());
 
-        productoRepository.saveAndFlush(tfg.funkomania.funkomania_api.persistence.entities.Producto.builder()
+        productoRepository.saveAndFlush(Producto.builder()
                 .nombre("BetaProduct")
                 .precio(BigDecimal.valueOf(22))
                 .stock(3)
@@ -286,7 +288,7 @@ class ProductoControllerIntegrationTest {
                 .build();
         cat = categoriaRepository.save(cat);
 
-        productoRepository.saveAndFlush(tfg.funkomania.funkomania_api.persistence.entities.Producto.builder()
+        productoRepository.saveAndFlush(Producto.builder()
                 .nombre("AName2")
                 .precio(BigDecimal.valueOf(10))
                 .stock(3)
@@ -297,7 +299,7 @@ class ProductoControllerIntegrationTest {
                 .categoria(cat)
                 .build());
 
-        productoRepository.saveAndFlush(tfg.funkomania.funkomania_api.persistence.entities.Producto.builder()
+        productoRepository.saveAndFlush(Producto.builder()
                 .nombre("ZName2")
                 .precio(BigDecimal.valueOf(12))
                 .stock(2)
@@ -331,7 +333,7 @@ class ProductoControllerIntegrationTest {
                 .build();
         cat = categoriaRepository.save(cat);
 
-        productoRepository.save(tfg.funkomania.funkomania_api.persistence.entities.Producto.builder()
+        productoRepository.save(Producto.builder()
                 .nombre("Offer1")
                 .precio(BigDecimal.valueOf(100))
                 .stock(1)
@@ -358,12 +360,12 @@ class ProductoControllerIntegrationTest {
      */
     @Test
     void obtenerCatalogoOfertasConFiltros_deberiaDevolverCatalogoOfertasFiltrado() {
-        tfg.funkomania.funkomania_api.persistence.entities.Categoria cat = tfg.funkomania.funkomania_api.persistence.entities.Categoria.builder()
+        Categoria cat = Categoria.builder()
                 .nombre("OfferCat2")
                 .build();
         cat = categoriaRepository.save(cat);
 
-        productoRepository.saveAndFlush(tfg.funkomania.funkomania_api.persistence.entities.Producto.builder()
+        productoRepository.saveAndFlush(Producto.builder()
                 .nombre("OfertaAlpha")
                 .precio(BigDecimal.valueOf(50))
                 .stock(1)
@@ -375,7 +377,7 @@ class ProductoControllerIntegrationTest {
                 .categoria(cat)
                 .build());
 
-        productoRepository.saveAndFlush(tfg.funkomania.funkomania_api.persistence.entities.Producto.builder()
+        productoRepository.saveAndFlush(Producto.builder()
                 .nombre("NoMatch")
                 .precio(BigDecimal.valueOf(60))
                 .stock(1)
@@ -399,11 +401,62 @@ class ProductoControllerIntegrationTest {
         }
     }
 
+    /**
+     * Debe devolver el producto solicitado por su ID exitosamente
+     */
+    @Test
+    void obtenerProductoPorSuIdentificadorExitoso() {
+        // Crear categoria y producto en BD
+        Categoria cat = Categoria.builder()
+                .nombre("SingleCat")
+                .build();
+        cat = categoriaRepository.save(cat);
+
+        Producto p = Producto.builder()
+                .nombre("SingleProd")
+                .precio(BigDecimal.valueOf(99))
+                .stock(5)
+                .iva(BigDecimal.valueOf(21))
+                .activo(true)
+                .enOferta(false)
+                .descuento(BigDecimal.ZERO)
+                .categoria(cat)
+                .build();
+        p = productoRepository.saveAndFlush(p);
+
+        // Limpiar contexto JPA para forzar lectura desde BD
+        entityManager.clear();
+
+        try {
+            mockMvc.perform(get("/productos/{id}", p.getId()).contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(p.getId().intValue()))
+                    .andExpect(jsonPath("$.nombre").value("SingleProd"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Debe no devolver el producto solicitado por su ID y lanzar excepción de producto no encontrado
+     */
+    @Test
+    void obtenerProductoPorSuIdentificadorFallido() {
+        // Usar un id que no existe
+        long notFoundId = 999999L;
+        try {
+            mockMvc.perform(get("/productos/{id}", notFoundId).contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+                    .andExpect(status().isNotFound());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @TestConfiguration
     static class TestConfig {
         // Provide a ProductoServiceImpl bean (controller depends on the implementation class)
         @Bean
-        public tfg.funkomania.funkomania_api.services.ProductoServiceImpl productoServiceImpl(IProductoRepository productoRepository) {
+        public ProductoServiceImpl productoServiceImpl(IProductoRepository productoRepository) {
             class TestProductoServiceImpl extends tfg.funkomania.funkomania_api.services.ProductoServiceImpl {
                 private final IProductoRepository prodRepo;
 
@@ -413,16 +466,16 @@ class ProductoControllerIntegrationTest {
                 }
 
                 @Override
-                public org.springframework.data.domain.Page<VistaProductosCatalogoDTOId> getAllProductos(String search, Long idCategoria, Double precioMin, Double precioMax, Boolean oferta, Pageable pageable) {
-                    List<tfg.funkomania.funkomania_api.persistence.entities.Producto> all = prodRepo.findAll();
-                    List<tfg.funkomania.funkomania_api.persistence.entities.Producto> filtered = all.stream()
+                public Page<VistaProductosCatalogoDTOId> getAllProductos(String search, Long idCategoria, Double precioMin, Double precioMax, Boolean oferta, Pageable pageable) {
+                    List<Producto> all = prodRepo.findAll();
+                    List<Producto> filtered = all.stream()
                             .filter(p -> (search == null || p.getNombre().contains(search)))
                             .filter(p -> (oferta == null || p.isEnOferta() == oferta))
                             .toList();
                     // Aplicar ordenamiento a la lista filtrada según pageable.sort
                     pageable.getSort();
                     if (pageable.getSort().isSorted()) {
-                        List<tfg.funkomania.funkomania_api.persistence.entities.Producto> mutable = new java.util.ArrayList<>(filtered);
+                        List<Producto> mutable = new java.util.ArrayList<>(filtered);
                         pageable.getSort().forEach(order -> {
                             if ("nombre".equals(order.getProperty())) {
                                 mutable.sort((a, b) -> order.isAscending() ? a.getNombre().compareTo(b.getNombre()) : b.getNombre().compareTo(a.getNombre()));
@@ -447,16 +500,41 @@ class ProductoControllerIntegrationTest {
                 }
 
                 @Override
-                public org.springframework.data.domain.Page<VistaProductosCatalogoDTOId> getAllProductosEnOfertaActivos(String search, Long idCategoria, Double precioMin, Double precioMax, Pageable pageable) {
-                    List<tfg.funkomania.funkomania_api.persistence.entities.Producto> all = prodRepo.findAll();
-                    List<tfg.funkomania.funkomania_api.persistence.entities.Producto> filtered = all.stream()
-                            .filter(tfg.funkomania.funkomania_api.persistence.entities.Producto::isEnOferta)
-                            .filter(tfg.funkomania.funkomania_api.persistence.entities.Producto::isActivo)
+                public tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId getProductoById(Long id) {
+                    java.util.Optional<Producto> opt = prodRepo.findById(id);
+                    Producto p = opt.orElseThrow(() -> new tfg.funkomania.funkomania_api.exceptions.custom_exceptions.ProductoNotFoundException("Producto solicitado no encontrado con ID: " + id));
+                    return VistaProductosCatalogoDTOId.builder()
+                            .id(p.getId())
+                            .nombre(p.getNombre())
+                            .precioOriginalSinIVA(p.getPrecio())
+                            .precioOriginalConIVA(p.getPrecio())
+                            .enOferta(p.isEnOferta())
+                            .descuento(p.getDescuento())
+                            .fechaFinOferta(p.getFechaFinOferta())
+                            .precioFinalSinIVA(p.getPrecio())
+                            .precioFinalConIVA(p.getPrecio())
+                            .iva(p.getIva())
+                            .stock(p.getStock())
+                            .imagen(p.getImagen())
+                            .descripcion(p.getDescripcion())
+                            .activo(p.isActivo())
+                            .idCategoria(p.getCategoria() != null ? p.getCategoria().getId() : null)
+                            .nombreCategoria(p.getCategoria() != null ? p.getCategoria().getNombre() : null)
+                            .nombreCategoriaPadre(p.getCategoria() != null && p.getCategoria().getCategoriaPadre() != null ? p.getCategoria().getCategoriaPadre().getNombre() : null)
+                            .build();
+                }
+
+                @Override
+                public Page<VistaProductosCatalogoDTOId> getAllProductosEnOfertaActivos(String search, Long idCategoria, Double precioMin, Double precioMax, Pageable pageable) {
+                    List<Producto> all = prodRepo.findAll();
+                    List<Producto> filtered = all.stream()
+                            .filter(Producto::isEnOferta)
+                            .filter(Producto::isActivo)
                             .filter(p -> (search == null || p.getNombre().contains(search)))
                             .toList();
                     pageable.getSort();
                     if (pageable.getSort().isSorted()) {
-                        List<tfg.funkomania.funkomania_api.persistence.entities.Producto> mutable = new java.util.ArrayList<>(filtered);
+                        List<Producto> mutable = new java.util.ArrayList<>(filtered);
                         pageable.getSort().forEach(order -> {
                             if ("nombre".equals(order.getProperty())) {
                                 mutable.sort((a, b) -> order.isAscending() ? a.getNombre().compareTo(b.getNombre()) : b.getNombre().compareTo(a.getNombre()));
@@ -466,7 +544,7 @@ class ProductoControllerIntegrationTest {
                     }
                     int start = (int) pageable.getOffset();
                     int end = Math.min(start + pageable.getPageSize(), filtered.size());
-                    List<VistaProductosCatalogoDTOId> content = filtered.subList(Math.max(0, start), Math.max(0, end)).stream().map(p ->
+                    List<tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId> content = filtered.subList(Math.max(0, start), Math.max(0, end)).stream().map(p ->
                             VistaProductosCatalogoDTOId.builder()
                                     .id(p.getId())
                                     .nombre(p.getNombre())

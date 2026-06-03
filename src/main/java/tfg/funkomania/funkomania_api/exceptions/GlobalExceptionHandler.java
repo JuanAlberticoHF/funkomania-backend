@@ -5,6 +5,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.ProductoNotFoundException;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioAlreadyExistsException;
 
 /**
@@ -14,7 +15,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioAlready
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1.1
+ * @version 0.2.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -30,6 +31,19 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(UsuarioAlreadyExistsException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("El usuario ya existe");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code ProductoNotFoundException} que se lanza cuando no se encuentra un producto en la base de datos.
+     * @param ex Excepción de tipo {@code ProductoNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (Not Found).
+     */
+    @ExceptionHandler(ProductoNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(ProductoNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Producto no encontrado");
         return problemDetail;
     }
 }

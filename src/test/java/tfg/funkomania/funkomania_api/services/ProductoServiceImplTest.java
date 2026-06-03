@@ -97,7 +97,6 @@ public class ProductoServiceImplTest {
         assertNotNull(page);
     }
 
-    // Tests para ofertas
     @Test
     void obtenerTodosProductosCatalogosConFiltrosOferta () {
         tfg.funkomania.funkomania_api.persistence.repositories.IVistaProductosCatalogoRepository repo = Mockito.mock(tfg.funkomania.funkomania_api.persistence.repositories.IVistaProductosCatalogoRepository.class);
@@ -108,4 +107,49 @@ public class ProductoServiceImplTest {
         Page<tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId> page = service.getAllProductosEnOfertaActivos(null, null, null, null, pageable);
         assertNotNull(page);
     }
+
+    
+
+    @Test
+    void obtenerUnProductoPorSuIdentificadorExitoso() {
+        IVistaProductosCatalogoRepository repo = Mockito.mock(IVistaProductosCatalogoRepository.class);
+
+        VistaProductosCatalogo v = new VistaProductosCatalogo(
+                1L,
+                "Found",
+                BigDecimal.valueOf(10),
+                BigDecimal.valueOf(12),
+                false,
+                BigDecimal.ZERO,
+                null,
+                BigDecimal.valueOf(10),
+                BigDecimal.valueOf(12),
+                BigDecimal.valueOf(21),
+                5,
+                "img",
+                "desc",
+                true,
+                1L,
+                "Cat",
+                "Padre"
+        );
+
+        Mockito.when(repo.findById(1L)).thenReturn(java.util.Optional.of(v));
+
+        ProductoServiceImpl service = new ProductoServiceImpl(repo);
+        var dto = service.getProductoById(1L);
+        assertNotNull(dto);
+        assertEquals(1L, dto.getId());
+    }
+
+    @Test
+    void obtenerUnProductoPorSuIdentificadorFallido() {
+        IVistaProductosCatalogoRepository repo = Mockito.mock(IVistaProductosCatalogoRepository.class);
+        Mockito.when(repo.findById(Mockito.anyLong())).thenReturn(java.util.Optional.empty());
+
+        ProductoServiceImpl service = new ProductoServiceImpl(repo);
+        assertThrows(tfg.funkomania.funkomania_api.exceptions.custom_exceptions.ProductoNotFoundException.class,
+                () -> service.getProductoById(1L));
+    }
+
 }
