@@ -420,7 +420,8 @@ class ProductoControllerIntegrationTest {
                             .filter(p -> (oferta == null || p.isEnOferta() == oferta))
                             .toList();
                     // Aplicar ordenamiento a la lista filtrada según pageable.sort
-                    if (pageable.getSort() != null && pageable.getSort().isSorted()) {
+                    pageable.getSort();
+                    if (pageable.getSort().isSorted()) {
                         List<tfg.funkomania.funkomania_api.persistence.entities.Producto> mutable = new java.util.ArrayList<>(filtered);
                         pageable.getSort().forEach(order -> {
                             if ("nombre".equals(order.getProperty())) {
@@ -453,7 +454,8 @@ class ProductoControllerIntegrationTest {
                             .filter(tfg.funkomania.funkomania_api.persistence.entities.Producto::isActivo)
                             .filter(p -> (search == null || p.getNombre().contains(search)))
                             .toList();
-                    if (pageable.getSort() != null && pageable.getSort().isSorted()) {
+                    pageable.getSort();
+                    if (pageable.getSort().isSorted()) {
                         List<tfg.funkomania.funkomania_api.persistence.entities.Producto> mutable = new java.util.ArrayList<>(filtered);
                         pageable.getSort().forEach(order -> {
                             if ("nombre".equals(order.getProperty())) {
