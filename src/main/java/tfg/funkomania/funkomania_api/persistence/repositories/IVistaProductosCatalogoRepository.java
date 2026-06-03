@@ -7,14 +7,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
 import tfg.funkomania.funkomania_api.persistence.entities.VistaProductosCatalogo;
 
 /**
  * Interfaz de repositorio para la entidad VistaProductosCatalogo.
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.2.0
  */
 public interface IVistaProductosCatalogoRepository extends JpaRepository<VistaProductosCatalogo, Long>, JpaSpecificationExecutor<VistaProductosCatalogo> {
