@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import tfg.funkomania.funkomania_api.dtos.security_dtos.LoginRequest;
+
 import tfg.funkomania.funkomania_api.dtos.security_dtos.TokenResponse;
 import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioRegistroDTO;
 import tools.jackson.databind.ObjectMapper;
@@ -23,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Pruebas de integración para el endpoint de registro del controlador de autenticación.
  * Pruebas de integración para el endpoint de registro del controlador de autenticación.
  *
  * <p>Ejecuta peticiones HTTP simuladas con MockMvc y valida respuestas JSON y códigos HTTP

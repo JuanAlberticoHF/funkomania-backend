@@ -2,6 +2,7 @@ package tfg.funkomania.funkomania_api.exceptions;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,7 +18,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.1.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -71,6 +72,13 @@ public class CommonExceptionHandler {
     public ProblemDetail dataIntegrityViolationException(DataIntegrityViolationException ex){
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
         problemDetail.setTitle("Error de integridad de datos");
+        return problemDetail;
+    }
+
+    @ExceptionHandler(InvalidDataAccessResourceUsageException.class)
+    public ProblemDetail invalidDataAccessResourceUsageException(InvalidDataAccessResourceUsageException ex){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problemDetail.setTitle("Error de uso de recurso de acceso a datos");
         return problemDetail;
     }
 }

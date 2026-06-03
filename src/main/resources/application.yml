@@ -30,6 +30,10 @@ spring:
 
     show-sql: true # Muestra las consultas SQL generadas por Hibernate en la consola.
 
+# Configuración SpringDoc OpenAPI
+springdoc:
+  override-with-generic-response: false
+
 # Configuración JWT
 jwt:
   secret: ${JWT_SECRET} # Clave secreta para firmar los tokens JWT, se debe configurar en las variables de entorno.
