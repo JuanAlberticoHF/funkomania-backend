@@ -110,7 +110,7 @@ public class ProductoController {
             @ParameterObject @PageableDefault(size = 20) Pageable pageable,
             @Parameter(
                     description = "Texto para buscar por nombre o descripción",
-                    example = "funkomania"
+                    example = "Armadura"
             )
             @RequestParam(required = false) String search,
             @Parameter(
@@ -210,7 +210,7 @@ public class ProductoController {
             @ParameterObject @PageableDefault(size = 20) Pageable pageable,
             @Parameter(
                     description = "Texto para buscar por nombre o descripción",
-                    example = "funkomania"
+                    example = "Armadura"
             )
             @RequestParam(required = false) String search,
             @Parameter(
