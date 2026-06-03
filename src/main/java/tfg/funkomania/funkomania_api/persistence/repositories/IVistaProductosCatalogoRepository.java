@@ -4,6 +4,7 @@ import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -13,10 +14,11 @@ import tfg.funkomania.funkomania_api.persistence.entities.VistaProductosCatalogo
  * Interfaz de repositorio para la entidad VistaProductosCatalogo.
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.1.0
  * @since 0.2.0
  */
-public interface IVistaProductosCatalogoRepository extends Repository<VistaProductosCatalogo, Long>, JpaSpecificationExecutor<VistaProductosCatalogo> {
+public interface IVistaProductosCatalogoRepository extends JpaRepository<VistaProductosCatalogo, Long>, JpaSpecificationExecutor<VistaProductosCatalogo> {
+    @NullMarked
     Page<VistaProductosCatalogo> findAll(Pageable pageable);
     @NullMarked
     Page<VistaProductosCatalogo> findAll(Specification<VistaProductosCatalogo> spec, Pageable pageable);
