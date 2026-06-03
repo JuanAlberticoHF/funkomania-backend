@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  * <p>Entidad que representa una vista de productos en el catálogo de Funkomania.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.2.0
  */
 @Entity
@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @Immutable
-@Table(name = "vproductos_catalogo")
+@Table(name = "VProductos_Catalogo")
 public class VistaProductosCatalogo {
     /**
      * Identificador único del producto.
