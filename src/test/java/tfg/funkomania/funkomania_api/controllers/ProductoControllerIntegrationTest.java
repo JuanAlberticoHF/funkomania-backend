@@ -401,6 +401,57 @@ class ProductoControllerIntegrationTest {
         }
     }
 
+    /**
+     * Debe devolver el producto solicitado por su ID exitosamente
+     */
+    @Test
+    void obtenerProductoPorSuIdentificadorExitoso() {
+        // Crear categoria y producto en BD
+        Categoria cat = Categoria.builder()
+                .nombre("SingleCat")
+                .build();
+        cat = categoriaRepository.save(cat);
+
+        Producto p = Producto.builder()
+                .nombre("SingleProd")
+                .precio(BigDecimal.valueOf(99))
+                .stock(5)
+                .iva(BigDecimal.valueOf(21))
+                .activo(true)
+                .enOferta(false)
+                .descuento(BigDecimal.ZERO)
+                .categoria(cat)
+                .build();
+        p = productoRepository.saveAndFlush(p);
+
+        // Limpiar contexto JPA para forzar lectura desde BD
+        entityManager.clear();
+
+        try {
+            mockMvc.perform(get("/productos/{id}", p.getId()).contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(p.getId().intValue()))
+                    .andExpect(jsonPath("$.nombre").value("SingleProd"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Debe no devolver el producto solicitado por su ID y lanzar excepción de producto no encontrado
+     */
+    @Test
+    void obtenerProductoPorSuIdentificadorFallido() {
+        // Usar un id que no existe
+        long notFoundId = 999999L;
+        try {
+            mockMvc.perform(get("/productos/{id}", notFoundId).contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+                    .andExpect(status().isNotFound());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @TestConfiguration
     static class TestConfig {
         // Provide a ProductoServiceImpl bean (controller depends on the implementation class)
@@ -446,6 +497,31 @@ class ProductoControllerIntegrationTest {
                                     .build()
                     ).toList();
                     return new PageImpl<>(content, pageable, filtered.size());
+                }
+
+                @Override
+                public tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId getProductoById(Long id) {
+                    java.util.Optional<Producto> opt = prodRepo.findById(id);
+                    Producto p = opt.orElseThrow(() -> new tfg.funkomania.funkomania_api.exceptions.custom_exceptions.ProductoNotFoundException("Producto solicitado no encontrado con ID: " + id));
+                    return VistaProductosCatalogoDTOId.builder()
+                            .id(p.getId())
+                            .nombre(p.getNombre())
+                            .precioOriginalSinIVA(p.getPrecio())
+                            .precioOriginalConIVA(p.getPrecio())
+                            .enOferta(p.isEnOferta())
+                            .descuento(p.getDescuento())
+                            .fechaFinOferta(p.getFechaFinOferta())
+                            .precioFinalSinIVA(p.getPrecio())
+                            .precioFinalConIVA(p.getPrecio())
+                            .iva(p.getIva())
+                            .stock(p.getStock())
+                            .imagen(p.getImagen())
+                            .descripcion(p.getDescripcion())
+                            .activo(p.isActivo())
+                            .idCategoria(p.getCategoria() != null ? p.getCategoria().getId() : null)
+                            .nombreCategoria(p.getCategoria() != null ? p.getCategoria().getNombre() : null)
+                            .nombreCategoriaPadre(p.getCategoria() != null && p.getCategoria().getCategoriaPadre() != null ? p.getCategoria().getCategoriaPadre().getNombre() : null)
+                            .build();
                 }
 
                 @Override
