@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * <p>La entidad mapea tabla {@code producto} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.1
+ * @version 1.0.2
  * @since 0.2.0
  */
 @Entity
@@ -37,7 +37,7 @@ public class Producto {
      * Nombre del producto.
      */
     @NotNull(message = "El nombre del producto no puede ser nulo.")
-    @Max(value = 150, message = "El nombre del producto no puede exceder los 150 caracteres.")
+    @Size(max = 150, message = "El nombre del producto no puede exceder los 150 caracteres.")
     @Column(name = "Nombre", nullable = false)
     private String nombre;
 
@@ -116,6 +116,6 @@ public class Producto {
      */
     @NotNull(message = "La categoría del producto no puede ser nula.")
     @ManyToOne
-    @JoinColumn(name="idCategoria", nullable = false, unique = true)
+    @JoinColumn(name="idCategoria", nullable = false)
     private Categoria categoria;
 }
