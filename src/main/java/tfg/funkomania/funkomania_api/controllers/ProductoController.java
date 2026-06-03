@@ -1,6 +1,7 @@
 package tfg.funkomania.funkomania_api.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,6 +17,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId;
 import tfg.funkomania.funkomania_api.services.ProductoServiceImpl;
@@ -25,7 +27,7 @@ import tfg.funkomania.funkomania_api.services.ProductoServiceImpl;
  * <p>Proporciona un endpoint para obtener todos los productos disponibles en el sistema.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0
+ * @version 1.1.0
  * @since 0.2.0
  */
 @RestController
@@ -105,9 +107,39 @@ public class ProductoController {
     })
     @GetMapping("/")
     public ResponseEntity<Page<VistaProductosCatalogoDTOId>> getAllProductos(
-            @ParameterObject @PageableDefault(size = 20) Pageable pageable
+            @ParameterObject @PageableDefault(size = 20) Pageable pageable,
+            @Parameter(
+                    description = "Texto para buscar por nombre o descripción",
+                    example = "funkomania"
+            )
+            @RequestParam(required = false) String search,
+            @Parameter(
+                    description = "ID de la categoría",
+                    example = "1",
+                    schema = @Schema(type = "integer", format = "int64", minimum = "1")
+            )
+            @RequestParam(required = false) Long idCategoria,
+            @Parameter(
+                    description = "Precio mínimo del producto",
+                    example = "10.0",
+                    schema = @Schema(type = "number", format = "double", minimum = "0")
+            )
+            @RequestParam(required = false) Double precioMin,
+            @Parameter(
+                    description = "Precio máximo del producto",
+                    example = "50.0",
+                    schema = @Schema(type = "number", format = "double", minimum = "0")
+            )
+            @RequestParam(required = false) Double precioMax,
+            @Parameter(
+                    description = "Booleano de oferta",
+                    example = "true",
+                    schema = @Schema(type = "boolean")
+            )
+            @RequestParam(required = false) Boolean oferta
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(productoService.getAllProductos(pageable));
+        return ResponseEntity.status(HttpStatus.OK).body(productoService.getAllProductos(
+                search, idCategoria, precioMin, precioMax, oferta, pageable));
     }
 
     @Operation(summary = "Obtener catalogo de productos ofertados y activos", description = "Retorna una lista paginada de todos los productos que están en oferta y activos en el sistema.")
@@ -175,7 +207,32 @@ public class ProductoController {
     })
     @GetMapping("/ofertas")
     public ResponseEntity<Page<VistaProductosCatalogoDTOId>> getAllProductosOfertas(
-            @ParameterObject @PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(productoService.getAllProductosEnOfertaActivos(pageable));
+            @ParameterObject @PageableDefault(size = 20) Pageable pageable,
+            @Parameter(
+                    description = "Texto para buscar por nombre o descripción",
+                    example = "funkomania"
+            )
+            @RequestParam(required = false) String search,
+            @Parameter(
+                    description = "ID de la categoría",
+                    example = "1",
+                    schema = @Schema(type = "integer", format = "int64", minimum = "1")
+            )
+            @RequestParam(required = false) Long idCategoria,
+            @Parameter(
+                    description = "Precio mínimo del producto",
+                    example = "10.0",
+                    schema = @Schema(type = "number", format = "double", minimum = "0")
+            )
+            @RequestParam(required = false) Double precioMin,
+            @Parameter(
+                    description = "Precio máximo del producto",
+                    example = "50.0",
+                    schema = @Schema(type = "number", format = "double", minimum = "0")
+            )
+            @RequestParam(required = false) Double precioMax
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(productoService.getAllProductosEnOfertaActivos(
+                search, idCategoria, precioMin, precioMax, pageable));
     }
 }
