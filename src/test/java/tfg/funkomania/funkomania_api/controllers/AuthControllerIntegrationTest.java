@@ -18,6 +18,8 @@ import tfg.funkomania.funkomania_api.persistence.repositories.IUsuarioRepository
 import tfg.funkomania.funkomania_api.testutils.UsuarioTestFactory;
 import tfg.funkomania.funkomania_api.utils.JwtUtils;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -136,6 +138,38 @@ class AuthControllerIntegrationTest {
 
         String token = objectMapper.readValue(response, TokenResponse.class).token();
         assertThat(jwtUtils.isTokenValid(token)).isTrue();
+    }
+
+    /**
+     * Debe iniciar sesión, devolver una respuesta exitosa y actualizar el ultimo login del usuario.
+     *
+     * @throws Exception sí falla la ejecución de la petición MockMvc
+     */
+    @Test
+    void login_deberiaSerExitosoYActualizarUltimoLogin() throws Exception {
+        Usuario existing = UsuarioTestFactory.usuarioPersistible(
+                "login@example.com",
+                passwordEncoder.encode("Password123")
+        );
+        usuarioRepository.save(existing);
+
+
+        LoginRequest loginRequest = new LoginRequest("login@example.com", "Password123");
+
+        LocalDateTime horaActual = LocalDateTime.now(); // Obtengo la hora actual que será previa al login
+
+        mockMvc.perform(post("/auth/login")
+                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk());
+
+        Usuario usuarioLogueado = usuarioRepository.findUsuarioByEmail("login@example.com").orElse(null);
+        assertThat(usuarioLogueado).isNotNull();
+
+        if (usuarioLogueado != null) {
+            assertThat(usuarioLogueado.getUltimoLogin()).isNotNull();
+            assertThat(usuarioLogueado.getUltimoLogin()).isAfter(horaActual);
+        }
     }
 
     /**
