@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
  * <p>Implementa la anotación @Slf4j para habilitar el registro de eventos y errores en el servicio.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.1.0
  */
 @Service
@@ -107,6 +107,10 @@ public class AuthServiceImpl implements AuthService{
         String tokenJWT = jwtUtils.generateAccessToken(usuario.getEmail());
 
         log.info("Token JWT generado para el usuario: {}", loginRequest.username());
+
+        // Actualiza el último login del usuario autenticado
+        usuario.setUltimoLogin(LocalDateTime.now());
+        IUsuarioRepository.save(usuario);
 
         // Devolver el token y los datos del usuario
         return new TokenResponse(tokenJWT, usuario.getEmail(), usuario.getNombre());
