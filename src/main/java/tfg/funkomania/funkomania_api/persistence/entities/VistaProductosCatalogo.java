@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.Immutable;
-import org.hibernate.annotations.Subselect;
-import org.hibernate.annotations.Synchronize;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,7 +12,7 @@ import java.time.LocalDateTime;
  * <p>Entidad que representa una vista de productos en el catálogo de Funkomania.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.2
+ * @version 1.0.4
  * @since 0.2.0
  */
 @Entity
@@ -24,14 +22,12 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 @Immutable
-@Subselect("SELECT * FROM VProductos_Catalogo")
-@Synchronize({"producto", "categoria"})
+@Table(name = "VProductos_Catalogo")
 public class VistaProductosCatalogo {
     /**
      * Identificador único del producto.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idProducto", nullable = false)
     private Long id;
 
