@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.NullEmailAutenticationException;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.ProductoNotFoundException;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioAlreadyExistsException;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioNotFoundException;
 
 /**
  * <p>Manejador global de excepciones controladas de la API de Funkomania.</p>
@@ -16,7 +17,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioAlready
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.3.0
+ * @version 0.4.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -58,6 +59,19 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(NullEmailAutenticationException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         problemDetail.setTitle("Error en la autenticación: email nulo");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code UsuarioNotFoundException} que se lanza cuando no se encuentra un usuario en la base de datos.
+     * @param ex Excepción de tipo {@code UsuarioNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (Not Found).
+     */
+    @ExceptionHandler(UsuarioNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(UsuarioNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Usuario no encontrado");
         return problemDetail;
     }
 }
