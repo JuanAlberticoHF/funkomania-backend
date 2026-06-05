@@ -45,7 +45,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 "El email obtenido es nulo por problemas de autenticación, no se puede obtener el perfil del cliente autenticado");
 
         // Buscamos el perfil del cliente en la base de datos utilizando el email obtenido del contexto de seguridad
-        VistaUsuarioPerfilCliente vistaUsuarioPerfilCliente = vistaUsuarioPerfilClienteRepository.findByEmail(email)
+        VistaUsuarioPerfilCliente vistaUsuarioPerfilCliente = vistaUsuarioPerfilClienteRepository.findVistaUsuarioPerfilClienteByEmail(email)
                 .orElseThrow(() -> new UsuarioNotFoundException(
                 "No se encontró un perfil de cliente con el email del usuario autenticado: " + email));
 

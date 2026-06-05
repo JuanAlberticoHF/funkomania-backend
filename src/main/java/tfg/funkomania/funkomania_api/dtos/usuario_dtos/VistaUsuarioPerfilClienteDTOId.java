@@ -2,6 +2,7 @@ package tfg.funkomania.funkomania_api.dtos.usuario_dtos;
 
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
+import lombok.*;
 import tfg.funkomania.funkomania_api.persistence.entities.VistaUsuarioPerfilCliente;
 
 import java.math.BigDecimal;
@@ -11,9 +12,14 @@ import java.time.LocalDateTime;
  * <p>DTO que representa una vista del perfil de usuario de un cliente.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.2
+ * @version 1.0.3
  * @since 0.4.0
  */
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 public class VistaUsuarioPerfilClienteDTOId {
     /**
      * Identificador único del usuario.
