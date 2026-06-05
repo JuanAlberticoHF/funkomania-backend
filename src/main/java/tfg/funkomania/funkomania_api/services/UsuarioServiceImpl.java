@@ -56,8 +56,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public void actualizarUsuarioAutenticado(UsuarioUpdateRequestDTO usuarioUpdateRequestDTO) {
         // Comprobamos que todas los campos del DTO de actualización sean nulos.
-        if (usuarioUpdateRequestDTO.isNullOrEmpty()) {
-            throw new IllegalArgumentException("Todos los campos del DTO de actualización no pueden ser nulos o el nombre no puede estar vacío");
+        if (UsuarioUpdateRequestDTO.isNullOrEmpty(usuarioUpdateRequestDTO)) {
+            throw new IllegalArgumentException("Todos los parámetros de actualización no pueden ser nulos o el nombre no puede estar vacío");
         }
 
         // Obtenemos el email del usuario autenticado desde el contexto de seguridad de Spring Security
