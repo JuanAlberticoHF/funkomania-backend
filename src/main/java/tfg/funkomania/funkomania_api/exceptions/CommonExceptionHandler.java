@@ -18,7 +18,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
+ * @version 1.2.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -75,10 +75,28 @@ public class CommonExceptionHandler {
         return problemDetail;
     }
 
+    /**
+     * Maneja la excepción {@code InvalidDataAccessResourceUsageException} cuando se produce un error de uso de recurso de acceso a datos.
+     * @param ex Excepción de tipo {@code InvalidDataAccessResourceUsageException}.
+     * @return Un objeto {@code ProblemDetail} con detalles sobre el error de uso de recurso de acceso a datos y un código de estado HTTP {@code 400 Bad Request}.
+     */
     @ExceptionHandler(InvalidDataAccessResourceUsageException.class)
     public ProblemDetail invalidDataAccessResourceUsageException(InvalidDataAccessResourceUsageException ex){
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
         problemDetail.setTitle("Error de uso de recurso de acceso a datos");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code IllegalArgumentException} cuando se lanza una excepción de argumento ilegal en cualquier parte de la aplicación.
+     * @param ex Excepción de tipo {@code IllegalArgumentException}.
+     * @return Un objeto {@code ProblemDetail} con detalles sobre el error de argumento ilegal y un código de estado HTTP {@code 400 Bad Request}.
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ProblemDetail illegalArgumentException(IllegalArgumentException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problemDetail.setTitle("Argumento ilegal");
         return problemDetail;
     }
 }
