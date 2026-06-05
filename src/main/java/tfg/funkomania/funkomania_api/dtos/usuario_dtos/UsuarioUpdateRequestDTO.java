@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
  * DTO para la actualización de un usuario. Contiene los campos que pueden ser actualizados por el usuario autenticado.
  *
  * @author JuanAlbeticoHF
- * @version 1.0.1
+ * @version 1.1.0
  * @since 0.4.0
  */
 @NoArgsConstructor
@@ -39,4 +39,15 @@ public class UsuarioUpdateRequestDTO {
      */
     @Size(max = 20, message = "El teléfono no debe exceder los 20 caracteres.")
     private String telefono;
+
+    /**
+     * Verifica que todos los campos del DTO sean nulos o el nombre este vacío.
+     * @return true si todos los campos son nulos o el nombre esta vacío, false en caso contrario.
+     */
+    public boolean isNullOrEmpty() {
+        return (nombre == null || nombre.isEmpty()) &&
+               (apellido1 == null) &&
+               (apellido2 == null) &&
+               (telefono == null);
+    }
 }
