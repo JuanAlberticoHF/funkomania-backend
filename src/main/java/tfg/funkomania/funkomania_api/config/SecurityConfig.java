@@ -26,7 +26,7 @@ import tfg.funkomania.funkomania_api.utils.JwtUtils;
  * <p>Esta clase define la configuración de seguridad utilizando Spring Security y el password encoder</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.2.0
+ * @version 1.3.0
  * @since 0.1.0
  */
 @Configuration
@@ -65,6 +65,7 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/productos/**").permitAll()
                         .requestMatchers("/categorias/**").permitAll()
+                        .requestMatchers("/usuario/perfil").authenticated()
                         // El acceso a los endpoints para cualquier otra solicitud necesita autenticación.
                         .anyRequest().authenticated()
                 )
