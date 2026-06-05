@@ -1,0 +1,90 @@
+package tfg.funkomania.funkomania_api.services;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioUpdateRequestDTO;
+import tfg.funkomania.funkomania_api.dtos.usuario_dtos.VistaUsuarioPerfilClienteDTOId;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.NullEmailAutenticationException;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioNotFoundException;
+import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
+import tfg.funkomania.funkomania_api.persistence.entities.VistaUsuarioPerfilCliente;
+import tfg.funkomania.funkomania_api.persistence.repositories.IUsuarioRepository;
+import tfg.funkomania.funkomania_api.persistence.repositories.IVistaUsuarioPerfilClienteRepository;
+
+/**
+ * <p>Servicio para gestionar las operaciones de usuarios</p>
+ * <p>Esta clase implementa la interfaz {@link UsuarioService} y proporciona la lógica de negocio para las operaciones
+ * relacionadas con los datos del usuario y la vistas de usuarios.</p>
+ *
+ * @author JuanAlbeticoHF
+ * @version 1.0.0
+ * @since 0.4.0
+ */
+@Service
+public class UsuarioServiceImpl implements UsuarioService {
+
+    /** Repositorio para obtener la vista con los datos del perfil del cliente autenticado. */
+    private final IVistaUsuarioPerfilClienteRepository vistaUsuarioPerfilClienteRepository;
+
+    /** Repositorio para la entidad Usuario */
+    private final IUsuarioRepository usuarioRepository;
+
+    public UsuarioServiceImpl(IVistaUsuarioPerfilClienteRepository vistaUsuarioPerfilClienteRepository,
+                              IUsuarioRepository usuarioRepository) {
+        this.vistaUsuarioPerfilClienteRepository = vistaUsuarioPerfilClienteRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    @Override
+    public VistaUsuarioPerfilClienteDTOId obtenerPerfilClienteAutenticado() {
+        // Obtenemos el email del usuario autenticado desde el contexto de seguridad de Spring Security
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // Validamos que el email no sea nulo antes de continuar con la actualización del usuario
+        if (email == null) throw new NullEmailAutenticationException(
+                "El email obtenido es nulo por problemas de autenticación, no se puede obtener el perfil del cliente autenticado");
+
+        // Buscamos el perfil del cliente en la base de datos utilizando el email obtenido del contexto de seguridad
+        VistaUsuarioPerfilCliente vistaUsuarioPerfilCliente = vistaUsuarioPerfilClienteRepository.findByEmail(email)
+                .orElseThrow(() -> new UsuarioNotFoundException(
+                "No se encontró un perfil de cliente con el email del usuario autenticado: " + email));
+
+        // Convertimos la entidad VistaUsuarioPerfilCliente a un DTO VistaUsuarioPerfilClienteDTOId y lo retornamos
+        return new VistaUsuarioPerfilClienteDTOId(vistaUsuarioPerfilCliente);
+    }
+
+    @Override
+    public void actualizarUsuarioAutenticado(UsuarioUpdateRequestDTO usuarioUpdateRequestDTO) {
+        // Obtenemos el email del usuario autenticado desde el contexto de seguridad de Spring Security
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // Validamos que el email no sea nulo antes de continuar con la actualización del usuario
+        if (email == null) throw new NullEmailAutenticationException(
+                "El email obtenido es nulo por problemas de autenticación, no se puede actualizar el usuario autenticado");
+
+        // Buscamos el usuario en la base de datos utilizando el email obtenido del contexto de seguridad
+        Usuario usuario = usuarioRepository.findUsuarioByEmail(email)
+                .orElseThrow(() -> new UsuarioNotFoundException(
+                        "No se encontró un usuario con el email del usuario autenticado: " + email));
+
+        // Solo actualizamos los campos que no sean nulos en el DTO de actualización
+        if (usuarioUpdateRequestDTO.getNombre() != null) {
+            usuario.setNombre(usuarioUpdateRequestDTO.getNombre());
+        }
+
+        if(usuarioUpdateRequestDTO.getApellido1() != null) {
+            usuario.setApellido1(usuarioUpdateRequestDTO.getApellido1());
+        }
+
+        if(usuarioUpdateRequestDTO.getApellido2() != null) {
+            usuario.setApellido2(usuarioUpdateRequestDTO.getApellido2());
+        }
+
+        if(usuarioUpdateRequestDTO.getTelefono() != null) {
+            usuario.setTelefono(usuarioUpdateRequestDTO.getTelefono());
+        }
+
+        // Guardamos el usuario actualizado en la base de datos
+        usuarioRepository.save(usuario);
+    }
+}
