@@ -1,14 +1,20 @@
 package tfg.funkomania.funkomania_api.dtos.usuario_dtos;
 
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * DTO para la actualización de un usuario. Contiene los campos que pueden ser actualizados por el usuario autenticado.
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.4.0
  */
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 public class UsuarioUpdateRequestDTO {
     /**
      * Nombre del usuario.
