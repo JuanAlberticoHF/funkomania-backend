@@ -17,7 +17,7 @@ import tfg.funkomania.funkomania_api.persistence.repositories.IVistaUsuarioPerfi
  * relacionadas con los datos del usuario y la vistas de usuarios.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.1.0
  * @since 0.4.0
  */
 @Service
@@ -55,6 +55,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public void actualizarUsuarioAutenticado(UsuarioUpdateRequestDTO usuarioUpdateRequestDTO) {
+        // Comprobamos que todas los campos del DTO de actualización sean nulos.
+        if (usuarioUpdateRequestDTO.isNullOrEmpty()) {
+            throw new IllegalArgumentException("Todos los campos del DTO de actualización no pueden ser nulos o el nombre no puede estar vacío");
+        }
+
         // Obtenemos el email del usuario autenticado desde el contexto de seguridad de Spring Security
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
