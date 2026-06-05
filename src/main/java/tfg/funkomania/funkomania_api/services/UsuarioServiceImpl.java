@@ -17,7 +17,7 @@ import tfg.funkomania.funkomania_api.persistence.repositories.IVistaUsuarioPerfi
  * relacionadas con los datos del usuario y la vistas de usuarios.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.4.0
  */
 @Service
@@ -72,21 +72,33 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .orElseThrow(() -> new UsuarioNotFoundException(
                         "No se encontró un usuario con el email del usuario autenticado: " + email));
 
-        // Solo actualizamos los campos que no sean nulos en el DTO de actualización
+        // Solo actualizamos los campos que no sean nulos en el DTO de actualización y los vacíos los ponemos a null en la base de datos
         if (usuarioUpdateRequestDTO.getNombre() != null) {
             usuario.setNombre(usuarioUpdateRequestDTO.getNombre());
         }
 
         if(usuarioUpdateRequestDTO.getApellido1() != null) {
-            usuario.setApellido1(usuarioUpdateRequestDTO.getApellido1());
+            if (usuarioUpdateRequestDTO.getApellido1().isEmpty()) {
+                usuario.setApellido1(null);
+            } else {
+                usuario.setApellido1(usuarioUpdateRequestDTO.getApellido1());
+            }
         }
 
         if(usuarioUpdateRequestDTO.getApellido2() != null) {
-            usuario.setApellido2(usuarioUpdateRequestDTO.getApellido2());
+            if (usuarioUpdateRequestDTO.getApellido2().isEmpty()) {
+                usuario.setApellido2(null);
+            } else {
+                usuario.setApellido2(usuarioUpdateRequestDTO.getApellido2());
+            }
         }
 
         if(usuarioUpdateRequestDTO.getTelefono() != null) {
-            usuario.setTelefono(usuarioUpdateRequestDTO.getTelefono());
+            if (usuarioUpdateRequestDTO.getTelefono().isEmpty()) {
+                usuario.setTelefono(null);
+            } else {
+                usuario.setTelefono(usuarioUpdateRequestDTO.getTelefono());
+            }
         }
 
         // Guardamos el usuario actualizado en la base de datos
