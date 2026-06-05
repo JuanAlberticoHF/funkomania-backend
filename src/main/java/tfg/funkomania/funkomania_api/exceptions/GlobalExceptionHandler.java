@@ -5,6 +5,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.NullEmailAutenticationException;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.ProductoNotFoundException;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioAlreadyExistsException;
 
@@ -15,7 +16,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioAlready
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.2.0
+ * @version 0.3.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -44,6 +45,19 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(ProductoNotFoundException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Producto no encontrado");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code NullEmailAutenticationException} que se lanza cuando el email de autenticación es nulo.
+     * @param ex Excepción de tipo {@code NullEmailAutenticationException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 500 (Internal Server Error).
+     */
+    @ExceptionHandler(NullEmailAutenticationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ProblemDetail handleException(NullEmailAutenticationException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        problemDetail.setTitle("Error en la autenticación: email nulo");
         return problemDetail;
     }
 }
