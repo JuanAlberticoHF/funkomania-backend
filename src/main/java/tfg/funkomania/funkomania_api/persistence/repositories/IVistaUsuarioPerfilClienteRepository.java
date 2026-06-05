@@ -9,9 +9,9 @@ import java.util.Optional;
  * Interfaz de repositorio para la entidad VistaUsuarioPerfilCliente.
  *
  * @author JuanAlbeticoHF
- * @version 1.0.2
+ * @version 1.0.3
  * @since 0.4.0
  */
 public interface IVistaUsuarioPerfilClienteRepository extends Repository<VistaUsuarioPerfilCliente, Long> {
-    Optional<VistaUsuarioPerfilCliente> findByEmail(String email);
+    Optional<VistaUsuarioPerfilCliente> findVistaUsuarioPerfilClienteByEmail(String email);
 }
