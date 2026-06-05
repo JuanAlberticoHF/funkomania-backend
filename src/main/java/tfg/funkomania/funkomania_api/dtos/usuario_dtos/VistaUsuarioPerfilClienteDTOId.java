@@ -2,6 +2,7 @@ package tfg.funkomania.funkomania_api.dtos.usuario_dtos;
 
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
+import tfg.funkomania.funkomania_api.persistence.entities.VistaUsuarioPerfilCliente;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
  * <p>DTO que representa una vista del perfil de usuario de un cliente.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.1
+ * @version 1.0.2
  * @since 0.4.0
  */
 public class VistaUsuarioPerfilClienteDTOId {
@@ -70,4 +71,16 @@ public class VistaUsuarioPerfilClienteDTOId {
     @Digits(integer = 41, fraction = 2, message = "El precio debe ser un número con hasta 41 dígitos enteros y 2 decimales.")
     @PositiveOrZero(message = "El total gastado por el cliente debe ser un número positivo o cero.")
     private BigDecimal totalGastado;
+
+    public VistaUsuarioPerfilClienteDTOId(VistaUsuarioPerfilCliente vista) {
+        this.id = vista.getId();
+        this.email = vista.getEmail();
+        this.nombre = vista.getNombre();
+        this.apellidos = vista.getApellidos();
+        this.telefono = vista.getTelefono();
+        this.fechaRegistro = vista.getFechaRegistro();
+        this.direccionPrincipal = vista.getDireccionPrincipal();
+        this.cantidadPedidos = vista.getCantidadPedidos();
+        this.totalGastado = vista.getTotalGastado();
+    }
 }
