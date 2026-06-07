@@ -6,13 +6,14 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * <p>Entidad que representa un producto en el sistema de Funkomania.</p>
  * <p>La entidad mapea tabla {@code producto} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.2
+ * @version 1.1.0
  * @since 0.2.0
  */
 @Entity
@@ -118,4 +119,7 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name="idCategoria", nullable = false)
     private Categoria categoria;
+
+    @ManyToMany(mappedBy = "productosDeseados", fetch = FetchType.LAZY)
+    private Set<Usuario> usuarios;
 }

@@ -14,7 +14,7 @@ import java.util.Set;
  * <p>La entidad mapea tabla {@code usuario} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.2.0
+ * @version 0.3.0
  * @since 0.1.0
  */
 @Entity
@@ -90,6 +90,12 @@ public class Usuario {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Set<Direccion> direcciones;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "lista_deseos",
+            joinColumns = @JoinColumn(name = "idUsuario"),
+            inverseJoinColumns = @JoinColumn(name = "idProducto"))
+    Set<Producto> productosDeseados;
 
     /**
      * Crea un nuevo usuario a partir de un DTO de registro. El ID se establece como {@code null} para que sea autogenerado por la base de datos.
