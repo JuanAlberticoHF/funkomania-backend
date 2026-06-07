@@ -14,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.5.0
+ * @version 0.6.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -82,6 +82,20 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(DireccionNotFoundException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Direccion no encontrada");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code ProductoYaEnListaDeseadosException} que se lanza cuando se intenta agregar un
+     * producto a la lista de deseados de un usuario y ese producto ya está en la lista.
+     * @param ex Excepción de tipo {@code ProductoYaEnListaDeseadosException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (Conflict).
+     */
+    @ExceptionHandler(ProductoYaEnListaDeseadosException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(ProductoYaEnListaDeseadosException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("Producto ya en lista de deseados");
         return problemDetail;
     }
 }
