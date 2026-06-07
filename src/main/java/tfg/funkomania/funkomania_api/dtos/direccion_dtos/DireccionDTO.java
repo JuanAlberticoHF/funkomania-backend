@@ -4,13 +4,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import tfg.funkomania.funkomania_api.persistence.entities.Direccion;
 
 /**
  * <p>DTO que representa una dirección en el sistema de Funkomania.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.5.0
  */
 @NoArgsConstructor
@@ -52,15 +51,4 @@ public class DireccionDTO {
     @NotNull(message = "El campo 'activo' no puede ser nulo")
     private Boolean activo;
 
-    public DireccionDTO(Direccion direccion) {
-        this.calle = direccion.getCalle();
-        this.numero = direccion.getNumero();
-        this.piso = direccion.getPiso();
-        this.puerta = direccion.getPuerta();
-        this.ciudad = direccion.getCiudad();
-        this.municipio = direccion.getMunicipio();
-        this.provincia = direccion.getProvincia();
-        this.codigoPostal = direccion.getCodigoPostal();
-        this.activo = direccion.getActivo();
-    }
 }
