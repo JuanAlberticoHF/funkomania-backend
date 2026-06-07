@@ -7,13 +7,14 @@ import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioRegistroDTO;
 import tfg.funkomania.funkomania_api.enums.RoleEnum;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * <p>Entidad que representa un usuario en el sistema de Funkomania.</p>
  * <p>La entidad mapea tabla {@code usuario} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1.0
+ * @version 0.2.0
  * @since 0.1.0
  */
 @Entity
@@ -86,6 +87,9 @@ public class Usuario {
     @NotNull
     @Column(name = "Activo", nullable = false)
     private boolean activo;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private Set<Direccion> direcciones;
 
     /**
      * Crea un nuevo usuario a partir de un DTO de registro. El ID se establece como {@code null} para que sea autogenerado por la base de datos.
