@@ -5,10 +5,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.NullEmailAutenticationException;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.ProductoNotFoundException;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioAlreadyExistsException;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioNotFoundException;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
 
 /**
  * <p>Manejador global de excepciones controladas de la API de Funkomania.</p>
@@ -17,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioNotFoun
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.4.0
+ * @version 0.5.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -72,6 +69,19 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(UsuarioNotFoundException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Usuario no encontrado");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code DireccionNotFoundException} que se lanza cuando no se encuentra una direccion en la base de datos.
+     * @param ex Excepción de tipo {@code DireccionNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (Not Found).
+     */
+    @ExceptionHandler(DireccionNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(DireccionNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Direccion no encontrada");
         return problemDetail;
     }
 }
