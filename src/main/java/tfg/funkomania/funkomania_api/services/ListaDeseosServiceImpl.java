@@ -1,7 +1,9 @@
 package tfg.funkomania.funkomania_api.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tfg.funkomania.funkomania_api.dtos.producto_dtos.ProductoDTOId;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.NullEmailAutenticationException;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.ProductoNotFoundException;
@@ -12,6 +14,7 @@ import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
 import tfg.funkomania.funkomania_api.persistence.repositories.IProductoRepository;
 import tfg.funkomania.funkomania_api.persistence.repositories.IUsuarioRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +23,7 @@ import java.util.List;
  * relacionadas con la lista de productos deseados del usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.1.0
  * @since 0.5.0
  */
 @Service
@@ -38,13 +41,17 @@ public class ListaDeseosServiceImpl implements ListaDeseosService {
         this.productoRepository = productoRepository;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ProductoDTOId> obtenerListaDeseosDelUsuario() {
         // Obtenemos usuario autenticado desde el contexto de seguridad de Spring Security con la lista de deseos
         final Usuario usuario = obtenerUsuarioAutenticadoConListaDeseados();
 
+        // Obtenemos la lista de productos deseados del usuario autenticado
+        List<Producto> listaDeseos = new ArrayList<>(usuario.getProductosDeseados());
+
         // Devolvemos la lista de productos deseados del usuario autenticado
-        return usuario.getProductosDeseados().stream().map(ProductoDTOId::new).toList();
+        return listaDeseos.stream().map(ProductoDTOId::new).toList();
     }
 
     @Override
