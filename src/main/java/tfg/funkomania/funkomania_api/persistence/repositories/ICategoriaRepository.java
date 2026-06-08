@@ -5,16 +5,24 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import tfg.funkomania.funkomania_api.persistence.entities.Categoria;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
  * Interfaz de repositorio para la entidad Categoria.
  *
  * @author JuanAlbeticoHF
- * @version 0.3.0
+ * @version 0.4.0
  * @since 0.2.0
  */
 public interface ICategoriaRepository extends JpaRepository<Categoria,Long> {
+    /**
+     * Obtiene un listado de categorías con sus productos asociados
+     * @return una lista de categorías con sus productos asociados
+     */
+    @Query("SELECT DISTINCT c FROM Categoria c LEFT JOIN FETCH c.productosAsociados")
+    List<Categoria> findAllConProductos();
+
     /**
      * Busca una categoria con sus productos asociados
      * @param id identificador de la categoría a buscar.

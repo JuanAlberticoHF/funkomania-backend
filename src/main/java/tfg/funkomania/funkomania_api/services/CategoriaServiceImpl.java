@@ -2,6 +2,7 @@ package tfg.funkomania.funkomania_api.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tfg.funkomania.funkomania_api.dtos.categoria_dtos.CategoriaDTOIdProductosAsociados;
 import tfg.funkomania.funkomania_api.dtos.categoria_dtos.CategoriaDTORequest;
 import tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.CategoriaConProductosException;
@@ -17,7 +18,7 @@ import java.util.List;
  * relacionadas con las categorías.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.1.1
  * @since 0.2.0
  */
 @Service
@@ -37,12 +38,20 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Transactional(readOnly = true)
     @Override
+    public List<CategoriaDTOIdProductosAsociados> obtenerListadoCategoriasConProductosAsociados() {
+        return categoriaRepository.findAllConProductos().stream()
+                .map(CategoriaDTOIdProductosAsociados::new)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<VistaProductosCatalogoDTOId> obtenerProductosAsociadosDeUnaCategoria(Long idCategoria) {
         return categoriaRepository.findCategoriaByIdConProductosParaAdmin(idCategoria)
                 .map(categoria -> categoria.getProductosAsociados().stream()
                         .map(VistaProductosCatalogoDTOId::new)
                         .toList())
-                .orElse(List.of());
+                .orElseThrow(() -> new CategoriaNotFoundException("No se encontró la categoría con ID: " + idCategoria));
     }
 
     @Transactional
@@ -51,7 +60,7 @@ public class CategoriaServiceImpl implements CategoriaService {
         // Verificar si la categoría padre existe antes de crear la nueva categoría
         Categoria categoriaPadre = null;
 
-        if (categoriaDTORequest.idCategoriaPadre() != null) {
+        if (categoriaDTORequest.idCategoriaPadre() != null && categoriaDTORequest.idCategoriaPadre() != 0L) {
             categoriaPadre = categoriaRepository.findById(categoriaDTORequest.idCategoriaPadre())
                     .orElseThrow(() -> new CategoriaNotFoundException("La categoría padre con ID " + categoriaDTORequest.idCategoriaPadre() + " no existe."));
         }
@@ -70,7 +79,7 @@ public class CategoriaServiceImpl implements CategoriaService {
         // Verificar si la categoría padre existe antes de actualizar la categoría
         Categoria categoriaPadre = null;
 
-        if (categoriaDTORequest.idCategoriaPadre() != null) {
+        if (categoriaDTORequest.idCategoriaPadre() != null && categoriaDTORequest.idCategoriaPadre() != 0L) {
             categoriaPadre = categoriaRepository.findById(categoriaDTORequest.idCategoriaPadre())
                     .orElseThrow(() -> new CategoriaNotFoundException("La categoría padre con ID " + categoriaDTORequest.idCategoriaPadre() + " no existe."));
         }

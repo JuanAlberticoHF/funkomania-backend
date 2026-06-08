@@ -1,5 +1,6 @@
 package tfg.funkomania.funkomania_api.services;
 
+import tfg.funkomania.funkomania_api.dtos.categoria_dtos.CategoriaDTOIdProductosAsociados;
 import tfg.funkomania.funkomania_api.dtos.categoria_dtos.CategoriaDTORequest;
 import tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId;
 import tfg.funkomania.funkomania_api.persistence.entities.Categoria;
@@ -11,7 +12,7 @@ import java.util.List;
  * Define los métodos para realizar operaciones relacionadas con las categorías de productos.
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
+ * @version 1.2.0
  * @since 0.2.0
  */
 public interface CategoriaService {
@@ -20,6 +21,12 @@ public interface CategoriaService {
      * @return Una lista de objetos Categoria que representan todas las categorías disponibles en el sistema.
      */
     List<Categoria> getAllCategorias();
+
+    /**
+     * Obtiene todas las categorías incluyendo los productos asociados a cada categoría.
+     * @return Una lista de Categorías con productos asociados VistaProductosCatalogoDTOId que representan todas las categorías disponibles en el sistema.
+     */
+    List<CategoriaDTOIdProductosAsociados> obtenerListadoCategoriasConProductosAsociados();
 
     /**
      * Obtiene una categoría por su ID, incluyendo los productos asociados a esa categoría.
