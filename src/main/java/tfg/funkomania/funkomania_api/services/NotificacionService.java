@@ -1,7 +1,6 @@
 package tfg.funkomania.funkomania_api.services;
 
 import tfg.funkomania.funkomania_api.dtos.notificacion_dtos.VistaNotificacionUsuarioDTOId;
-import tfg.funkomania.funkomania_api.persistence.entities.VistaNotificacionesUsuarios;
 import tfg.funkomania.funkomania_api.persistence.enums.TipoNotificacionEnum;
 
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
  * Define los métodos para realizar operaciones relacionadas con las notificaciones del usuario.
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.5.0
  */
 public interface NotificacionService {
