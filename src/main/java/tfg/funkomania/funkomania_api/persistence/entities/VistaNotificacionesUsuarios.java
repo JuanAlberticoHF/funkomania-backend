@@ -31,11 +31,11 @@ public class VistaNotificacionesUsuarios {
     private Long idUsuario;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo")
+    @Column(name = "tipo", nullable = false)
     private TipoNotificacionEnum tipoNotificacion;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado")
+    @Column(name = "estado",  nullable = false)
     private EstadoNotificacionEnum estadoNotificacion;
 
     @Column(name = "Mensaje")
