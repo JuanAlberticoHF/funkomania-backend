@@ -1,5 +1,6 @@
 package tfg.funkomania.funkomania_api.persistence.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
  * <p>La entidad mapea tabla {@code producto} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.2.0
  */
 @Entity
@@ -115,8 +116,9 @@ public class Producto {
      * Categoría a la que pertenece el producto.
      */
     @NotNull(message = "La categoría del producto no puede ser nula.")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="idCategoria", nullable = false)
+    @JsonIgnoreProperties("productosAsociados") // Evita la serialización recursiva de los productos dentro de la categoría
     @EqualsAndHashCode.Exclude
     private Categoria categoria;
 
