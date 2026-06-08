@@ -1,16 +1,20 @@
 package tfg.funkomania.funkomania_api.persistence.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <p>Entidad que representa un categoria en el sistema de Funkomania.</p>
  * <p>La entidad mapea tabla {@code categoria} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.1.0
  * @since 0.2.0
  */
 @Entity
@@ -37,4 +41,9 @@ public class Categoria {
     @JoinColumn(name = "CategoriaPadre")
     @EqualsAndHashCode.Exclude
     private Categoria categoriaPadre;
+
+    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("categoria") // Evita la serialización recursiva de la categoría dentro de los productos
+    @EqualsAndHashCode.Exclude
+    private Set<Producto> productosAsociados = new HashSet<>();
 }
