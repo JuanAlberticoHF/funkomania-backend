@@ -14,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.7.0
+ * @version 0.8.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -109,6 +109,19 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(NotificacionNotFoundException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("Notificación no encontrada");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code NotNotificationOwnerException} que se lanza cuando un usuario intenta acceder o modificar una notificación que no le pertenece.
+     * @param ex Excepción de tipo {@code NotNotificationOwnerException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (NOT_FOUND).
+     */
+    @ExceptionHandler(NotNotificationOwnerException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(NotNotificationOwnerException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("No eres el propietario de esta notificación");
         return problemDetail;
     }
 }
