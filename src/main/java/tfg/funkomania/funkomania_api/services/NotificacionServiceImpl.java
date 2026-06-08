@@ -3,10 +3,7 @@ package tfg.funkomania.funkomania_api.services;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import tfg.funkomania.funkomania_api.dtos.notificacion_dtos.VistaNotificacionUsuarioDTOId;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.NotNotificationOwnerException;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.NotificacionNotFoundException;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.NullEmailAutenticationException;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioNotFoundException;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
 import tfg.funkomania.funkomania_api.persistence.entities.Notificacion;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
 import tfg.funkomania.funkomania_api.persistence.enums.EstadoNotificacionEnum;
@@ -24,7 +21,7 @@ import java.util.Objects;
  * relacionadas con las notificaciones del usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.5.0
  */
 @Service
@@ -88,6 +85,12 @@ public class NotificacionServiceImpl implements NotificacionService {
         if (!Objects.equals(notificacion.getUsuario().getIdUsuario(), idUsuario))
             throw new NotNotificationOwnerException(
                 "La notificación con identificador" + idNotificacion + " no pertenece al usuario autenticado");
+
+        // Validamos que la notificación no este ya leída antes de cambiar su estado a "LEIDO"
+        if (notificacion.getEstadoNotificacion() == EstadoNotificacionEnum.LEIDA)
+            throw new NotificacionYaLeidaException(
+                "La notificación con identificador" + idNotificacion + " ya ha sido leída");
+
 
         // Si existe la notificación y el usuario autenticado es propietaria cambiamos su estado a "LEIDO"
         notificacionRepository.findByIdNotificacionAndEstadoNotificacion(idNotificacion, EstadoNotificacionEnum.LEIDA);

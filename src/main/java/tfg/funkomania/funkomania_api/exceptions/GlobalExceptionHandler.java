@@ -14,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.8.1
+ * @version 0.9.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -122,6 +122,19 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(NotNotificationOwnerException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("No eres el propietario de esta notificación");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code NotificacionYaLeidaException} que se lanza cuando la notificación ya ha sido leída.
+     * @param ex Excepción de tipo {@code NotificacionYaLeidaException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(NotificacionYaLeidaException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(NotificacionYaLeidaException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("La notificación ya ha sido leída");
         return problemDetail;
     }
 }
