@@ -20,7 +20,9 @@ import tfg.funkomania.funkomania_api.dtos.security_dtos.LoginRequest;
 import tfg.funkomania.funkomania_api.dtos.security_dtos.TokenResponse;
 import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioRegistroDTO;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
+import tfg.funkomania.funkomania_api.persistence.enums.TipoNotificacionEnum;
 import tfg.funkomania.funkomania_api.services.AuthServiceImpl;
+import tfg.funkomania.funkomania_api.services.NotificacionServiceImpl;
 
 /**
  * <p>Controlador REST para la autenticación de usuarios.</p>
@@ -29,7 +31,7 @@ import tfg.funkomania.funkomania_api.services.AuthServiceImpl;
  * <p>Proporciona endpoints para el registro de un usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.2.2
+ * @version 0.3.0
  * @since 0.1.0
  */
 @RestController
@@ -41,14 +43,23 @@ public class AuthController {
     /** Servicio de autenticación */
     private final AuthServiceImpl authService;
 
-    public AuthController(AuthServiceImpl authServiceimpl) {
+    /** Servicio de notificaciones para enviar correos electrónicos de bienvenida a los nuevos usuarios. */
+    private final NotificacionServiceImpl notificacionService;
+
+    public AuthController(AuthServiceImpl authServiceimpl,
+                          NotificacionServiceImpl notificacionService) {
         this.authService = authServiceimpl;
+        this.notificacionService = notificacionService;
     }
 
     @Operation(summary = "Registrar un nuevo usuario", description = "Registra un nuevo usuario en la base de datos. Retorna el objeto creado con su ID generado automáticamente.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "El usuario ha sido registrado satisfactoriamente"),
             @ApiResponse(responseCode = "400", description = "El cuerpo de la petición no es valido o no cumple con las validaciones", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "404", description = "El usuario registrado no ha sido encontrado en la base de datos.", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -77,7 +88,11 @@ public class AuthController {
                     )
             )
             @Valid @RequestBody UsuarioRegistroDTO usuarioRegistroDTO) {
-        authService.register(new Usuario(usuarioRegistroDTO));
+        // Registrar el nuevo usuario utilizando el servicio de autenticación
+        Usuario usuario = authService.register(new Usuario(usuarioRegistroDTO));
+        // Obtengo el identificador generado automáticamente para el nuevo usuario registrado y registro la notificación de registro.
+        notificacionService.generarNotificacion(usuario.getIdUsuario(), TipoNotificacionEnum.REGISTRO);
+        // Retornar una respuesta HTTP 201 Created sin cuerpo, indicando que el usuario ha sido registrado satisfactoriamente.
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
