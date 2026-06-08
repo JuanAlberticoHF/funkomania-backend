@@ -37,7 +37,7 @@ public class VistaNotificacionUsuarioDTOId {
 
     public VistaNotificacionUsuarioDTOId(VistaNotificacionesUsuarios vistaNotificacionesUsuarios) {
         this.idUsuario = vistaNotificacionesUsuarios.getIdUsuario();
-        this.idNotificacion = vistaNotificacionesUsuarios.getIdUsuario();
+        this.idNotificacion = vistaNotificacionesUsuarios.getIdNotificacion();
         this.tipoNotificacion = vistaNotificacionesUsuarios.getTipoNotificacion();
         this.estadoNotificacion = vistaNotificacionesUsuarios.getEstadoNotificacion();
         this.mensaje = vistaNotificacionesUsuarios.getMensaje();
