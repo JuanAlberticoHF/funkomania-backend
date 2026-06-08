@@ -760,6 +760,13 @@ INSERT INTO Notificacion (idUsuario, tipo, estado) VALUES
 (2, 'REGISTRO', 'ENVIADA'),
 (2, 'BIENVENIDA', 'ENVIADA');
 
+-- Insertar metodos de pago
+INSERT INTO Metodo_Pago (Nombre, Activo) VALUES
+('Tarjeta de Crédito', 1),
+('PayPal', 1),
+('Transferencia Bancaria', 1),
+('Efectivo', 0);
+
 -- Insertar Categorías
 INSERT INTO Categoria (Nombre) VALUES ('Marvel');
 INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('DC Comics', 1);
