@@ -19,10 +19,18 @@ import tfg.funkomania.funkomania_api.services.DireccionServiceImpl;
 
 import java.util.List;
 
+/**
+ * <p>Controlador REST para manejar las solicitudes relacionadas con las direcciones de un usuario.</p>
+ *
+ * @author JuanAlbeticoHF
+ * @version 1.0.0
+ * @since 0.5.0
+ */
 @RestController
 @RequestMapping("/usuario/direcciones")
 @Tag(name = "Gestor de Direcciones", description = "Endpoints para gestionar las direcciones del usuario autenticado, incluyendo la creación, actualización y activación de direcciones.")
 public class DireccionController {
+    /** Servicio de direcciones que contiene la lógica de negocio de todas las operaciones */
     private final DireccionServiceImpl direccionService;
 
     public DireccionController(DireccionServiceImpl direccionService) {
