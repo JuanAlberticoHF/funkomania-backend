@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers("/usuario/direcciones/**").authenticated()
                         .requestMatchers("/usuario/notificaciones/**").authenticated()
                         .requestMatchers("/usuario/lista-deseos/**").authenticated()
+                        .requestMatchers("/metodos-pago/**").permitAll()
                         // El acceso a los endpoints para cualquier otra solicitud necesita autenticación.
                         .anyRequest().authenticated()
                 )
