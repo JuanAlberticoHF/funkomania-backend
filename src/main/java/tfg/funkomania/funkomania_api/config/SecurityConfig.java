@@ -70,6 +70,7 @@ public class SecurityConfig {
                         .requestMatchers("/usuario/notificaciones/**").authenticated()
                         .requestMatchers("/usuario/lista-deseos/**").authenticated()
                         .requestMatchers("/metodos-pago/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         // El acceso a los endpoints para cualquier otra solicitud necesita autenticación.
                         .anyRequest().authenticated()
                 )
