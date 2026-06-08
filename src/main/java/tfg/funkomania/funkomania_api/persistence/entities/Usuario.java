@@ -14,7 +14,7 @@ import java.util.Set;
  * <p>La entidad mapea tabla {@code usuario} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.3.1
+ * @version 0.3.2
  * @since 0.1.0
  */
 @Entity
@@ -92,9 +92,10 @@ public class Usuario {
     private Set<Direccion> direcciones;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "lista_deseos",
+    @JoinTable(name = "Lista_Deseos",
             joinColumns = @JoinColumn(name = "idUsuario"),
             inverseJoinColumns = @JoinColumn(name = "idProducto"))
+    @EqualsAndHashCode.Exclude
     Set<Producto> productosDeseados;
 
     /**
