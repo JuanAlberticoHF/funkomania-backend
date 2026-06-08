@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 /**
  * <p>Entidad que representa un producto en el sistema de Funkomania.</p>
@@ -118,8 +117,7 @@ public class Producto {
     @NotNull(message = "La categoría del producto no puede ser nula.")
     @ManyToOne
     @JoinColumn(name="idCategoria", nullable = false)
+    @EqualsAndHashCode.Exclude
     private Categoria categoria;
 
-    @ManyToMany(mappedBy = "productosDeseados", fetch = FetchType.LAZY)
-    private Set<Usuario> usuarios;
 }
