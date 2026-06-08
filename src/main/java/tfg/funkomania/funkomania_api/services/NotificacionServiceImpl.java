@@ -93,7 +93,8 @@ public class NotificacionServiceImpl implements NotificacionService {
 
 
         // Si existe la notificación y el usuario autenticado es propietaria cambiamos su estado a "LEIDO"
-        notificacionRepository.findByIdNotificacionAndEstadoNotificacion(idNotificacion, EstadoNotificacionEnum.LEIDA);
+        notificacion.setEstadoNotificacion(EstadoNotificacionEnum.LEIDA);
+        notificacionRepository.save(notificacion);
     }
 
     @Override

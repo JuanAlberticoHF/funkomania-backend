@@ -8,9 +8,8 @@ import tfg.funkomania.funkomania_api.persistence.enums.EstadoNotificacionEnum;
  * Interfaz de repositorio para la entidad Notificacion.
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.5.0
  */
 public interface INotificacionRepository extends JpaRepository<Notificacion, Long> {
-    void findByIdNotificacionAndEstadoNotificacion(Long idNotificacion, EstadoNotificacionEnum estado);
 }
