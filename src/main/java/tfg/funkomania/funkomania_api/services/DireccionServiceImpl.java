@@ -51,10 +51,10 @@ public class DireccionServiceImpl implements DireccionService {
         // Obtenemos el identificador del usuario
         final Long idUsuario = usuarioRepository.findUsuarioByEmail(email)
                 .orElseThrow(() -> new UsuarioNotFoundException(
-                        "No se encontró un usuario con el email del usuario autenticado: " + email)).getId();
+                        "No se encontró un usuario con el email del usuario autenticado: " + email)).getIdUsuario();
 
         // Obtenemos las direcciones del usuario autenticado utilizando el identificador del usuario
-        return direccionRepository.findDireccionsByUsuario_Id(idUsuario).stream().map(DireccionDTOId::new).toList();
+        return direccionRepository.findDireccionsByUsuario_IdUsuario(idUsuario).stream().map(DireccionDTOId::new).toList();
     }
 
     @Override
@@ -118,7 +118,7 @@ public class DireccionServiceImpl implements DireccionService {
         // Obtenemos el identificador del usuario
         final Long idUsuario = usuarioRepository.findUsuarioByEmail(email)
                 .orElseThrow(() -> new UsuarioNotFoundException(
-                        "No se encontró un usuario con el email del usuario autenticado: " + email)).getId();
+                        "No se encontró un usuario con el email del usuario autenticado: " + email)).getIdUsuario();
 
         // Activamos la dirección del usuario autenticado utilizando el identificador del usuario y el identificador de la dirección
         direccionRepository.activarDireccion(idDireccion, idUsuario);

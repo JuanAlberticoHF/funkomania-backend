@@ -14,7 +14,7 @@ import java.util.Set;
  * <p>La entidad mapea tabla {@code usuario} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.3.0
+ * @version 0.3.1
  * @since 0.1.0
  */
 @Entity
@@ -35,7 +35,7 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idUsuario", nullable = false)
-    private Long id;
+    private Long idUsuario;
 
     /**
      * Correo electrónico único del usuario.
@@ -102,7 +102,7 @@ public class Usuario {
      * @param usuarioRegistroDTO DTO con los datos necesarios para registrar un nuevo usuario.
      */
     public Usuario(UsuarioRegistroDTO usuarioRegistroDTO) {
-        this.id = null;
+        this.idUsuario = null;
         this.email = usuarioRegistroDTO.getEmail();
         this.password = usuarioRegistroDTO.getPassword();
         this.nombre = usuarioRegistroDTO.getNombre();

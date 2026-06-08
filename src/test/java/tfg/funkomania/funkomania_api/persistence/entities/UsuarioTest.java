@@ -25,7 +25,7 @@ class UsuarioTest {
 
         Usuario usuario = new Usuario(dto);
 
-        assertThat(usuario.getId()).isNull();
+        assertThat(usuario.getIdUsuario()).isNull();
         assertThat(usuario.getEmail()).isEqualTo("user@example.com");
         assertThat(usuario.getPassword()).isEqualTo("pass");
         assertThat(usuario.getNombre()).isEqualTo("Nombre");

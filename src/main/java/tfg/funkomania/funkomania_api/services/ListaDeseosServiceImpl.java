@@ -108,7 +108,7 @@ public class ListaDeseosServiceImpl implements ListaDeseosService {
         // Obtenemos el identificador del usuario
         final Long idUsuario = usuarioRepository.findUsuarioByEmail(email)
                 .orElseThrow(() -> new UsuarioNotFoundException(
-                        "No se encontró un usuario con el email del usuario autenticado: " + email)).getId();
+                        "No se encontró un usuario con el email del usuario autenticado: " + email)).getIdUsuario();
 
         // Obtenemos de nuevo el usuario y obtenemos su información junto a los productos deseados
         return usuarioRepository.findUsuarioByIdConListaDeseos(idUsuario).orElseThrow(

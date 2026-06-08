@@ -27,7 +27,7 @@ class UsuarioDTOIdTest {
     void constructor_deberiaMapearCamposDeEntidad() {
         LocalDateTime now = LocalDateTime.now();
         Usuario usuario = new Usuario();
-        usuario.setId(10L);
+        usuario.setIdUsuario(10L);
         usuario.setEmail("dto@example.com");
         usuario.setPassword("hash");
         usuario.setNombre("Nombre");

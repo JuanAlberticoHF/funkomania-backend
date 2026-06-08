@@ -12,7 +12,7 @@ import java.util.List;
  * Interfaz de repositorio para la entidad {@link Direccion}.
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.5.0
  */
 public interface IDireccionRepository extends JpaRepository<Direccion, Long> {
@@ -20,7 +20,7 @@ public interface IDireccionRepository extends JpaRepository<Direccion, Long> {
     @Query(value = "CALL sp_activar_direccion_usuario(:p_idUsuario, :p_idDireccion)", nativeQuery = true)
     void activarDireccion(@Param("p_idDireccion") Long idDireccion, @Param("p_idUsuario") Long idUsuario);
 
-    List<Direccion> findDireccionsByUsuario_Id(Long usuarioId);
+    List<Direccion> findDireccionsByUsuario_IdUsuario(Long usuarioId);
 
     boolean existsDireccionById(Long id);
 }
