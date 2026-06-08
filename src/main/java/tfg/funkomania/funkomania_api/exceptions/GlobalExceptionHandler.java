@@ -5,10 +5,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.NullEmailAutenticationException;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.ProductoNotFoundException;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioAlreadyExistsException;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioNotFoundException;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
 
 /**
  * <p>Manejador global de excepciones controladas de la API de Funkomania.</p>
@@ -17,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioNotFoun
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.4.0
+ * @version 0.9.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -72,6 +69,72 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(UsuarioNotFoundException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Usuario no encontrado");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code DireccionNotFoundException} que se lanza cuando no se encuentra una direccion en la base de datos.
+     * @param ex Excepción de tipo {@code DireccionNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (Not Found).
+     */
+    @ExceptionHandler(DireccionNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(DireccionNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Direccion no encontrada");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code ProductoYaEnListaDeseadosException} que se lanza cuando se intenta agregar un
+     * producto a la lista de deseados de un usuario y ese producto ya está en la lista.
+     * @param ex Excepción de tipo {@code ProductoYaEnListaDeseadosException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (Conflict).
+     */
+    @ExceptionHandler(ProductoYaEnListaDeseadosException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(ProductoYaEnListaDeseadosException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("Producto ya en lista de deseados");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code NotificacionNotFoundException} que se lanza cuando no se encuentra una notificación en la base de datos.
+     * @param ex Excepción de tipo {@code NotificacionNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(NotificacionNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(NotificacionNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("Notificación no encontrada");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code NotNotificationOwnerException} que se lanza cuando un usuario intenta acceder o modificar una notificación que no le pertenece.
+     * @param ex Excepción de tipo {@code NotNotificationOwnerException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(NotNotificationOwnerException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(NotNotificationOwnerException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("No eres el propietario de esta notificación");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code NotificacionYaLeidaException} que se lanza cuando la notificación ya ha sido leída.
+     * @param ex Excepción de tipo {@code NotificacionYaLeidaException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(NotificacionYaLeidaException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(NotificacionYaLeidaException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("La notificación ya ha sido leída");
         return problemDetail;
     }
 }

@@ -4,16 +4,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioRegistroDTO;
-import tfg.funkomania.funkomania_api.enums.RoleEnum;
+import tfg.funkomania.funkomania_api.persistence.enums.RoleEnum;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * <p>Entidad que representa un usuario en el sistema de Funkomania.</p>
  * <p>La entidad mapea tabla {@code usuario} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1.0
+ * @version 0.4.0
  * @since 0.1.0
  */
 @Entity
@@ -34,7 +35,7 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idUsuario", nullable = false)
-    private Long id;
+    private Long idUsuario;
 
     /**
      * Correo electrónico único del usuario.
@@ -87,12 +88,25 @@ public class Usuario {
     @Column(name = "Activo", nullable = false)
     private boolean activo;
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private Set<Direccion> direcciones;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "Lista_Deseos",
+            joinColumns = @JoinColumn(name = "idUsuario"),
+            inverseJoinColumns = @JoinColumn(name = "idProducto"))
+    @EqualsAndHashCode.Exclude
+    Set<Producto> productosDeseados;
+
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    private Set<Notificacion> notificaciones;
+
     /**
      * Crea un nuevo usuario a partir de un DTO de registro. El ID se establece como {@code null} para que sea autogenerado por la base de datos.
      * @param usuarioRegistroDTO DTO con los datos necesarios para registrar un nuevo usuario.
      */
     public Usuario(UsuarioRegistroDTO usuarioRegistroDTO) {
-        this.id = null;
+        this.idUsuario = null;
         this.email = usuarioRegistroDTO.getEmail();
         this.password = usuarioRegistroDTO.getPassword();
         this.nombre = usuarioRegistroDTO.getNombre();

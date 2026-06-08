@@ -1,12 +1,11 @@
 package tfg.funkomania.funkomania_api.dtos.usuario_dtos;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tfg.funkomania.funkomania_api.enums.RoleEnum;
+import tfg.funkomania.funkomania_api.persistence.enums.RoleEnum;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
 
 import java.time.LocalDateTime;
@@ -63,7 +62,7 @@ public class UsuarioDTOId {
     private boolean activo;
 
     public UsuarioDTOId(Usuario usuario) {
-        this.id = usuario.getId();
+        this.id = usuario.getIdUsuario();
         this.email = usuario.getEmail();
         this.password = usuario.getPassword();
         this.nombre = usuario.getNombre();

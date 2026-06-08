@@ -8,9 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tfg.funkomania.funkomania_api.dtos.security_dtos.LoginRequest;
 import tfg.funkomania.funkomania_api.dtos.security_dtos.TokenResponse;
-import tfg.funkomania.funkomania_api.enums.RoleEnum;
+import tfg.funkomania.funkomania_api.persistence.enums.RoleEnum;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioAlreadyExistsException;
+import tfg.funkomania.funkomania_api.persistence.enums.TipoNotificacionEnum;
 import tfg.funkomania.funkomania_api.persistence.repositories.IUsuarioRepository;
 import tfg.funkomania.funkomania_api.utils.JwtUtils;
 
@@ -23,7 +24,7 @@ import java.time.LocalDateTime;
  * <p>Implementa la anotación @Slf4j para habilitar el registro de eventos y errores en el servicio.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.1
+ * @version 1.1.0
  * @since 0.1.0
  */
 @Service
@@ -39,16 +40,21 @@ public class AuthServiceImpl implements AuthService{
     /** Gestor de autenticación para realizar el proceso de autenticación de los usuarios. */
     private final AuthenticationManager authenticationManager;
 
+    /** Servicio de notificaciones */
+    private final NotificacionServiceImpl notificacionServiceImpl;
+
     /** Utilidad para generar tokens JWT para la autenticación de los usuarios. */
     private final JwtUtils jwtUtils;
 
     public AuthServiceImpl(IUsuarioRepository IUsuarioRepository,
                            PasswordEncoder passwordEncoder,
                            AuthenticationManager authenticationManager,
+                           NotificacionServiceImpl notificacionServiceImpl,
                            JwtUtils jwtUtils) {
         this.IUsuarioRepository = IUsuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.notificacionServiceImpl = notificacionServiceImpl;
         this.jwtUtils = jwtUtils;
     }
 
@@ -107,6 +113,11 @@ public class AuthServiceImpl implements AuthService{
         String tokenJWT = jwtUtils.generateAccessToken(usuario.getEmail());
 
         log.info("Token JWT generado para el usuario: {}", loginRequest.username());
+
+        // Comprueba si el último login es nulo para enviar el mensaje de bienvenida
+        if (usuario.getUltimoLogin() == null) {
+            notificacionServiceImpl.generarNotificacion(usuario.getIdUsuario(), TipoNotificacionEnum.BIENVENIDA);
+        }
 
         // Actualiza el último login del usuario autenticado
         usuario.setUltimoLogin(LocalDateTime.now());

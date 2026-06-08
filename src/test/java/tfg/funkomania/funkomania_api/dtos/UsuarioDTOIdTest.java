@@ -2,7 +2,7 @@ package tfg.funkomania.funkomania_api.dtos;
 
 import org.junit.jupiter.api.Test;
 import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioDTOId;
-import tfg.funkomania.funkomania_api.enums.RoleEnum;
+import tfg.funkomania.funkomania_api.persistence.enums.RoleEnum;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
 
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ class UsuarioDTOIdTest {
     void constructor_deberiaMapearCamposDeEntidad() {
         LocalDateTime now = LocalDateTime.now();
         Usuario usuario = new Usuario();
-        usuario.setId(10L);
+        usuario.setIdUsuario(10L);
         usuario.setEmail("dto@example.com");
         usuario.setPassword("hash");
         usuario.setNombre("Nombre");

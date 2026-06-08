@@ -1,5 +1,6 @@
 package tfg.funkomania.funkomania_api.services;
 
+import org.hibernate.annotations.Any;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,7 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import tfg.funkomania.funkomania_api.dtos.security_dtos.LoginRequest;
 import tfg.funkomania.funkomania_api.dtos.security_dtos.TokenResponse;
-import tfg.funkomania.funkomania_api.enums.RoleEnum;
+import tfg.funkomania.funkomania_api.persistence.enums.RoleEnum;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioAlreadyExistsException;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
 import tfg.funkomania.funkomania_api.persistence.repositories.IUsuarioRepository;
@@ -22,9 +23,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Pruebas unitarias para la implementación del servicio de autenticación.
@@ -40,6 +39,9 @@ class AuthServiceImplTest {
 
     @Mock
     private IUsuarioRepository usuarioRepository;
+
+    @Mock
+    private NotificacionServiceImpl notificacionService;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -116,6 +118,7 @@ class AuthServiceImplTest {
 
         when(usuarioRepository.findUsuarioByEmail("user@example.com")).thenReturn(Optional.of(usuario));
         when(jwtUtils.generateAccessToken("user@example.com")).thenReturn("jwt-token");
+        doNothing().when(notificacionService).generarNotificacion(any(), any());
 
         TokenResponse response = authService.login(loginRequest);
 

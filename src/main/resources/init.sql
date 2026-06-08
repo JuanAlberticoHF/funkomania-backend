@@ -129,8 +129,8 @@ CREATE TABLE IF NOT EXISTS Detalle_Carrito (
 CREATE TABLE IF NOT EXISTS Notificacion (
     idNotificacion BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     idUsuario BIGINT UNSIGNED NOT NULL,
-    tipo ENUM('registro', 'compra', 'estado_pedido', 'carrito_abandonado', 'pago_error', 'wishlist_stock', 'bienvenida') NOT NULL,
-    estado ENUM('pendiente', 'enviada', 'leida') NOT NULL DEFAULT 'pendiente',
+    tipo ENUM('REGISTRO', 'COMPRA', 'ESTADO_PEDIDO', 'CARRITO_ABANDONADO', 'PAGO_ERROR', 'LISTADESEOS_STOCK', 'BIENVENIDA') NOT NULL,
+    estado ENUM('PENDIENTE', 'ENVIADA', 'LEIDA') NOT NULL DEFAULT 'PENDIENTE',
 
     CONSTRAINT fk_notificacion_usuario FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
     );
@@ -746,11 +746,26 @@ CREATE INDEX idx_direccion_usuario_activo ON Direccion(idUsuario, Activo);
 CREATE INDEX idx_notificacion_usuario_estado ON Notificacion(idUsuario, estado);
 
 -- --------------------------REGISTROS---------------------------
+-- Insertar usuarios de prueba
 INSERT INTO Usuario (email, passwordHash, Nombre, Apellido1, Apellido2, Telefono, FechaRegistro, UltimoLogin, Rol, Activo) VALUES
 ('JuanAlberticoHF@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Juan Alberto',
  'Hernandez', 'Fernandez', '123456789', '2026-06-04 18:41:12', '2026-06-04 18:41:13', 'ADMIN', 1),
 ('UsuarioNormal@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Usuario',
  'Normal', 'Apellido2', '987654321', '2026-06-04 18:41:12', '2026-06-04 18:41:13', 'CLIENTE', 1);
+
+-- Insertar notificaciones
+INSERT INTO Notificacion (idUsuario, tipo, estado) VALUES
+(1, 'REGISTRO', 'ENVIADA'),
+(1, 'BIENVENIDA', 'ENVIADA'),
+(2, 'REGISTRO', 'ENVIADA'),
+(2, 'BIENVENIDA', 'ENVIADA');
+
+-- Insertar metodos de pago
+INSERT INTO Metodo_Pago (Nombre, Activo) VALUES
+('Tarjeta de Crédito', 1),
+('PayPal', 1),
+('Transferencia Bancaria', 1),
+('Efectivo', 0);
 
 -- Insertar Categorías
 INSERT INTO Categoria (Nombre) VALUES ('Marvel');

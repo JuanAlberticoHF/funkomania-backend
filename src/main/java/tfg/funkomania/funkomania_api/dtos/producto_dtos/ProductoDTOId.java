@@ -1,36 +1,28 @@
-package tfg.funkomania.funkomania_api.persistence.entities;
+package tfg.funkomania.funkomania_api.dtos.producto_dtos;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import tfg.funkomania.funkomania_api.persistence.entities.Producto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * <p>Entidad que representa un producto en el sistema de Funkomania.</p>
- * <p>La entidad mapea tabla {@code producto} de la base de datos</p>
+ * <p>DTO que representa un producto con su identificador en el catálogo de Funkomania</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
- * @since 0.2.0
+ * @version 1.0.0
+ * @since 0.5.0
  */
-@Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
-@Table(name = "Producto")
-public class Producto {
+@Builder
+public class ProductoDTOId {
     /**
      * Identificador único del producto.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idProducto", nullable = false)
     private Long id;
 
     /**
@@ -38,7 +30,6 @@ public class Producto {
      */
     @NotNull(message = "El nombre del producto no puede ser nulo.")
     @Size(max = 150, message = "El nombre del producto no puede exceder los 150 caracteres.")
-    @Column(name = "Nombre", nullable = false)
     private String nombre;
 
     /**
@@ -47,28 +38,23 @@ public class Producto {
     @NotNull(message = "El precio del producto no puede ser nulo.")
     @Digits(integer = 10, fraction = 2, message = "El precio debe ser un número con hasta 10 dígitos enteros y 2 decimales.")
     @PositiveOrZero(message = "El precio del producto debe ser un número positivo o cero.")
-    @Column (name = "Precio", nullable = false)
     private BigDecimal precio;
 
     /**
      * Stock disponible del producto.
      */
     @PositiveOrZero(message = "El stock del producto debe ser un número positivo o cero.")
-    @Column(name = "Stock", nullable = false)
     private Integer stock;
 
     /**
      * URL de la imagen del producto.
      */
     @Max(value = 255, message = "La URL de la imagen no puede exceder los 255 caracteres.")
-    @Column(name = "Image")
     private String imagen;
 
     /**
      * Descripción detallada del producto.
      */
-    @Lob
-    @Column(name = "Descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
     /**
@@ -78,21 +64,18 @@ public class Producto {
     @Digits(integer = 5, fraction = 2, message = "El iva debe ser un número con hasta 5 dígitos enteros y 2 decimales.")
     @DecimalMax(value = "100.00", message = "El iva del producto no puede exceder el 100%.")
     @PositiveOrZero(message = "El iva del producto debe ser un número positivo o cero.")
-    @Column(name = "iva", nullable = false, precision = 7, scale = 2)
     private BigDecimal iva;
 
     /**
      * Producto activado o inactivo
      */
     @NotNull
-    @Column(name = "Activo", nullable = false)
     private boolean activo;
 
     /**
      * Producto en oferta o sin oferta
      */
     @NotNull
-    @Column(name = "EnOferta", nullable = false)
     private boolean enOferta;
 
     /**
@@ -102,22 +85,24 @@ public class Producto {
     @Digits(integer = 5, fraction = 2, message = "El descuento debe ser un número con hasta 5 dígitos enteros y 2 decimales.")
     @DecimalMax(value = "90.00", message = "El descuento del producto no puede exceder el 90%.")
     @PositiveOrZero(message = "El descuento del producto debe ser un número positivo o cero.")
-    @Column(name = "Descuento", nullable = false, precision = 7, scale = 2)
     private BigDecimal descuento;
 
     /**
      * Fecha de creación del producto.
      */
-    @Column(name = "FechaFinOferta")
     private LocalDateTime fechaFinOferta;
 
-    /**
-     * Categoría a la que pertenece el producto.
-     */
-    @NotNull(message = "La categoría del producto no puede ser nula.")
-    @ManyToOne
-    @JoinColumn(name="idCategoria", nullable = false)
-    @EqualsAndHashCode.Exclude
-    private Categoria categoria;
-
+    public ProductoDTOId(Producto producto) {
+        this.id = producto.getId();
+        this.nombre = producto.getNombre();
+        this.precio = producto.getPrecio();
+        this.stock = producto.getStock();
+        this.imagen = producto.getImagen();
+        this.descripcion = producto.getDescripcion();
+        this.iva = producto.getIva();
+        this.activo = producto.isActivo();
+        this.enOferta = producto.isEnOferta();
+        this.descuento = producto.getDescuento();
+        this.fechaFinOferta = producto.getFechaFinOferta();
+    }
 }

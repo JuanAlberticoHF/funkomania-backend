@@ -24,7 +24,7 @@ import java.util.List;
  * <p>Proporciona un endpoint para obtener todas las categorías disponibles.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.1.0
+ * @version 0.1.1
  * @since 0.2.0
  */
 @RestController
@@ -64,11 +64,7 @@ public class CategoriaController {
                                     ]
                                     """
                     )
-            )),
-            @ApiResponse(responseCode = "400", description = "Los parámetros de la solicitud no son validos", content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = ProblemDetail.class)
-            )),
+            ))
     })
     @GetMapping("/")
     public ResponseEntity<List<CategoriaDTOId>> getAllCategorias() {

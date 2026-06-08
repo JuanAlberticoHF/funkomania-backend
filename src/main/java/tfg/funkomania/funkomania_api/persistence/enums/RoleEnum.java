@@ -1,4 +1,4 @@
-package tfg.funkomania.funkomania_api.enums;
+package tfg.funkomania.funkomania_api.persistence.enums;
 
 /**
  * <p>Enum para definir los roles de usuario en la aplicación. Actualmente, se definen dos roles:</p>
