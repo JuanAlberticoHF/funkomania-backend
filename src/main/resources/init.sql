@@ -746,11 +746,19 @@ CREATE INDEX idx_direccion_usuario_activo ON Direccion(idUsuario, Activo);
 CREATE INDEX idx_notificacion_usuario_estado ON Notificacion(idUsuario, estado);
 
 -- --------------------------REGISTROS---------------------------
+-- Insertar usuarios de prueba
 INSERT INTO Usuario (email, passwordHash, Nombre, Apellido1, Apellido2, Telefono, FechaRegistro, UltimoLogin, Rol, Activo) VALUES
 ('JuanAlberticoHF@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Juan Alberto',
  'Hernandez', 'Fernandez', '123456789', '2026-06-04 18:41:12', '2026-06-04 18:41:13', 'ADMIN', 1),
 ('UsuarioNormal@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Usuario',
  'Normal', 'Apellido2', '987654321', '2026-06-04 18:41:12', '2026-06-04 18:41:13', 'CLIENTE', 1);
+
+-- Insertar notificaciones
+INSERT INTO Notificacion (idUsuario, tipo, estado) VALUES
+(1, 'REGISTRO', 'ENVIADA'),
+(1, 'BIENVENIDA', 'ENVIADA'),
+(2, 'REGISTRO', 'ENVIADA'),
+(2, 'BIENVENIDA', 'ENVIADA');
 
 -- Insertar Categorías
 INSERT INTO Categoria (Nombre) VALUES ('Marvel');
