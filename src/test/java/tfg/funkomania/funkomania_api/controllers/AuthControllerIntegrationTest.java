@@ -7,6 +7,7 @@ import tfg.funkomania.funkomania_api.dtos.security_dtos.LoginRequest;
 
 import tfg.funkomania.funkomania_api.dtos.security_dtos.TokenResponse;
 import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioRegistroDTO;
+import tfg.funkomania.funkomania_api.persistence.repositories.INotificacionRepository;
 import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MediaType;
@@ -48,6 +49,9 @@ class AuthControllerIntegrationTest {
     private IUsuarioRepository usuarioRepository;
 
     @Autowired
+    private INotificacionRepository notificacionRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -55,6 +59,7 @@ class AuthControllerIntegrationTest {
 
     @BeforeEach
     void limpiarBaseDeDatos() {
+        notificacionRepository.deleteAll();
         usuarioRepository.deleteAll();
     }
 
