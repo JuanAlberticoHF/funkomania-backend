@@ -129,8 +129,8 @@ CREATE TABLE IF NOT EXISTS Detalle_Carrito (
 CREATE TABLE IF NOT EXISTS Notificacion (
     idNotificacion BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     idUsuario BIGINT UNSIGNED NOT NULL,
-    tipo ENUM('registro', 'compra', 'estado_pedido', 'carrito_abandonado', 'pago_error', 'wishlist_stock', 'bienvenida') NOT NULL,
-    estado ENUM('pendiente', 'enviada', 'leida') NOT NULL DEFAULT 'pendiente',
+    tipo ENUM('REGISTRO', 'COMPRA', 'ESTADO_PEDIDO', 'CARRITO_ABANDONADO', 'PAGO_ERROR', 'LISTADESEOS_STOCK', 'BIENVENIDA') NOT NULL,
+    estado ENUM('PENDIENTE', 'ENVIADA', 'LEIDA') NOT NULL DEFAULT 'pendiente',
 
     CONSTRAINT fk_notificacion_usuario FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
     );
