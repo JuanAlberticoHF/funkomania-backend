@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * <p>Servicio para gestionar los productos en el catálogo de Funkomania.</p>
- * <p>Esta clase implementa la interfaz {@link ProductoService} y proporciona la lógica de negocio para las operaciones
- * relacionadas con los productos en el catálogo.</p>
+ * <p>Servicio para gestionar las notificaciones de un usuario de Funkomania.</p>
+ * <p>Esta clase implementa la interfaz {@link NotificacionService} y proporciona la lógica de negocio para las operaciones
+ * relacionadas con las notificaciones del usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
- * @since 0.2.0
+ * @version 1.0.0
+ * @since 0.5.0
  */
 @Service
 public class NotificacionServiceImpl implements NotificacionService {
