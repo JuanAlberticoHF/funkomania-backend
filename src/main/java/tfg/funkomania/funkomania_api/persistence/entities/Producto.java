@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import tfg.funkomania.funkomania_api.utils.ProductoUtils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 /**
@@ -121,5 +123,38 @@ public class Producto {
     @JsonIgnoreProperties("productosAsociados") // Evita la serialización recursiva de los productos dentro de la categoría
     @EqualsAndHashCode.Exclude
     private Categoria categoria;
+
+    /**
+     * Devuelve el precio final sin IVA del producto, aplicando el descuento si el producto está en oferta.
+     * @return Precio final sin IVA del producto.
+     */
+    public BigDecimal getPrecioOriginalConIVA() {
+        BigDecimal precioConIva = ProductoUtils.calcularPrecioConIva(this.precio, this.iva);
+        return precioConIva.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Devuelve el precio final sin IVA del producto, aplicando el descuento si el producto está en oferta.
+     * @return Precio final sin IVA del producto.
+     */
+    public BigDecimal getPrecioFinalSinIVA() {
+        return ProductoUtils.calcularPrecioConDescuento(
+                this.precio,
+                this.enOferta,
+                this.descuento,
+                this.fechaFinOferta
+        );
+    }
+
+    /**
+     * Devuelve el precio final sin IVA del producto, aplicando el descuento si el producto está en oferta.
+     * @return Precio final sin IVA del producto.
+     */
+    public BigDecimal getPrecioFinalConIVA() {
+        // En SQL: fn_precio_con_iva(fn_precio_con_descuento(...))
+        BigDecimal precioFinalSinIva = getPrecioFinalSinIVA();
+        BigDecimal precioFinalConIva = ProductoUtils.calcularPrecioConIva(precioFinalSinIva, this.iva);
+        return precioFinalConIva.setScale(2, RoundingMode.HALF_UP);
+    }
 
 }

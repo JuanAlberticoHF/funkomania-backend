@@ -3,6 +3,7 @@ package tfg.funkomania.funkomania_api.dtos.producto_dtos;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import tfg.funkomania.funkomania_api.persistence.entities.Producto;
 import tfg.funkomania.funkomania_api.persistence.entities.VistaProductosCatalogo;
 
 import java.math.BigDecimal;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
  * <p>DTO que representa una vista de productos en el catálogo de Funkomania con ID.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.1
+ * @version 1.1.0
  * @since 0.2.0
  */
 @NoArgsConstructor
@@ -154,6 +155,30 @@ public class VistaProductosCatalogoDTOId {
         this.idCategoria = vistaProductosCatalogo.getIdCategoria();
         this.nombreCategoria = vistaProductosCatalogo.getNombreCategoria();
         this.nombreCategoriaPadre = vistaProductosCatalogo.getNombreCategoriaPadre();
+    }
+
+    public VistaProductosCatalogoDTOId (Producto producto) {
+        this.id = producto.getId();
+        this.nombre = producto.getNombre();
+        this.precioOriginalSinIVA = producto.getPrecio();
+        this.precioOriginalConIVA = producto.getPrecioOriginalConIVA();
+        this.enOferta = producto.isEnOferta();
+        this.descuento = producto.getDescuento();
+        this.fechaFinOferta = producto.getFechaFinOferta();
+        this.precioFinalSinIVA = producto.getPrecioFinalSinIVA();
+        this.precioFinalConIVA = producto.getPrecioFinalConIVA();
+        this.iva = producto.getIva();
+        this.stock = producto.getStock();
+        this.imagen = producto.getImagen();
+        this.descripcion = producto.getDescripcion();
+        this.activo = producto.isActivo();
+        this.idCategoria = producto.getCategoria().getId();
+        this.nombreCategoria = producto.getCategoria().getNombre();
+        if (producto.getCategoria().getCategoriaPadre() != null) {
+            this.nombreCategoriaPadre = producto.getCategoria().getCategoriaPadre().getNombre();
+        } else {
+            this.nombreCategoriaPadre = null;
+        }
     }
 }
 
