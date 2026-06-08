@@ -14,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.9.0
+ * @version 0.11.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -135,6 +135,32 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(NotificacionYaLeidaException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("La notificación ya ha sido leída");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code CategoriaNotFoundException} que se lanza cuando no se encuentra una categoria en la base de datos.
+     * @param ex Excepción de tipo {@code CategoriaNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(CategoriaNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(CategoriaNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("Categoría no encontrada");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code CategoriaConProductosException} que se lanza cuando se intenta eliminar una categoría que tiene productos asociados.
+     * @param ex Excepción de tipo {@code CategoriaConProductosException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(CategoriaConProductosException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(CategoriaConProductosException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("No se puede eliminar la categoría porque tiene productos asociados");
         return problemDetail;
     }
 }
