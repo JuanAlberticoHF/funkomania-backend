@@ -2,7 +2,7 @@ package tfg.funkomania.funkomania_api.dtos;
 
 import org.junit.jupiter.api.Test;
 import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioDTOId;
-import tfg.funkomania.funkomania_api.enums.RoleEnum;
+import tfg.funkomania.funkomania_api.persistence.enums.RoleEnum;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
 
 import java.time.LocalDateTime;

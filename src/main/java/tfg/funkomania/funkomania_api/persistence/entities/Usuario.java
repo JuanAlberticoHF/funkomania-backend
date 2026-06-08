@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioRegistroDTO;
-import tfg.funkomania.funkomania_api.enums.RoleEnum;
+import tfg.funkomania.funkomania_api.persistence.enums.RoleEnum;
 
 import java.time.LocalDateTime;
 import java.util.Set;
