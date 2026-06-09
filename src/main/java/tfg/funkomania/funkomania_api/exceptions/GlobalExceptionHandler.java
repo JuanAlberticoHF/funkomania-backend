@@ -14,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.11.0
+ * @version 0.12.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -161,6 +161,19 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(CategoriaConProductosException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("No se puede eliminar la categoría porque tiene productos asociados");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code ProductoNoEliminadoException} que se lanza cuando se intenta eliminar un producto que no se puede eliminar por alguna razón.
+     * @param ex Excepción de tipo {@code ProductoNoEliminadoException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(ProductoNoEliminadoException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(ProductoNoEliminadoException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("No se pudo eliminar el producto");
         return problemDetail;
     }
 }
