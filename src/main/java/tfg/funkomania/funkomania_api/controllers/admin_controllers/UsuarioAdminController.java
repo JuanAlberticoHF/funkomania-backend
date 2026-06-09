@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Size;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ import java.util.List;
  * <p>Proporciona endpoints para el registro de un usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.6.0
  */
 @RestController
@@ -45,7 +46,10 @@ public class UsuarioAdminController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = UsuarioDTOId.class)
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición"),
+            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
     })
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/")
