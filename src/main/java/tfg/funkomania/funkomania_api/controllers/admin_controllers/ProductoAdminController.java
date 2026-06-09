@@ -85,7 +85,7 @@ public class ProductoAdminController {
     public ResponseEntity<List<VistaProductosCatalogoDTOId>> getAllProductos(
             @Parameter(
                     description = "Texto para buscar por nombre o descripción (opcional)",
-                    example = "vibranium"
+                    example = "Spider"
             )
             @RequestParam(required = false) String search
     ) {
@@ -94,7 +94,7 @@ public class ProductoAdminController {
 
     @Operation(summary = "Crear un nuevo producto", description = "Permite al administrador crear un nuevo producto en el sistema.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Producto creado exitosamente"),
+            @ApiResponse(responseCode = "201", description = "Producto creado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Los parámetros de la solicitud no son validos", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
@@ -120,17 +120,17 @@ public class ProductoAdminController {
                             examples = @ExampleObject(
                                     value = """
                                     {
-                                        "idCategoria": "1"
+                                        "idCategoria": 1,
                                         "nombre": "Figura Funko Pop Original 2 de Funkomania",
                                         "precio": 14.99,
                                         "stock": 120,
-                                        "imagen": "funko_funkomania.jpg"
+                                        "imagen": "funko_funkomania.jpg",
                                         "descripcion": "Figura Funko Pop Original 2 de Funkomania",
                                         "iva": 21.00,
                                         "activo": true,
                                         "enOferta": true,
                                         "descuento": 10.00,
-                                        "fechaFinOferta": "2026-12-31T00:00:00",
+                                        "fechaFinOferta": "2026-12-31T00:00:00"
                                     }
                                     """
                             )
@@ -173,17 +173,17 @@ public class ProductoAdminController {
                             examples = @ExampleObject(
                                     value = """
                                     {
-                                        "idCategoria": "1"
-                                        "nombre": "Figura Funko Pop Original 2 de Funkomania",
+                                        "idCategoria": 1,
+                                        "nombre": "Figura Funko Pop Original 3 de Funkomania",
                                         "precio": 14.99,
                                         "stock": 120,
-                                        "imagen": "funko_funkomania.jpg"
-                                        "descripcion": "Figura Funko Pop Original 2 de Funkomania",
+                                        "imagen": "funko_funkomania.jpg",
+                                        "descripcion": "Figura Funko Pop Original 3 de Funkomania",
                                         "iva": 21.00,
                                         "activo": true,
                                         "enOferta": true,
                                         "descuento": 10.00,
-                                        "fechaFinOferta": "2026-12-31T00:00:00",
+                                        "fechaFinOferta": "2026-12-31T00:00:00"
                                     }
                                     """
                             )
