@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import tfg.funkomania.funkomania_api.dtos.producto_dtos.ProductoDTOIdCategoria;
 import tfg.funkomania.funkomania_api.utils.ProductoUtils;
 
 import java.math.BigDecimal;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
  * <p>La entidad mapea tabla {@code producto} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.1.1
+ * @version 1.2.0
  * @since 0.2.0
  */
 @Entity
@@ -123,6 +124,24 @@ public class Producto {
     @JsonIgnoreProperties("productosAsociados") // Evita la serialización recursiva de los productos dentro de la categoría
     @EqualsAndHashCode.Exclude
     private Categoria categoria;
+
+    /**
+     * Constructor que crea un producto a partir de un DTO de producto con ID de categoría.
+     * @param productoDTOIdCategoria DTO que contiene los datos del producto a crear, incluyendo el ID de la categoría a la que pertenece.
+     */
+    public Producto(ProductoDTOIdCategoria productoDTOIdCategoria) {
+        this.id = null;
+        this.nombre = productoDTOIdCategoria.getNombre();
+        this.precio = productoDTOIdCategoria.getPrecio();
+        this.stock = productoDTOIdCategoria.getStock();
+        this.imagen = productoDTOIdCategoria.getImagen();
+        this.descripcion = productoDTOIdCategoria.getDescripcion();
+        this.iva = productoDTOIdCategoria.getIva();
+        this.activo = productoDTOIdCategoria.isActivo();
+        this.enOferta = productoDTOIdCategoria.isEnOferta();
+        this.descuento = productoDTOIdCategoria.getDescuento();
+        this.fechaFinOferta = productoDTOIdCategoria.getFechaFinOferta();
+    }
 
     /**
      * Devuelve el precio final sin IVA del producto, aplicando el descuento si el producto está en oferta.
