@@ -768,47 +768,37 @@ INSERT INTO Metodo_Pago (Nombre, Activo) VALUES
 ('Efectivo', 0);
 
 -- Insertar Categorías
-INSERT INTO Categoria (Nombre) VALUES ('Marvel');
-INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('DC Comics', 1);
-INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Star Wars', 1);
 INSERT INTO Categoria (Nombre) VALUES ('Anime');
-INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Shonen', 4);
-INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Seinen', 4);
-INSERT INTO Categoria (Nombre) VALUES ('Videojuegos');
-INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Nintendo', 7);
-INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('PlayStation', 7);
-INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Xbox', 7);
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Demon Slayer', 1);
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Pokemon', 1);
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Naruto', 1);
+INSERT INTO Categoria (Nombre) VALUES ('Marvel');
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Spiderman', 5);
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Iron Man', 5);
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Guardians of the Galaxy', 5);
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Dr. Strange', 5);
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Avengers', 5);
+INSERT INTO Categoria (Nombre) VALUES ('Peliculas');
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('StarWars', 11);
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Harry Potter', 11);
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Lilo & Stitch', 11);
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Batman', 11);
+INSERT INTO Categoria (Nombre, CategoriaPadre) VALUES ('Wednesday', 11);
 
 -- Insertar Productos
-INSERT INTO Producto (Nombre, Precio, Stock, Image, Descripcion, idCategoria, iva, Activo, EnOferta, Descuento, FechaFinOferta) VALUES
-('Spider-Man Classic', 14.99, 120, 'funko_spiderman_classic.jpg', 'Figura Funko Pop de Spider-Man con traje clasico.', 1, 21.00, 1, 1, 10.00, '2026-12-31'),
-('Iron Man Mark 85', 16.99, 80, 'funko_ironman_mk85.jpg', 'Funko Pop de Iron Man Mark 85 con detalles metalicos.', 1, 21.00, 1, 0, 0.00, NULL),
-('Captain America Shield', 15.49, 70, 'funko_captain_america.jpg', 'Capitan America con escudo vibranium.', 1, 21.00, 1, 1, 12.50, '2026-10-31'),
-('Doctor Strange', 14.49, 65, 'funko_doctor_strange.jpg', 'Doctor Strange con capa levitacion.', 1, 21.00, 1, 0, 0.00, NULL),
-('Batman Detective', 14.99, 90, 'funko_batman_detective.jpg', 'Batman estilo detective con capa.', 2, 21.00, 1, 0, 0.00, NULL),
-('Joker Classic', 13.99, 75, 'funko_joker_classic.jpg', 'Joker clasico con sonrisa iconica.', 2, 21.00, 1, 1, 15.00, '2026-11-30'),
-('Wonder Woman Shield', 15.99, 60, 'funko_wonder_woman.jpg', 'Wonder Woman con escudo y espada.', 2, 21.00, 1, 0, 0.00, NULL),
-('Darth Vader', 16.49, 110, 'funko_darth_vader.jpg', 'Darth Vader con sable rojo.', 3, 21.00, 1, 1, 8.00, '2026-09-30'),
-('Grogu', 15.29, 150, 'funko_grogu.jpg', 'Grogu con taza y orejas grandes.', 3, 21.00, 1, 0, 0.00, NULL),
-('Mandalorian', 16.29, 95, 'funko_mandalorian.jpg', 'Mandalorian con armadura beskar.', 3, 21.00, 1, 1, 9.50, '2026-08-31'),
-('Goku Super Saiyan', 15.99, 140, 'funko_goku_ss.jpg', 'Goku en modo Super Saiyan.', 4, 21.00, 1, 0, 0.00, NULL),
-('Naruto Sage', 15.59, 130, 'funko_naruto_sage.jpg', 'Naruto en modo sabio.', 4, 21.00, 1, 1, 11.00, '2026-12-15'),
-('Luffy Gear 4', 16.79, 85, 'funko_luffy_gear4.jpg', 'Luffy Gear 4 con pose dinamica.', 5, 21.00, 1, 0, 0.00, NULL),
-('Ichigo Hollow', 15.89, 60, 'funko_ichigo_hollow.jpg', 'Ichigo con mascara hollow.', 5, 21.00, 1, 1, 13.00, '2026-10-15'),
-('Guts Berserker', 17.99, 50, 'funko_guts_berserker.jpg', 'Guts con armadura berserker.', 6, 21.00, 1, 0, 0.00, NULL),
-('Levi Ackerman', 15.99, 70, 'funko_levi_ackerman.jpg', 'Levi con equipo de maniobras.', 6, 21.00, 1, 1, 10.00, '2026-11-15'),
-('Mario Classic', 14.49, 160, 'funko_mario_classic.jpg', 'Mario con gorra roja clasica.', 7, 21.00, 1, 0, 0.00, NULL),
-('Link BOTW', 16.49, 90, 'funko_link_botw.jpg', 'Link con arco de Breath of the Wild.', 8, 21.00, 1, 1, 12.00, '2026-10-01'),
-('Samus Aran', 16.99, 55, 'funko_samus_aran.jpg', 'Samus con armadura power suit.', 8, 21.00, 1, 0, 0.00, NULL),
-('Kratos', 17.49, 75, 'funko_kratos.jpg', 'Kratos con hacha leviathan.', 9, 21.00, 1, 1, 9.00, '2026-09-15'),
-('Ellie', 15.49, 65, 'funko_ellie.jpg', 'Ellie de The Last of Us.', 9, 21.00, 1, 0, 0.00, NULL),
-('Master Chief', 16.79, 100, 'funko_master_chief.jpg', 'Master Chief con armadura Mjolnir.', 10, 21.00, 1, 1, 8.50, '2026-12-01'),
-('Marcus Fenix', 15.99, 40, 'funko_marcus_fenix.jpg', 'Marcus Fenix con armadura COG.', 10, 21.00, 1, 0, 0.00, NULL),
-('Black Panther', 15.29, 85, 'funko_black_panther.jpg', 'Black Panther con traje vibranium.', 1, 21.00, 1, 1, 7.50, '2026-11-01'),
-('Scarlet Witch', 15.69, 70, 'funko_scarlet_witch.jpg', 'Scarlet Witch con efectos magicos.', 1, 21.00, 1, 0, 0.00, NULL),
-('Superman Classic', 14.89, 95, 'funko_superman_classic.jpg', 'Superman con capa roja.', 2, 21.00, 1, 1, 10.00, '2026-12-20'),
-('Harley Quinn', 14.59, 85, 'funko_harley_quinn.jpg', 'Harley Quinn con mazo.', 2, 21.00, 1, 0, 0.00, NULL),
-('Luke Skywalker', 15.79, 105, 'funko_luke_skywalker.jpg', 'Luke con sable verde.', 3, 21.00, 1, 1, 9.99, '2026-10-20'),
-('R2-D2', 13.99, 130, 'funko_r2d2.jpg', 'R2-D2 con detalles clasicos.', 3, 21.00, 1, 0, 0.00, NULL),
-('Tanjiro Kamado', 15.39, 120, 'funko_tanjiro.jpg', 'Tanjiro con katana y haori.', 4, 21.00, 1, 1, 11.50, '2026-09-10'),
-('Nezuko', 15.19, 110, 'funko_nezuko.jpg', 'Nezuko con bozal de bambu.', 4, 21.00, 1, 0, 0.00, NULL);
+INSERT INTO Producto
+    (Nombre, Precio, Stock, Image, Descripcion, idCategoria, iva, Activo, EnOferta, Descuento, FechaFinOferta) VALUES
+('Funko Pop Tanjiro Kamado', 16.99, 12, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/tanjiro.png', 'Figura coleccionable de Tanjiro Kamado inspirada en Demon Slayer.', 2, 21, 1, 0, 0, NULL),
+('Funko Pop Spider-Man', 14.03, 8, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/spiderman.png', 'Figura de Spider-Man ideal para fans del universo Marvel.', 6, 21, 1, 1, 22, '2026-12-31'),
+('Funko Pop Darth Vader', 18.99, 5, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/darth-vader.png', 'Figura de Darth Vader, uno de los personajes más icónicos de Star Wars.', 12, 21, 1, 0, 0, NULL),
+('Funko Pop Harry Potter', 15.99, 10, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/harry-potter.png', 'Figura de Harry Potter con detalles inspirados en la saga mágica.', 13, 21, 1, 0, 0, NULL),
+('Funko Pop Pikachu', 14.99, 0, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/pikachu.png', 'Figura de Pikachu para coleccionistas y fans de Pokémon.', 3, 21, 1, 1, 25, '2026-12-31'),
+('Funko Pop Stitch', 12.99, 15, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/stitch.png', 'Figura de Stitch con estilo divertido y adorable.', 14, 21, 1, 0, 0, NULL),
+('Funko Pop Iron Man', 18.03, 6, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/iron-man.png', 'Figura de Iron Man basada en el universo de los Avengers.', 7, 21, 1, 1, 18, '2026-12-31'),
+('Funko Pop Batman', 16.49, 9, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/batman.png', 'Figura de Batman para fans de DC Comics.', 15, 21, 1, 0, 0, NULL),
+('Funko Pop Naruto Uzumaki', 15.49, 11, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/naruto.png', 'Figura de Naruto Uzumaki inspirada en el anime Naruto.', 4, 21, 1, 0, 0, NULL),
+('Funko Pop Wednesday Addams', 18.39, 4, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/wednesday.png', 'Figura de Wednesday Addams con estética oscura y elegante.', 16, 21, 1, 1, 20, '2026-12-31'),
+('Funko Pop Groot', 13.49, 14, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/groot.png', 'Figura de Groot, personaje de Guardians of the Galaxy.', 12, 21, 1, 0, 0, NULL),
+('Funko Pop Doctor Strange', 17.84, 3, NULL, 'Figura de Doctor Strange dentro de la colección Avengers de Marvel.', 9, 21, 1, 1, 15, NULL),
+('Funko Pop Spider-Man Edición Antigua', 24.99, 7, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/spiderman.png', 'Producto con oferta caducada para comprobar que el descuento no se aplica.', 6, 21, 1, 1, 30, '2024-12-31'),
+('Funko Pop Loki Archivado', 18.49, 2, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/iron-man.png', 'Producto inactivo para comprobar que no aparece en el catálogo público.', 5, 21, 0, 0, 0, NULL);
