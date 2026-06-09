@@ -47,7 +47,7 @@ public class ProductoDTOIdCategoria {
     /**
      * URL de la imagen del producto.
      */
-    @Max(value = 255, message = "La URL de la imagen no puede exceder los 255 caracteres.")
+    @Size(max = 255, message = "La URL de la imagen no puede exceder los 255 caracteres.")
     private String imagen;
 
     /**
