@@ -461,7 +461,7 @@ class ProductoControllerIntegrationTest {
                 private final IProductoRepository prodRepo;
 
                 public TestProductoServiceImpl(IProductoRepository prodRepo) {
-                    super(null); // pass null because we override methods that use the view repository
+                    super(null, null, null); // pass null because we override methods that use the view repository
                     this.prodRepo = prodRepo;
                 }
 

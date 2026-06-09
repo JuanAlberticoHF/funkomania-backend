@@ -1,10 +1,14 @@
 package tfg.funkomania.funkomania_api.persistence.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import tfg.funkomania.funkomania_api.dtos.producto_dtos.ProductoDTOIdCategoria;
+import tfg.funkomania.funkomania_api.utils.ProductoUtils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 /**
@@ -12,7 +16,7 @@ import java.time.LocalDateTime;
  * <p>La entidad mapea tabla {@code producto} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
+ * @version 1.2.0
  * @since 0.2.0
  */
 @Entity
@@ -60,7 +64,7 @@ public class Producto {
     /**
      * URL de la imagen del producto.
      */
-    @Max(value = 255, message = "La URL de la imagen no puede exceder los 255 caracteres.")
+    @Size(max = 255, message = "La URL de la imagen no puede exceder los 255 caracteres.")
     @Column(name = "Image")
     private String imagen;
 
@@ -115,9 +119,61 @@ public class Producto {
      * Categoría a la que pertenece el producto.
      */
     @NotNull(message = "La categoría del producto no puede ser nula.")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="idCategoria", nullable = false)
+    @JsonIgnoreProperties("productosAsociados") // Evita la serialización recursiva de los productos dentro de la categoría
     @EqualsAndHashCode.Exclude
     private Categoria categoria;
+
+    /**
+     * Constructor que crea un producto a partir de un DTO de producto con ID de categoría.
+     * @param productoDTOIdCategoria DTO que contiene los datos del producto a crear, incluyendo el ID de la categoría a la que pertenece.
+     */
+    public Producto(ProductoDTOIdCategoria productoDTOIdCategoria) {
+        this.id = null;
+        this.nombre = productoDTOIdCategoria.getNombre();
+        this.precio = productoDTOIdCategoria.getPrecio();
+        this.stock = productoDTOIdCategoria.getStock();
+        this.imagen = productoDTOIdCategoria.getImagen();
+        this.descripcion = productoDTOIdCategoria.getDescripcion();
+        this.iva = productoDTOIdCategoria.getIva();
+        this.activo = productoDTOIdCategoria.isActivo();
+        this.enOferta = productoDTOIdCategoria.isEnOferta();
+        this.descuento = productoDTOIdCategoria.getDescuento();
+        this.fechaFinOferta = productoDTOIdCategoria.getFechaFinOferta();
+    }
+
+    /**
+     * Devuelve el precio final sin IVA del producto, aplicando el descuento si el producto está en oferta.
+     * @return Precio final sin IVA del producto.
+     */
+    public BigDecimal getPrecioOriginalConIVA() {
+        BigDecimal precioConIva = ProductoUtils.calcularPrecioConIva(this.precio, this.iva);
+        return precioConIva.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Devuelve el precio final sin IVA del producto, aplicando el descuento si el producto está en oferta.
+     * @return Precio final sin IVA del producto.
+     */
+    public BigDecimal getPrecioFinalSinIVA() {
+        return ProductoUtils.calcularPrecioConDescuento(
+                this.precio,
+                this.enOferta,
+                this.descuento,
+                this.fechaFinOferta
+        );
+    }
+
+    /**
+     * Devuelve el precio final sin IVA del producto, aplicando el descuento si el producto está en oferta.
+     * @return Precio final sin IVA del producto.
+     */
+    public BigDecimal getPrecioFinalConIVA() {
+        // En SQL: fn_precio_con_iva(fn_precio_con_descuento(...))
+        BigDecimal precioFinalSinIva = getPrecioFinalSinIVA();
+        BigDecimal precioFinalConIva = ProductoUtils.calcularPrecioConIva(precioFinalSinIva, this.iva);
+        return precioFinalConIva.setScale(2, RoundingMode.HALF_UP);
+    }
 
 }

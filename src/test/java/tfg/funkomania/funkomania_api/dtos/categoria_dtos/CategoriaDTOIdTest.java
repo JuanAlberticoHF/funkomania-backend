@@ -56,7 +56,7 @@ class CategoriaDTOIdTest {
                         .nombre("Padre")
                         .build();
 
-        CategoriaDTOId dto = new CategoriaDTOId(2L, "Hija", padre);
+        CategoriaDTOId dto = new CategoriaDTOId(2L, "Hija", new CategoriaDTOIdNoCategoriaPadre(padre));
 
         assertEquals(2L, dto.getId());
         assertEquals("Hija", dto.getNombre());
@@ -105,7 +105,7 @@ class CategoriaDTOIdTest {
                         .nombre("Padre")
                         .build();
 
-        CategoriaDTOId dto = new CategoriaDTOId(2L, "Hija", padre);
+        CategoriaDTOId dto = new CategoriaDTOId(2L, "Hija", new CategoriaDTOIdNoCategoriaPadre(padre));
         Set<ConstraintViolation<CategoriaDTOId>> violations = validator.validate(dto);
         assertTrue(violations.isEmpty());
     }
