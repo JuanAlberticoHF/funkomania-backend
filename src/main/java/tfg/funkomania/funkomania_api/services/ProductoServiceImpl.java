@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tfg.funkomania.funkomania_api.dtos.producto_dtos.ProductoDTOIdCategoria;
 import tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.CategoriaNotFoundException;
@@ -26,7 +27,7 @@ import java.util.List;
  * relacionadas con los productos en el catálogo.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.2.0
+ * @version 1.2.1
  * @since 0.2.0
  */
 @Service
@@ -105,6 +106,7 @@ public class ProductoServiceImpl implements ProductoService {
                 .orElseThrow(() -> new ProductoNotFoundException("Producto solicitado no encontrado con ID: " + id));
     }
 
+    @Transactional
     @Override
     public void addProducto(ProductoDTOIdCategoria productoDTOIdCategoria) {
         // Verificar que la categoría existe, la obtenemos y si no lanzamos excepción
@@ -120,10 +122,11 @@ public class ProductoServiceImpl implements ProductoService {
         productoRepository.save(productoNuevo);
     }
 
+    @Transactional
     @Override
     public void updateProducto(Long idProducto, ProductoDTOIdCategoria productoDTOIdCategoria) {
         // Verificar si el producto existe
-        if (productoRepository.existsById(idProducto)) {
+        if (!productoRepository.existsById(idProducto)) {
             throw new ProductoNotFoundException("No se puede actualizar el producto. Producto con ID " + idProducto + " no encontrado.");
         }
 
@@ -134,16 +137,18 @@ public class ProductoServiceImpl implements ProductoService {
 
         // Crear una nueva entidad Producto a partir del DTO
         Producto productoNuevo = new Producto(productoDTOIdCategoria);
+        productoNuevo.setId(idProducto);
         productoNuevo.setCategoria(categoria); // Asignar la categoría al producto
 
         // Guardar el nuevo producto en la base de datos
         productoRepository.save(productoNuevo);
     }
 
+    @Transactional
     @Override
     public void deleteProducto(Long idProducto) {
         // Verificar si el producto existe
-        if (productoRepository.existsById(idProducto)) {
+        if (!productoRepository.existsById(idProducto)) {
             throw new ProductoNotFoundException("No se puede actualizar el producto. Producto con ID " + idProducto + " no encontrado.");
         }
 
@@ -151,7 +156,7 @@ public class ProductoServiceImpl implements ProductoService {
         productoRepository.eliminarLogicamenteProductoByIdProducto(idProducto);
 
         // Verificar que el producto se ha eliminado correctamente
-        if (!productoRepository.existsByIdAndActivoTrue(idProducto))
+        if (productoRepository.existsByIdAndActivoTrue(idProducto))
             throw new ProductoNoEliminadoException("El producto con ID " + idProducto + " no pudo ser eliminado.");
     }
 
