@@ -30,7 +30,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/productos")
-@Tag(name = "Gestor de Productos", description = "Endpoints para gestionar los productos disponibles en el sistema.")
+@Tag(name = "[ADMIN] Gestor de Productos", description = "Endpoints para gestionar los productos disponibles en el sistema.")
 public class ProductoAdminController {
 
     /** Servicio productos */
