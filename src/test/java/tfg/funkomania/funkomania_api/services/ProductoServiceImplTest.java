@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Pruebas unitarias para la clase {@link ProductoServiceImpl}.
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.2.0
  */
 public class ProductoServiceImplTest {
@@ -49,7 +49,7 @@ public class ProductoServiceImplTest {
         Pageable pageable = PageRequest.of(0, 20);
         Mockito.when(repo.findAll(Mockito.any(Pageable.class))).thenReturn(new PageImpl<>(List.of(v), pageable, 1));
 
-        ProductoServiceImpl service = new ProductoServiceImpl(repo);
+        ProductoServiceImpl service = new ProductoServiceImpl(repo, null, null);
         Page<tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId> page = service.getAllProductos(null, null, null, null, null, pageable);
         assertNotNull(page);
         assertEquals(1, page.getTotalElements());
@@ -81,7 +81,7 @@ public class ProductoServiceImplTest {
         Pageable pageable = PageRequest.of(0,20);
         Mockito.when(repo.findAll(Mockito.<Specification<VistaProductosCatalogo>>any(), Mockito.eq(pageable))).thenReturn(new PageImpl<>(List.of(v), pageable, 1));
 
-        ProductoServiceImpl service = new ProductoServiceImpl(repo);
+        ProductoServiceImpl service = new ProductoServiceImpl(repo, null, null);
         Page<tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId> page = service.getAllProductos("Alpha", null, null, null, null, pageable);
         assertEquals(1, page.getTotalElements());
     }
@@ -92,7 +92,7 @@ public class ProductoServiceImplTest {
         Pageable pageable = PageRequest.of(0,20);
         Mockito.when(repo.findAll(Mockito.<Specification<VistaProductosCatalogo>>any(), Mockito.eq(pageable))).thenReturn(new PageImpl<>(List.of(), pageable, 0));
 
-        ProductoServiceImpl service = new ProductoServiceImpl(repo);
+        ProductoServiceImpl service = new ProductoServiceImpl(repo, null, null);
         Page<tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId> page = service.getAllProductos(null, 1L, null, null, null, pageable);
         assertNotNull(page);
     }
@@ -103,12 +103,12 @@ public class ProductoServiceImplTest {
         Pageable pageable = PageRequest.of(0,20);
         Mockito.when(repo.findAllEnOfertaVigenteYActivo(Mockito.any(Pageable.class))).thenReturn(new PageImpl<>(List.of(), pageable, 0));
 
-        ProductoServiceImpl service = new ProductoServiceImpl(repo);
+        ProductoServiceImpl service = new ProductoServiceImpl(repo, null, null);
         Page<tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId> page = service.getAllProductosEnOfertaActivos(null, null, null, null, pageable);
         assertNotNull(page);
     }
 
-    
+
 
     @Test
     void obtenerUnProductoPorSuIdentificadorExitoso() {
@@ -136,7 +136,7 @@ public class ProductoServiceImplTest {
 
         Mockito.when(repo.findById(1L)).thenReturn(java.util.Optional.of(v));
 
-        ProductoServiceImpl service = new ProductoServiceImpl(repo);
+        ProductoServiceImpl service = new ProductoServiceImpl(repo, null, null);
         var dto = service.getProductoById(1L);
         assertNotNull(dto);
         assertEquals(1L, dto.getId());
@@ -147,7 +147,7 @@ public class ProductoServiceImplTest {
         IVistaProductosCatalogoRepository repo = Mockito.mock(IVistaProductosCatalogoRepository.class);
         Mockito.when(repo.findById(Mockito.anyLong())).thenReturn(java.util.Optional.empty());
 
-        ProductoServiceImpl service = new ProductoServiceImpl(repo);
+        ProductoServiceImpl service = new ProductoServiceImpl(repo, null, null);
         assertThrows(tfg.funkomania.funkomania_api.exceptions.custom_exceptions.ProductoNotFoundException.class,
                 () -> service.getProductoById(1L));
     }
