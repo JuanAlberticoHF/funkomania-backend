@@ -207,10 +207,8 @@ public class CategoriaAdminController {
                             examples = @ExampleObject(
                                     value = """
                                     {
-                                        {
-                                            "nombre": "Categoria Nueva",
-                                            "idCategoriaPadre": 1
-                                        }
+                                        "nombre": "Categoria Nueva",
+                                        "idCategoriaPadre": 1
                                     }
                                     """
                             )
