@@ -19,7 +19,6 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @Table(name = "Detalle_Carrito")
 public class DetalleCarrito {
     @EmbeddedId

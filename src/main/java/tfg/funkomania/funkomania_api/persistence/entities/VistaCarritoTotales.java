@@ -17,14 +17,13 @@ import java.math.BigDecimal;
  * <p>Entidad que representa una vista de totales del carrito de compras en Funkomania.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.7.0
  */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@ToString
 @Builder
 @Immutable
 @Table(name = "VCarrito_Totales")

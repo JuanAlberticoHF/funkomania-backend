@@ -10,7 +10,7 @@ import lombok.*;
  * <p>La entidad mapea tabla {@code Metodo_Pago} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.5.0
  */
 @Entity
@@ -19,7 +19,6 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode
 @Table(name = "Metodo_Pago")
 public class MetodoPago {

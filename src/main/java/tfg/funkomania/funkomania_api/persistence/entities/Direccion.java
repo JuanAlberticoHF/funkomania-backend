@@ -12,7 +12,7 @@ import tfg.funkomania.funkomania_api.dtos.direccion_dtos.DireccionDTO;
  * <p>La entidad mapea tabla {@code Dirección} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.5.0
  */
 @Entity
@@ -21,7 +21,6 @@ import tfg.funkomania.funkomania_api.dtos.direccion_dtos.DireccionDTO;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode
 @Table(name = "Direccion")
 public class Direccion {

@@ -14,7 +14,7 @@ import java.util.Set;
  * <p>La entidad mapea tabla {@code usuario} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.5.0
+ * @version 0.5.1
  * @since 0.1.0
  */
 @Entity
@@ -23,7 +23,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode
 @Table(name = "Usuario")
 public class Usuario {

@@ -12,14 +12,13 @@ import java.time.LocalDateTime;
  * <p>Entidad que representa una vista de productos en el catálogo de Funkomania.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.4
+ * @version 1.0.5
  * @since 0.2.0
  */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@ToString
 @Builder
 @Immutable
 @Table(name = "VProductos_Catalogo")

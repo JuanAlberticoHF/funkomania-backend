@@ -11,7 +11,7 @@ import tfg.funkomania.funkomania_api.persistence.enums.TipoNotificacionEnum;
  * <p>La entidad mapea tabla {@code Notificacion} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.5.0
  */
 @Entity
@@ -20,7 +20,6 @@ import tfg.funkomania.funkomania_api.persistence.enums.TipoNotificacionEnum;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode
 @Table(name = "Notificacion")
 public class Notificacion {

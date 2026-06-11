@@ -15,7 +15,7 @@ import java.util.Set;
  * <p>La entidad mapea tabla {@code Carrito} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.7.0
  */
 @Entity
@@ -24,7 +24,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @Table(name = "Carrito")
 public class Carrito {
     @Id

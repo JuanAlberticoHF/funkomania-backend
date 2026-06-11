@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@ToString
 @Builder
 @Immutable
 @Table(name = "VCarrito_Contenido")
