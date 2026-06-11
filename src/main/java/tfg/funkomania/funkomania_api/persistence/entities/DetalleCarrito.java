@@ -10,7 +10,7 @@ import lombok.*;
  * <p>La entidad mapea tabla {@code DetalleCarrito} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.1.0
  * @since 0.7.0
  */
 @Entity
@@ -22,12 +22,18 @@ import lombok.*;
 @ToString
 @Table(name = "Detalle_Carrito")
 public class DetalleCarrito {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idCarrito;
+    @EmbeddedId
+    private DetalleCarritoId id = new DetalleCarritoId();
 
-    @ManyToOne
-    @JoinColumn(name = "idProducto", nullable = false)
+    // Mapeamos la relación apuntando al campo de la clave compuesta
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("idCarrito") // Extrae el ID del Carrito y lo mete en id.idCarrito
+    @JoinColumn(name = "idCarrito")
+    private Carrito carrito;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("idProducto") // Extrae el ID del Producto y lo mete en id.idProducto
+    @JoinColumn(name = "idProducto")
     private Producto producto;
 
     @NotNull(message = "La cantidad del producto en el carrito no puede ser nula.")
