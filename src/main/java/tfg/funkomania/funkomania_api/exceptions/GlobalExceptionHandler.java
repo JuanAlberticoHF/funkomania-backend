@@ -14,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.12.0
+ * @version 0.14.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -174,6 +174,32 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(ProductoNoEliminadoException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("No se pudo eliminar el producto");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code CarritoNotFoundException} que se lanza cuando no se encuentra el carrito del usuario creado en la base de datos.
+     * @param ex Excepción de tipo {@code CarritoNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(CarritoNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(CarritoNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("Carrito del usuario no existe.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code ProductoNotFoundInCarritoException} que se lanza cuando no se encuentra un producto en el carrito del usuario.
+     * @param ex Excepción de tipo {@code ProductoNotFoundInCarritoException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(ProductoNotFoundInCarritoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(ProductoNotFoundInCarritoException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("Producto no encontrado en el carrito del usuario.");
         return problemDetail;
     }
 }
