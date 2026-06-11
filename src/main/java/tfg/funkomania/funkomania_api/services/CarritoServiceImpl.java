@@ -18,7 +18,7 @@ import java.util.List;
  * <p>Esta clase implementa la interfaz {@link CarritoService}.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.7.0
  */
 @Service
@@ -77,6 +77,9 @@ public class CarritoServiceImpl implements CarritoService {
         // Comprobamos primero que el producto exista
         Producto producto = productoRepository.findById(idProducto).orElseThrow(() -> new ProductoNotFoundException(
                 "Producto deseado no encontrado"));
+
+        // Si la cantidad es nula se añade uno por defecto
+        if (cantidad == null) cantidad = 1;
 
         // Obtenemos usuario autenticado desde el contexto de seguridad de Spring Security
         Usuario usuario = obtenerUsuarioAutenticado();
