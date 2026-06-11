@@ -13,11 +13,13 @@ import tfg.funkomania.funkomania_api.persistence.entities.DetalleCarritoId;
  * Interfaz de repositorio para la entidad DetalleCarrito.
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
+ * @version 1.2.0
  * @since 0.7.0
  */
 public interface IDetalleCarritoRepository extends JpaRepository<DetalleCarrito, DetalleCarritoId> {
     @Modifying
     @Query(value = "CALL sp_agregar_producto_carrito(:p_idUsuario, :p_idProducto, :p_cantidad)", nativeQuery = true)
     CarritoDTOId_IdProducto agregarProductoAlCarrito(@Param("p_idUsuario") Long idUsuario, @Param("p_idProducto") Long idProducto, @Param("p_cantidad") Integer cantidad);
+
+    void deleteDetalleCarritosByCarrito(Carrito carrito);
 }
