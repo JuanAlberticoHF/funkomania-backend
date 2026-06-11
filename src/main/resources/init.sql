@@ -237,7 +237,7 @@ SELECT
     idCarrito,
     idUsuario,
     COUNT(idProducto) AS Total_Articulos_Diferentes,
-    SUM(cantidad) AS Total_Unidades_Fisicas,
+    CAST(SUM(cantidad) AS UNSIGNED) AS Total_Unidades_Fisicas,
     ROUND(SUM(PrecioUnitario_SinIVA * cantidad), 2) AS Base_Imponible,
     ROUND(SUM(Subtotal_Posicion), 2) AS Total_A_Pagar
 FROM VCarrito_Contenido
