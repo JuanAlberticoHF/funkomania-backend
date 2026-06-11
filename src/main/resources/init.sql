@@ -805,3 +805,12 @@ INSERT INTO Producto
 ('Funko Pop Doctor Strange', 17.84, 3, NULL, 'Figura de Doctor Strange dentro de la colección Avengers de Marvel.', 9, 21, 1, 1, 15, NULL),
 ('Funko Pop Spider-Man Edición Antigua', 24.99, 7, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/spiderman.png', 'Producto con oferta caducada para comprobar que el descuento no se aplica.', 6, 21, 1, 1, 30, '2024-12-31'),
 ('Funko Pop Loki Archivado', 18.49, 2, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/iron-man.png', 'Producto inactivo para comprobar que no aparece en el catálogo público.', 5, 21, 0, 0, 0, NULL);
+
+-- Insertar Carritos
+INSERT INTO Carrito (idUsuario, FechaCreacion, FechaActualizacion, Estado) VALUES
+(2, '2026-06-04 18:41:12', '2026-06-04 18:41:12', 'ACTIVO');
+
+-- Insertar Detalles de Carrito
+INSERT INTO Detalle_Carrito (idCarrito, idProducto, cantidad) VALUES
+(1, 1, 2),
+(1, 2, 1);
