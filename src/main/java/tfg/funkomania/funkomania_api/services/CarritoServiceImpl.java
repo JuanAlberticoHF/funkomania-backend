@@ -1,6 +1,7 @@
 package tfg.funkomania.funkomania_api.services;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tfg.funkomania.funkomania_api.dtos.carrito_dtos.VistaCarritoContenidoDTOId;
 import tfg.funkomania.funkomania_api.dtos.carrito_dtos.VistaCarritoTotalesContenidoDTOId;
@@ -20,6 +21,7 @@ import java.util.List;
  * @version 1.0.0
  * @since 0.7.0
  */
+@Service
 public class CarritoServiceImpl implements CarritoService {
 
     /** Repositorio de operaciones para la entidad Carrito */
