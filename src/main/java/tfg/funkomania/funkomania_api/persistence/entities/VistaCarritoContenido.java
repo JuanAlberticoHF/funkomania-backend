@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * <p>Entidad que representa una vista del contenido del carrito de un cliente en Funkomania.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.1.0
  * @since 0.7.0
  */
 @Entity
@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 @Builder
 @Immutable
 @Table(name = "VCarrito_Contenido")
+@IdClass(VistaCarritoContenidoId.class)
 public class VistaCarritoContenido {
     @NotNull(message = "El ID del usuario no puede ser nulo.")
     @Positive(message = "El ID del usuario debe ser un número positivo.")
@@ -32,11 +33,13 @@ public class VistaCarritoContenido {
     @NotNull(message = "El ID del carrito no puede ser nulo.")
     @Positive(message = "El ID del carrito debe ser un número positivo.")
     @Column(name = "idCarrito", nullable = false)
+    @Id
     private Long idCarrito;
 
     @NotNull(message = "El ID del producto no puede ser nulo.")
     @Positive(message = "El ID del producto debe ser un número positivo.")
     @Column(name = "idProducto", nullable = false)
+    @Id
     private Long idProducto;
 
     @NotNull(message = "El nombre del producto no puede ser nulo.")
