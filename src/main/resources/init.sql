@@ -760,12 +760,15 @@ INSERT INTO Notificacion (idUsuario, tipo, estado) VALUES
 (2, 'REGISTRO', 'ENVIADA'),
 (2, 'BIENVENIDA', 'ENVIADA');
 
--- Insertar metodos de pago
+-- Insertar métodos de pago
 INSERT INTO Metodo_Pago (Nombre, Activo) VALUES
-('Tarjeta de Crédito', 1),
+('Tarjeta bancaria', 1),
 ('PayPal', 1),
-('Transferencia Bancaria', 1),
-('Efectivo', 0);
+('Bizum', 1),
+('Transferencia bancaria', 1),
+('Contra reembolso', 1),
+('Google Pay', 1),
+('Apple Pay', 1),
 
 -- Insertar Categorías
 INSERT INTO Categoria (Nombre) VALUES ('Anime');
