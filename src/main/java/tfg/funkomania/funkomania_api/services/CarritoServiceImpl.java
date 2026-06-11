@@ -1,5 +1,6 @@
 package tfg.funkomania.funkomania_api.services;
 
+import jakarta.persistence.EntityManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,7 @@ import tfg.funkomania.funkomania_api.persistence.entities.*;
 import tfg.funkomania.funkomania_api.persistence.enums.EstadoCarritoEnum;
 import tfg.funkomania.funkomania_api.persistence.repositories.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -42,18 +44,23 @@ public class CarritoServiceImpl implements CarritoService {
     /** Repositorio para obtener al producto */
     private final IProductoRepository productoRepository;
 
+    /** EntityManager para forzar operaciones y vaciar el contexto */
+    private final EntityManager entityManager;
+
     public CarritoServiceImpl(ICarritoRepository carritoRepository,
                               IDetalleCarritoRepository detalleCarritoRepository,
                               IVistaCarritoContenidoRepository vistaCarritoContenidoRepository,
                               IVistaCarritoTotalesRepository vistaCarritoTotalesRepository,
                               IUsuarioRepository usuarioRepository,
-                              IProductoRepository productoRepository) {
+                              IProductoRepository productoRepository,
+                              EntityManager entityManager) {
         this.carritoRepository = carritoRepository;
         this.detalleCarritoRepository = detalleCarritoRepository;
         this.vistaCarritoContenidoRepository = vistaCarritoContenidoRepository;
         this.vistaCarritoTotalesRepository = vistaCarritoTotalesRepository;
         this.usuarioRepository = usuarioRepository;
         this.productoRepository = productoRepository;
+        this.entityManager = entityManager;
     }
 
     @Transactional
@@ -65,8 +72,10 @@ public class CarritoServiceImpl implements CarritoService {
         // Comprobamos que el usuario tenga un carrito creado
         Carrito carritoUsuario = usuario.getCarrito();
 
-        if (usuario.getCarrito() == null) carritoUsuario = crearCarritoParaUsuario(usuario);
-
+        if (carritoUsuario == null) {
+            usuario = crearCarritoParaUsuario(usuario);
+            carritoUsuario = usuario.getCarrito();
+        }
         // Devolvemos el carrito completo del usuario
         return obtenerCarritoCompletoDelUsuario(usuario.getIdUsuario(), carritoUsuario.getIdCarrito());
     }
@@ -87,7 +96,10 @@ public class CarritoServiceImpl implements CarritoService {
         // Comprobamos que el usuario tenga un carrito creado
         Carrito carritoUsuario = usuario.getCarrito();
 
-        if (usuario.getCarrito() == null) carritoUsuario = crearCarritoParaUsuario(usuario);
+        if (carritoUsuario == null) {
+            usuario = crearCarritoParaUsuario(usuario);
+            carritoUsuario = usuario.getCarrito();
+        }
 
         // Comprobamos si el producto ya existe en el carrito del usuario y lo obtenemos, si no existe, lo creamos
         DetalleCarrito detalleCarrito = detalleCarritoRepository.findById(
@@ -111,6 +123,11 @@ public class CarritoServiceImpl implements CarritoService {
         // Actualizamos la última fecha de modificación
         carritoRepository.updateFechaActualizacionByIdCarrito(carritoUsuario.getIdCarrito());
 
+        // Forzamos la ejecución de las operaciones pendientes en la base de datos para asegurar que los datos estén actualizados antes de obtener el carrito completo
+        entityManager.flush();
+        // Limpiamos el contexto de persistencia para evitar que se devuelvan datos obsoletos en la consulta del carrito completo.
+        entityManager.clear();
+
         // Devolvemos el carrito completo del usuario con el producto actualizado
         return obtenerCarritoCompletoDelUsuario(usuario.getIdUsuario(), carritoUsuario.getIdCarrito());
     }
@@ -128,7 +145,7 @@ public class CarritoServiceImpl implements CarritoService {
         // Comprobamos que el usuario tenga un carrito creado
         Carrito carritoUsuario = usuario.getCarrito();
 
-        if (usuario.getCarrito() == null) throw new CarritoNotFoundException("Carrito no encontrado");
+        if (carritoUsuario == null) throw new CarritoNotFoundException("Carrito no encontrado");
 
         // Comprobamos si el producto ya existe en el carrito del usuario y lo obtenemos
         DetalleCarrito detalleCarrito = detalleCarritoRepository.findById(
@@ -141,6 +158,14 @@ public class CarritoServiceImpl implements CarritoService {
 
         // Guardamos el detalle del carrito actualizado
         detalleCarritoRepository.save(detalleCarrito);
+
+        // Actualizamos la última fecha de modificación
+        carritoRepository.updateFechaActualizacionByIdCarrito(carritoUsuario.getIdCarrito());
+
+        // Forzamos la ejecución de las operaciones pendientes en la base de datos para asegurar que los datos estén actualizados antes de obtener el carrito completo
+        entityManager.flush();
+        // Limpiamos el contexto de persistencia para evitar que se devuelvan datos obsoletos en la consulta del carrito completo.
+        entityManager.clear();
 
         // Devolvemos el carrito completo del usuario con el producto actualizado
         return obtenerCarritoCompletoDelUsuario(usuario.getIdUsuario(), carritoUsuario.getIdCarrito());
@@ -159,7 +184,7 @@ public class CarritoServiceImpl implements CarritoService {
         // Comprobamos que el usuario tenga un carrito creado
         Carrito carritoUsuario = usuario.getCarrito();
 
-        if (usuario.getCarrito() == null) throw new CarritoNotFoundException("Carrito no encontrado");
+        if (carritoUsuario == null) throw new CarritoNotFoundException("Carrito no encontrado");
 
         // Comprobamos si el producto ya existe en el carrito del usuario y lo obtenemos
         // Construimos el identificador del detalle del carrito.
@@ -172,6 +197,14 @@ public class CarritoServiceImpl implements CarritoService {
 
         // Eliminamos el detalle del carrito
         detalleCarritoRepository.delete(detalleCarrito);
+
+        // Actualizamos la última fecha de modificación
+        carritoRepository.updateFechaActualizacionByIdCarrito(carritoUsuario.getIdCarrito());
+
+        // Forzamos la ejecución de las operaciones pendientes en la base de datos para asegurar que los datos estén actualizados antes de obtener el carrito completo
+        entityManager.flush();
+        // Limpiamos el contexto de persistencia para evitar que se devuelvan datos obsoletos en la consulta del carrito completo.
+        entityManager.clear();
 
         // Devolvemos la información actualizada del carrito del usuario sin el producto eliminado
         return obtenerCarritoCompletoDelUsuario(usuario.getIdUsuario(), carritoUsuario.getIdCarrito());
@@ -187,10 +220,18 @@ public class CarritoServiceImpl implements CarritoService {
         // Comprobamos que el usuario tenga un carrito creado
         Carrito carritoUsuario = usuario.getCarrito();
 
-        if (usuario.getCarrito() == null) throw new CarritoNotFoundException("Carrito no encontrado");
+        if (carritoUsuario == null) throw new CarritoNotFoundException("Carrito no encontrado");
 
         // Eliminamos todos los elementos del carrito
         detalleCarritoRepository.deleteDetalleCarritosByCarrito(carritoUsuario);
+
+        // Actualizamos la última fecha de modificación
+        carritoRepository.updateFechaActualizacionByIdCarrito(carritoUsuario.getIdCarrito());
+
+        // Forzamos la ejecución de las operaciones pendientes en la base de datos para asegurar que los datos estén actualizados antes de obtener el carrito completo
+        entityManager.flush();
+        // Limpiamos el contexto de persistencia para evitar que se devuelvan datos obsoletos en la consulta del carrito completo.
+        entityManager.clear();
 
         // Devolvemos la información actualizada del carrito del usuario sin productos
         return obtenerCarritoCompletoDelUsuario(usuario.getIdUsuario(), carritoUsuario.getIdCarrito());
@@ -205,11 +246,19 @@ public class CarritoServiceImpl implements CarritoService {
     private VistaCarritoTotalesContenidoDTOId obtenerCarritoCompletoDelUsuario(Long idUsuario, Long idCarrito) {
         // Obtenemos el contenido del carrito del usuario
         List<VistaCarritoContenidoDTOId> listaContenidoCarrito =
-                vistaCarritoContenidoRepository.findVistaCarritoContenidoByIdUsuario(idUsuario)
+                vistaCarritoContenidoRepository.findVistaCarritoContenidosByIdUsuario(idUsuario)
                         .stream().map(VistaCarritoContenidoDTOId::new).toList();
 
-        // Obtenemos el total del carrito del usuario
-        VistaCarritoTotales carritoTotales = vistaCarritoTotalesRepository.findByIdCarrito(idCarrito);
+        // Obtenemos el total del carrito del usuario o si esta vacío creamos un VistaCarritoTotales con totales a 0
+        VistaCarritoTotales carritoTotales = vistaCarritoTotalesRepository.findByIdCarrito(idCarrito)
+                .orElse(VistaCarritoTotales.builder()
+                        .idCarrito(idCarrito)
+                        .idUsuario(idUsuario)
+                        .totalArticulosDiferentes(0)
+                        .totalUnidadesFisicas(0)
+                        .baseImponible(BigDecimal.ZERO)
+                        .totalAPagar(BigDecimal.ZERO)
+                        .build());
 
         // Construimos y devolvemos el DTO con el contenido y el total del carrito del usuario
         return new VistaCarritoTotalesContenidoDTOId(listaContenidoCarrito, carritoTotales);
@@ -220,25 +269,23 @@ public class CarritoServiceImpl implements CarritoService {
      * @param usuario El usuario para el cual se creará el carrito.
      * @return El carrito creado para el usuario.
      */
-    private Carrito crearCarritoParaUsuario(Usuario usuario) {
+    private Usuario crearCarritoParaUsuario(Usuario usuario) {
         if (usuario.getCarrito() == null) {
             Carrito nuevoCarrito = Carrito.builder()
                     .idCarrito(null) // El ID se generará automáticamente al guardar el carrito
                     .usuario(usuario)
                     .fechaCreacion(LocalDateTime.now())
-                    .fechaActualizacion(null)
+                    .fechaActualizacion(LocalDateTime.now())
                     .estado(EstadoCarritoEnum.ACTIVO).build();
 
             // Asociamos el nuevo carrito al usuario
             usuario.setCarrito(nuevoCarrito);
 
             // Guardamos el usuario con el nuevo carrito asociado
-            Usuario usuarioGuardado = usuarioRepository.save(usuario);
-
             // Devolvemos el carrito del usuario guardado, que ahora incluye el nuevo carrito creado
-            return usuarioGuardado.getCarrito();
+            return usuarioRepository.save(usuario);
         }
-        return usuario.getCarrito();
+        return usuario;
     }
 
     /**
