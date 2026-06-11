@@ -768,7 +768,7 @@ INSERT INTO Metodo_Pago (Nombre, Activo) VALUES
 ('Transferencia bancaria', 1),
 ('Contra reembolso', 1),
 ('Google Pay', 1),
-('Apple Pay', 1),
+('Apple Pay', 1);
 
 -- Insertar Categorías
 INSERT INTO Categoria (Nombre) VALUES ('Anime');
