@@ -43,13 +43,13 @@ public class Carrito {
     @Column(name = "FechaCreacion", nullable = false)
     private LocalDateTime fechaCreacion;
 
-    @NotNull(message = "El estado del carrito no puede ser nulo.")
+    @NotNull(message = "La fecha de actualización del carrito no puede ser nulo.")
     @PastOrPresent(message = "La fecha de actualización del carrito no puede ser futura.")
     @Column(name = "FechaActualizacion", nullable = false)
     private LocalDateTime fechaActualizacion;
 
     @NotNull(message = "El estado del carrito no puede ser nulo.")
-    @Column(name = "Estado", nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(name = "Estado", nullable = false)
     private EstadoCarritoEnum estado;
 }
