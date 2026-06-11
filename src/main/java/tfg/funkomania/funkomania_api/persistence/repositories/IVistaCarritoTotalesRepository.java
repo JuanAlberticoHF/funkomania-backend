@@ -9,9 +9,9 @@ import java.util.List;
  * Interfaz de repositorio para la entidad VistaCarritoTotales.
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.7.0
  */
-public interface VistaCarritoTotalesRepository extends JpaRepository<VistaCarritoTotales, Long> {
+public interface IVistaCarritoTotalesRepository extends JpaRepository<VistaCarritoTotales, Long> {
     List<VistaCarritoTotales> findByIdCarrito(Long idCarrito);
 }
