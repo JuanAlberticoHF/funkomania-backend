@@ -294,7 +294,7 @@ SELECT
     p.idPedido,
     p.idUsuario,
     COUNT(dp.idProducto) AS Cantidad_Articulos_Diferentes,
-    SUM(dp.cantidad) AS Total_Unidades_Fisicas,
+    CAST(SUM(dp.cantidad) AS UNSIGNED) AS Total_Unidades_Fisicas,
     ROUND(SUM(dp.precioUnitario * dp.cantidad), 2) AS Base_Imponible,
     ROUND(SUM(fn_subtotal_linea(dp.precioUnitario, dp.cantidad, dp.iva)), 2) AS Total_Con_IVA
 FROM Pedido p
