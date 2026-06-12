@@ -14,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.14.0
+ * @version 0.15.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -200,6 +200,19 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(ProductoNotFoundInCarritoException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("Producto no encontrado en el carrito del usuario.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code PedidoNotFoundException} que se lanza cuando no se encuentra un pedido concreto del usuario.
+     * @param ex Excepción de tipo {@code PedidoNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(PedidoNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(PedidoNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("Pedido no encontrado para el usuario.");
         return problemDetail;
     }
 }
