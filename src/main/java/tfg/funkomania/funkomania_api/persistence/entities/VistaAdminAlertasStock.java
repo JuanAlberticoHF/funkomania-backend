@@ -8,13 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
 
-import java.math.BigDecimal;
-
 /**
  * <p>Entidad que representa una vista de alertas de stock para el administrador en Funkomania.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.7.0
  */
 @Entity
@@ -47,6 +45,6 @@ public class VistaAdminAlertasStock {
     private Long idCategoria;
 
     @Size(max = 7, message = "La prioridad no puede exceder los 7 caracteres.")
-    @Column(name = "Nombre", nullable = false)
+    @Column(name = "Prioridad", nullable = false)
     private String prioridad;
 }
