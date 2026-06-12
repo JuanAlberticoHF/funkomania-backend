@@ -1,5 +1,6 @@
 package tfg.funkomania.funkomania_api.services;
 
+import jakarta.persistence.EntityManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +34,15 @@ public class DireccionServiceImpl implements DireccionService {
     /** Repositorio de usuarios. */
     private final IUsuarioRepository usuarioRepository;
 
+    /** EntityManager para forzar operaciones y vaciar el contexto */
+    private final EntityManager entityManager;
+
     public DireccionServiceImpl(IDireccionRepository direccionRepository,
-                                IUsuarioRepository usuarioRepository) {
+                                IUsuarioRepository usuarioRepository,
+                                EntityManager entityManager) {
         this.direccionRepository = direccionRepository;
         this.usuarioRepository = usuarioRepository;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -57,6 +63,7 @@ public class DireccionServiceImpl implements DireccionService {
         return direccionRepository.findDireccionsByUsuario_IdUsuario(idUsuario).stream().map(DireccionDTOId::new).toList();
     }
 
+    @Transactional
     @Override
     public void addDireccion(DireccionDTO direccionDTO) {
         // Obtenemos el email del usuario autenticado desde el contexto de seguridad de Spring Security
@@ -76,7 +83,14 @@ public class DireccionServiceImpl implements DireccionService {
         direccion.setUsuario(usuario);
 
         // Añadimos la dirección a la base de datos
-        direccionRepository.save(direccion);
+        Direccion direccionNueva = direccionRepository.save(direccion);
+
+        // Sincronizamos y limpiamos para asegurar coherencia al leer desde vistas
+        entityManager.flush();
+        entityManager.clear();
+
+        // Activamos la dirección del usuario autenticado utilizando el identificador del usuario y el identificador de la dirección
+        direccionRepository.activarDireccion(direccionNueva.getId(), usuario.getIdUsuario());
     }
 
     @Override
