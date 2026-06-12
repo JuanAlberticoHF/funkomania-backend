@@ -753,8 +753,13 @@ CREATE INDEX idx_notificacion_usuario_estado ON Notificacion(idUsuario, estado);
 INSERT INTO Usuario (email, passwordHash, Nombre, Apellido1, Apellido2, Telefono, FechaRegistro, UltimoLogin, Rol, Activo) VALUES
 ('JuanAlberticoHF@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Juan Alberto',
  'Hernandez', 'Fernandez', '123456789', '2026-06-04 18:41:12', '2026-06-04 18:41:13', 'ADMIN', 1),
-('UsuarioNormal@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Usuario',
+('Usuario@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Usuario',
  'Normal', 'Apellido2', '987654321', '2026-06-04 18:41:12', '2026-06-04 18:41:13', 'CLIENTE', 1);
+
+-- Insertar direcciones
+INSERT INTO Direccion (idUsuario, Calle, Numero, Ciudad, Municipio, Provincia, CP, Activo) VALUES
+(1, 'Calle Falsa', '123', 'Springfield', 'Springfield', 'Illinois', '62704', 1),
+(2, 'Avenida Siempre Viva', '742', 'Springfield', 'Springfield', 'Illinois', '62704', 1);
 
 -- Insertar notificaciones
 INSERT INTO Notificacion (idUsuario, tipo, estado) VALUES
