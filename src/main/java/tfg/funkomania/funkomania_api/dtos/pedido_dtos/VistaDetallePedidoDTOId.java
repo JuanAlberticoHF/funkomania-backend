@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Immutable;
 import tfg.funkomania.funkomania_api.persistence.entities.VistaDetallePedido;
 
 import java.math.BigDecimal;

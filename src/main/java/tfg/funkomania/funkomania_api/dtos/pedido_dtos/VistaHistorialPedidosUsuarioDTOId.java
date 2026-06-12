@@ -4,9 +4,7 @@ package tfg.funkomania.funkomania_api.dtos.pedido_dtos;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.annotations.Immutable;
 import tfg.funkomania.funkomania_api.persistence.entities.VistaHistorialPedidosUsuario;
-import tfg.funkomania.funkomania_api.persistence.entities.VistaHistorialPedidosUsuarioId;
 import tfg.funkomania.funkomania_api.persistence.enums.EstadoPagoEnum;
 import tfg.funkomania.funkomania_api.persistence.enums.EstadoPedidoEnum;
 
