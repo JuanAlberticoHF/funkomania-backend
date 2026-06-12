@@ -10,6 +10,8 @@ import tfg.funkomania.funkomania_api.persistence.enums.EstadoPagoEnum;
 import tfg.funkomania.funkomania_api.persistence.enums.EstadoPedidoEnum;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <p>Entidad que representa un pedido en el sistema de Funkomania.</p>
@@ -42,6 +44,10 @@ public class Pedido {
     @JoinColumn(name = "idUsuario", nullable = false)
     @EqualsAndHashCode.Exclude
     private Usuario usuario;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @EqualsAndHashCode.Exclude
+    private Set<DetallePedido> detallesPedido = new HashSet<>();
 
     @NotNull(message = "La fecha del pedido no puede ser nula.")
     @PastOrPresent(message = "La fecha del pedido no puede ser futura.")
