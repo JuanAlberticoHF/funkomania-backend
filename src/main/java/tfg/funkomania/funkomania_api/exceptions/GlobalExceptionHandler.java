@@ -102,12 +102,12 @@ public class GlobalExceptionHandler {
     /**
      * Maneja la excepción {@code NotificacionNotFoundException} que se lanza cuando no se encuentra una notificación en la base de datos.
      * @param ex Excepción de tipo {@code NotificacionNotFoundException}.
-     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (Not Found)
      */
     @ExceptionHandler(NotificacionNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(NotificacionNotFoundException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Notificación no encontrada");
         return problemDetail;
     }
@@ -141,12 +141,12 @@ public class GlobalExceptionHandler {
     /**
      * Maneja la excepción {@code CategoriaNotFoundException} que se lanza cuando no se encuentra una categoria en la base de datos.
      * @param ex Excepción de tipo {@code CategoriaNotFoundException}.
-     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (Not Found)
      */
     @ExceptionHandler(CategoriaNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(CategoriaNotFoundException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Categoría no encontrada");
         return problemDetail;
     }
@@ -185,7 +185,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CarritoNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(CarritoNotFoundException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Carrito del usuario no existe.");
         return problemDetail;
     }
@@ -198,7 +198,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductoNotFoundInCarritoException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(ProductoNotFoundInCarritoException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Producto no encontrado en el carrito del usuario.");
         return problemDetail;
     }
@@ -211,7 +211,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PedidoNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(PedidoNotFoundException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Pedido no encontrado para el usuario.");
         return problemDetail;
     }
