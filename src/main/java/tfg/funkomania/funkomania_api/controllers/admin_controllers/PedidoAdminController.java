@@ -3,6 +3,7 @@ package tfg.funkomania.funkomania_api.controllers.admin_controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -131,7 +132,34 @@ public class PedidoAdminController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/")
     public ResponseEntity<Void> crearPedidoParaUsuario(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos para crear el pedido", required = true)
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos para crear el pedido",
+                    required = true,
+                    content = @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(implementation = CrearPedidoAdminRequestDTO.class),
+                        examples = @ExampleObject(
+                            name = "Ejemplo de creación de pedido",
+                            value = """
+                            {
+                                "idUsuario": 2,
+                                "idDireccion": 2,
+                                "idMetodoPago": 2,
+                                "estadoPedido": "PENDIENTE",
+                                "estadoPago": "PENDIENTE",
+                                "comentarios": "Esto es un comentario",
+                                "productos": [
+                                    {
+                                        "idProducto": 1,
+                                        "precioUnitarioSinIVA": 20,
+                                        "iva": 21,
+                                        "cantidad": 5
+                                    }
+                                ]
+                            }
+                            """
+                        )
+                    ))
             @RequestBody @Validated CrearPedidoAdminRequestDTO datosCrearPedido) {
         pedidoService.crearPedidoParaUsuario(datosCrearPedido);
         return ResponseEntity.status(HttpStatus.CREATED).build();
