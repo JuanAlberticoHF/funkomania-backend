@@ -16,6 +16,7 @@ import tfg.funkomania.funkomania_api.persistence.specifications.PedidosAdminSpec
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>Servicio para gestionar los pedidos de los usuarios.</p>
@@ -206,7 +207,12 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
         MetodoPago metodoPago = metodoPagoRepository.findById(datosCrearPedido.idMetodoPago())
                 .orElseThrow(() -> new MetodoPagoNotFoundException("Método de pago no encontrado"));
 
-        // 2. Creamos el objeto Pedido base
+        // 2. Comprobar que la dirección sea del usuario
+        if (!Objects.equals(direccion.getUsuario().getIdUsuario(), usuario.getIdUsuario())) {
+            throw new NotNotificationOwnerException("La dirección no pertenece al usuario especificado");
+        }
+
+        // 3. Creamos el objeto Pedido base
         Pedido nuevoPedido = Pedido.builder()
                 .usuario(usuario)
                 .fechaPedido(LocalDateTime.now())
@@ -219,16 +225,18 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
                 .codigoPedido("PED-" + System.currentTimeMillis())
                 .build();
 
-        // 3. Guardamos el pedido base
+        // 4. Guardamos el pedido base
         pedidoRepository.save(nuevoPedido);
-        
-        // 4. Notificamos al usuario de la creación del pedido.
-        notificacionServiceImpl.generarNotificacion(nuevoPedido.getUsuario().getIdUsuario(), TipoNotificacionEnum.ESTADO_PEDIDO);
         
         // 5. Creamos y asociamos los detalles del pedido
         for (var productoDTO : datosCrearPedido.productos()) {
             Producto producto = productoRepository.findById(productoDTO.getIdProducto())
                     .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado"));
+
+            // Comprobamos que el producto esté activo
+            if (productoDTO.getCantidad() > producto.getStock()) {
+                throw new InsufficientStockException("No hay suficiente stock para el producto: " + producto.getNombre());
+            }
             
             DetallePedido detalle = DetallePedido.builder()
                     .pedido(nuevoPedido)
@@ -239,7 +247,14 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
                     .build();
             
             detallePedidoRepository.save(detalle);
+
+            // Actualizamos el stock del producto
+            producto.setStock(producto.getStock() - productoDTO.getCantidad());
+            productoRepository.save(producto);
         }
+
+        // 6. Notificamos al usuario de la creación del pedido.
+        notificacionServiceImpl.generarNotificacion(nuevoPedido.getUsuario().getIdUsuario(), TipoNotificacionEnum.ESTADO_PEDIDO);
     }
 
     @Transactional
