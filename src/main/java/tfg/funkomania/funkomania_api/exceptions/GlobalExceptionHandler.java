@@ -14,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.18.0
+ * @version 0.19.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -252,6 +252,19 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(DetallePedidoNotFoundException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Detalle de pedido no encontrado para el usuario.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code InsufficientStockException} que se lanza cuando el admin intenta realizar un pedido con un producto que no tiene suficiente stock.
+     * @param ex Excepción de tipo {@code InsufficientStockException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(InsufficientStockException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(InsufficientStockException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("No se puede realizar el pedido porque no hay suficiente stock del producto.");
         return problemDetail;
     }
 }
