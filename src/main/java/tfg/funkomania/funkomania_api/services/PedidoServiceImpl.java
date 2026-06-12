@@ -162,6 +162,22 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
         return new PedidoCompletoDTOId(pedidoTotales, lineas);
     }
 
+    @Override
+    public PedidoCompletoDTOId obtenerPedidoEnAdminPorId(Long idPedido) {
+        // Comprobamos que el pedido exista.
+        pedidoRepository.findById(idPedido).orElseThrow(() -> new PedidoNotFoundException("El pedido no existe"));
+
+        // Obtenemos la información del pedido
+        VistaPedidoTotales pedidoTotales = vistaPedidoTotalesRepository
+                .findByIdPedido(idPedido);
+
+        // Obtenemos la información de las líneas del pedido
+        List<VistaDetallePedidoDTOId> lineas = vistaDetallePedidoRepository.findByIdPedido(idPedido)
+                .stream().map(VistaDetallePedidoDTOId::new).toList();
+
+        return new PedidoCompletoDTOId(pedidoTotales, lineas);
+    }
+
     // ADMIN
 
     @Override

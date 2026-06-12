@@ -36,7 +36,7 @@ public interface PedidoAdminService {
      * @param idPedido El ID del pedido que se desea obtener.
      * @return Un DTO que contiene los detalles completos del pedido, incluyendo los totales y las líneas de pedido.
      */
-    PedidoCompletoDTOId obtenerPedidoUsuarioPorId(Long idPedido);
+    PedidoCompletoDTOId obtenerPedidoEnAdminPorId(Long idPedido);
 
 
     /**
