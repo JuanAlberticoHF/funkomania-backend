@@ -9,9 +9,9 @@ import java.util.List;
  * Interfaz de repositorio para la entidad MetodoPago.
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.5.0
  */
-public interface IMetodoPagoRepository extends JpaRepository<MetodoPago, Integer> {
+public interface IMetodoPagoRepository extends JpaRepository<MetodoPago, Long> {
     List<MetodoPago> findMetodoPagosByActivoIsTrue();
 }
