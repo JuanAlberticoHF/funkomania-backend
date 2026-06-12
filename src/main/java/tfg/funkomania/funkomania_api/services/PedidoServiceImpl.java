@@ -1,33 +1,32 @@
 package tfg.funkomania.funkomania_api.services;
 
 import jakarta.persistence.EntityManager;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tfg.funkomania.funkomania_api.dtos.pedido_dtos.*;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.CarritoVacioException;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.NullEmailAutenticationException;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.PedidoNotFoundException;
-import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioNotFoundException;
-import tfg.funkomania.funkomania_api.persistence.entities.Carrito;
-import tfg.funkomania.funkomania_api.persistence.entities.Pedido;
-import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
-import tfg.funkomania.funkomania_api.persistence.entities.VistaPedidoTotales;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
+import tfg.funkomania.funkomania_api.persistence.entities.*;
+import tfg.funkomania.funkomania_api.persistence.enums.EstadoPagoEnum;
+import tfg.funkomania.funkomania_api.persistence.enums.EstadoPedidoEnum;
 import tfg.funkomania.funkomania_api.persistence.enums.TipoNotificacionEnum;
 import tfg.funkomania.funkomania_api.persistence.repositories.*;
+import tfg.funkomania.funkomania_api.persistence.specifications.PedidosAdminSpecification;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  * <p>Servicio para gestionar los pedidos de los usuarios.</p>
- * <p>Esta clase implementa la interfaz {@link PedidoService}.</p>
+ * <p>Esta clase implementa la interfaz {@link PedidoService} y {@link PedidoAdminService}.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.3.0
+ * @version 1.0.0
  * @since 0.7.0
  */
 @Service
-public class PedidoServiceImpl implements PedidoService {
+public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
 
     /** Repositorio para acceder a la vista de historial de pedidos del usuario. */
     private final IVistaHistorialPedidosUsuarioRepository vistaHistorialPedidosUsuarioRepository;
@@ -49,6 +48,21 @@ public class PedidoServiceImpl implements PedidoService {
 
     /** Repositorio para acceder a la información de las líneas de pedido */
     private final IVistaDetallePedidoRepository vistaDetallePedidoRepository;
+    
+    /** Repositorio para acceder a las direcciones */
+    private final IDireccionRepository direccionRepository;
+    
+    /** Repositorio para acceder a los metodos de pago */
+    private final IMetodoPagoRepository metodoPagoRepository;
+
+    /** Repositorio para acceder a los productos */
+    private final IProductoRepository productoRepository;
+
+    /** Repositorio para acceder a los pedidos */
+    private final IDetallePedidoRepository detallePedidoRepository;
+
+    /** Repositorio para acceder a los pedidos */
+    private final IVistaPedidosAdminRepository vistaPedidosAdminRepository;
 
     public PedidoServiceImpl(IVistaHistorialPedidosUsuarioRepository vistaHistorialPedidosUsuarioRepository,
                              IUsuarioRepository usuarioRepository,
@@ -56,7 +70,12 @@ public class PedidoServiceImpl implements PedidoService {
                              EntityManager entityManager,
                              NotificacionServiceImpl notificacionServiceImpl,
                              IVistaDetallePedidoRepository vistaDetallePedidoRepository,
-                             IVistaPedidoTotalesRepository vistaPedidoTotalesRepository) {
+                             IVistaPedidoTotalesRepository vistaPedidoTotalesRepository,
+                             IDetallePedidoRepository detallePedidoRepository,
+                             IVistaPedidosAdminRepository vistaPedidosAdminRepository,
+                             IDireccionRepository direccionRepository,
+                             IMetodoPagoRepository metodoPagoRepository,
+                             IProductoRepository productoRepository) {
         this.vistaHistorialPedidosUsuarioRepository = vistaHistorialPedidosUsuarioRepository;
         this.usuarioRepository = usuarioRepository;
         this.pedidoRepository = pedidoRepository;
@@ -64,6 +83,11 @@ public class PedidoServiceImpl implements PedidoService {
         this.notificacionServiceImpl = notificacionServiceImpl;
         this.vistaDetallePedidoRepository = vistaDetallePedidoRepository;
         this.vistaPedidoTotalesRepository = vistaPedidoTotalesRepository;
+        this.detallePedidoRepository = detallePedidoRepository;
+        this.vistaPedidosAdminRepository = vistaPedidosAdminRepository;
+        this.direccionRepository = direccionRepository;
+        this.metodoPagoRepository = metodoPagoRepository;
+        this.productoRepository = productoRepository;
     }
 
     @Transactional
@@ -135,6 +159,208 @@ public class PedidoServiceImpl implements PedidoService {
                 .stream().map(VistaDetallePedidoDTOId::new).toList();
 
         return new PedidoCompletoDTOId(pedidoTotales, lineas);
+    }
+
+    // ADMIN
+
+    @Override
+    public List<VistaPedidosAdminDTOId> getAllPedidosAdmin(Long idPedido, String codigoPedido, String usuario, LocalDateTime fechaPedido, EstadoPedidoEnum estadoPedido, EstadoPagoEnum estadoPago, String metodoPago) {
+        // Inicializar la especificación como null para construirla dinámicamente
+        Specification<VistaPedidosAdmin> spec = Specification.anyOf();
+
+        // Agregar filtros a la especificación según los parámetros de búsqueda
+        if (idPedido != null && idPedido > 0) {
+            spec = spec.and(PedidosAdminSpecification.busquedaPorIdPedido(idPedido));
+        }
+        if (codigoPedido != null && !codigoPedido.isEmpty()) {
+            spec = spec.and(PedidosAdminSpecification.busquedaPorCodigoPedido(codigoPedido));
+        }
+        if (usuario != null && !usuario.isEmpty()) {
+            spec = spec.and(PedidosAdminSpecification.busquedaContiene(usuario));
+        }
+        if (fechaPedido != null) {
+            spec = spec.and(PedidosAdminSpecification.busquedaPorFechaPedido(fechaPedido));
+        }
+        if (estadoPedido != null) {
+            spec = spec.and(PedidosAdminSpecification.busquedaPorEstadoPedido(estadoPedido));
+        }
+        if (estadoPago != null) {
+            spec = spec.and(PedidosAdminSpecification.busquedaPorEstadoPago(estadoPago));
+        }
+        if (metodoPago != null && !metodoPago.isEmpty()) {
+            spec = spec.and(PedidosAdminSpecification.busquedaPorMetodoPago(metodoPago));
+        }
+
+        return vistaPedidosAdminRepository.findAll(spec)
+                .stream().map(VistaPedidosAdminDTOId::new).toList();
+    }
+
+    @Transactional
+    @Override
+    public void crearPedidoParaUsuario(CrearPedidoAdminRequestDTO datosCrearPedido) {
+        // 1. Buscamos el usuario, la dirección y el metodo de pago necesarios
+        Usuario usuario = usuarioRepository.findById(datosCrearPedido.idUsuario())
+                .orElseThrow(() -> new UsuarioNotFoundException("Usuario no encontrado"));
+        Direccion direccion = direccionRepository.findById(datosCrearPedido.idDireccion())
+                .orElseThrow(() -> new DireccionNotFoundException("Dirección no encontrada"));
+        MetodoPago metodoPago = metodoPagoRepository.findById(datosCrearPedido.idMetodoPago())
+                .orElseThrow(() -> new MetodoPagoNotFoundException("Método de pago no encontrado"));
+
+        // 2. Creamos el objeto Pedido base
+        Pedido nuevoPedido = Pedido.builder()
+                .usuario(usuario)
+                .fechaPedido(LocalDateTime.now())
+                .ultimaModificacion(LocalDateTime.now())
+                .estadoPedido(datosCrearPedido.estadoPedido())
+                .estadoPago(datosCrearPedido.estadoPago())
+                .direccion(direccion)
+                .metodoPago(metodoPago)
+                .comentarios(datosCrearPedido.comentarios())
+                .codigoPedido("PED-" + System.currentTimeMillis())
+                .build();
+
+        // 3. Guardamos el pedido base
+        pedidoRepository.save(nuevoPedido);
+        
+        // 4. Notificamos al usuario de la creación del pedido.
+        notificacionServiceImpl.generarNotificacion(nuevoPedido.getUsuario().getIdUsuario(), TipoNotificacionEnum.ESTADO_PEDIDO);
+        
+        // 5. Creamos y asociamos los detalles del pedido
+        for (var productoDTO : datosCrearPedido.productos()) {
+            Producto producto = productoRepository.findById(productoDTO.getIdProducto())
+                    .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado"));
+            
+            DetallePedido detalle = DetallePedido.builder()
+                    .pedido(nuevoPedido)
+                    .producto(producto)
+                    .precioUnitario(producto.getPrecio())
+                    .cantidad(productoDTO.getCantidad())
+                    .iva(producto.getIva())
+                    .build();
+            
+            detallePedidoRepository.save(detalle);
+        }
+    }
+
+    @Transactional
+    @Override
+    public PedidoCompletoDTOId agregarUnNuevoProductoAlPedido(Long idPedido, AdminAgregarLineaPedidoRequestDTO datosAgregarLineaPedido) {
+        // 1. Buscamos el pedido y el producto
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new PedidoNotFoundException("Pedido no encontrado"));
+        Producto producto = productoRepository.findById(datosAgregarLineaPedido.idProducto())
+                .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado"));
+        
+        // 2. Creamos o actualizamos el DetallePedido
+        DetallePedidoId detalleId = new DetallePedidoId(pedido.getIdPedido(), producto.getId());
+        DetallePedido detalle = detallePedidoRepository.findById(detalleId).orElse(
+                DetallePedido.builder().pedido(pedido).producto(producto).iva(producto.getIva()).build()
+        );
+        
+        detalle.setCantidad(detalle.getCantidad() == null ? datosAgregarLineaPedido.cantidad() : detalle.getCantidad() + datosAgregarLineaPedido.cantidad());
+        detalle.setPrecioUnitario(producto.getPrecio());
+        
+        // 3. Guardamos el detalle
+        detallePedidoRepository.save(detalle);
+        
+        // 4. Actualizamos la fecha de modificación del pedido
+        pedido.setUltimaModificacion(LocalDateTime.now());
+        pedidoRepository.save(pedido);
+
+        // Sincronizamos y limpiamos para asegurar coherencia al leer desde vistas
+        entityManager.flush();
+        entityManager.clear();
+        
+        // 5. Retornamos el pedido actualizado
+        return obtenerPedidoUsuarioPorId(pedido.getIdPedido());
+    }
+
+    @Transactional
+    @Override
+    public PedidoCompletoDTOId actualizarDatosPedido(Long idPedido, AdminUpdatePedidoRequestDTO datosActualizarPedido) {
+        // 1. Buscamos el pedido
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new PedidoNotFoundException("Pedido no encontrado"));
+        
+        // Guardamos el estado anterior para verificar si cambia
+        EstadoPedidoEnum estadoAnterior = pedido.getEstadoPedido();
+        
+        // 2. Actualizamos campos permitidos
+        if (datosActualizarPedido.estadoPedido() != null) pedido.setEstadoPedido(datosActualizarPedido.estadoPedido());
+        if (datosActualizarPedido.estadoPago() != null) pedido.setEstadoPago(datosActualizarPedido.estadoPago());
+        if (datosActualizarPedido.comentarios() != null) pedido.setComentarios(datosActualizarPedido.comentarios());
+        pedido.setUltimaModificacion(LocalDateTime.now());
+        
+        // 3. Guardamos el pedido
+        pedidoRepository.save(pedido);
+        
+        // 4. Si el estado ha cambiado, enviamos notificación
+        if (datosActualizarPedido.estadoPedido() != null && !datosActualizarPedido.estadoPedido().equals(estadoAnterior)) {
+            notificacionServiceImpl.generarNotificacion(pedido.getUsuario().getIdUsuario(), TipoNotificacionEnum.ESTADO_PEDIDO);
+        }
+        
+        // Sincronizamos y limpiamos para asegurar coherencia al leer desde vistas
+        entityManager.flush();
+        entityManager.clear();
+        
+        return obtenerPedidoUsuarioPorId(idPedido);
+    }
+
+    @Transactional
+    @Override
+    public PedidoCompletoDTOId actualizarDatosDetallePedido(Long idPedido, Long idProducto, AdminUpdateProductoPedidoRequestDTO datosActualizarDetallePedido) {
+        // 1. Buscamos el detalle del pedido
+        DetallePedidoId detalleId = new DetallePedidoId(idPedido, idProducto);
+        DetallePedido detalle = detallePedidoRepository.findById(detalleId)
+                .orElseThrow(() -> new DetallePedidoNotFoundException("Línea de pedido no encontrada"));
+
+        // 2. Actualizamos los campos permitidos
+        if (datosActualizarDetallePedido.cantidad() != null) {
+            detalle.setCantidad(datosActualizarDetallePedido.cantidad());
+        }
+        if (datosActualizarDetallePedido.PrecioUnitario_SinIVA() != null) {
+            detalle.setPrecioUnitario(datosActualizarDetallePedido.PrecioUnitario_SinIVA());
+        }
+        if (datosActualizarDetallePedido.IVA() != null) {
+            detalle.setIva(datosActualizarDetallePedido.IVA());
+        }
+
+        // 3. Guardamos el detalle actualizado
+        detallePedidoRepository.save(detalle);
+
+        // 4. Actualizamos la fecha de modificación del pedido asociado
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new PedidoNotFoundException("Pedido no encontrado"));
+        pedido.setUltimaModificacion(LocalDateTime.now());
+        pedidoRepository.save(pedido);
+
+        // Sincronizamos y limpiamos para asegurar coherencia al leer desde vistas
+        entityManager.flush();
+        entityManager.clear();
+
+        // 5. Retornamos el pedido actualizado
+        return obtenerPedidoUsuarioPorId(idPedido);
+    }
+
+    @Transactional
+    @Override
+    public void eliminarDetallePedido(Long idPedido, Long idProducto) {
+        // 1. Buscamos el detalle del pedido
+        DetallePedidoId detalleId = new DetallePedidoId(idPedido, idProducto);
+        DetallePedido detalle = detallePedidoRepository.findById(detalleId)
+                .orElseThrow(() -> new DetallePedidoNotFoundException("Línea de pedido no encontrada"));
+        
+        // 2. Eliminamos la línea
+        detallePedidoRepository.delete(detalle);
+        
+        // 3. Actualizamos la fecha de modificación del pedido
+        Pedido pedido = pedidoRepository.findById(idPedido).orElseThrow(() -> new PedidoNotFoundException("Pedido no encontrado"));
+        pedido.setUltimaModificacion(LocalDateTime.now());
+        pedidoRepository.save(pedido);
+        
+        // Sincronizamos y limpiamos para asegurar coherencia al leer desde vistas
+        entityManager.flush();
+        entityManager.clear();
     }
 
     /**
