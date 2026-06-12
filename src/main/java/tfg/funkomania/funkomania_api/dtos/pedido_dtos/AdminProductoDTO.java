@@ -24,7 +24,7 @@ public class AdminProductoDTO {
 
     @NotNull(message = "La cantidad del producto no puede ser nula")
     @Positive(message = "La cantidad del producto debe ser un número positivo")
-    private Integer Cantidad;
+    private Integer cantidad;
 
     @NotNull(message = "El precio unitario sin iva del producto no puede ser nulo.")
     @Digits(integer = 10, fraction = 2, message = "El precio unitario sin iva debe ser un número con hasta 10 dígitos enteros y 2 decimales.")
