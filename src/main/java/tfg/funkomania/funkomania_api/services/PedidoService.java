@@ -11,7 +11,7 @@ import java.util.List;
  * Interfaz de servicio de la entidad Pedido.
  *
  * @author JuanAlbeticoHF
- * @version 0.3.0
+ * @version 1.0.0
  * @since 0.7.0
  */
 public interface PedidoService {
