@@ -11,7 +11,7 @@ import lombok.*;
  * <p>Clase que representa la clave primaria compuesta de la entidad {@link DetallePedido}.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.7.0
  */
 @AllArgsConstructor
@@ -22,7 +22,7 @@ import lombok.*;
 public class DetallePedidoId {
     @NotNull(message = "El ID del pedido no puede ser nulo.")
     @Column(name = "idPedido")
-    private Long idCarrito;
+    private Long idPedido;
 
     @NotNull(message = "El ID del producto no puede ser nulo.")
     @Column(name = "idProducto")
