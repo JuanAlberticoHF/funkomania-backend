@@ -14,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.16.0
+ * @version 0.18.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -226,6 +226,32 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(CarritoVacioException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("No se puede realizar el pedido porque el carrito está vacío.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code MetodoPagoNotFoundException} que se lanza cuando no se encuentra un metodo de pago concreto del usuario.
+     * @param ex Excepción de tipo {@code MetodoPagoNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (NOT_FOUND).
+     */
+    @ExceptionHandler(MetodoPagoNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(MetodoPagoNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Metodo de pago no encontrado para el usuario.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code DetallePedidoNotFoundException} que se lanza cuando no se encuentra un detalle de pedido concreto del usuario.
+     * @param ex Excepción de tipo {@code DetallePedidoNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (NOT_FOUND).
+     */
+    @ExceptionHandler(DetallePedidoNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(DetallePedidoNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Detalle de pedido no encontrado para el usuario.");
         return problemDetail;
     }
 }
