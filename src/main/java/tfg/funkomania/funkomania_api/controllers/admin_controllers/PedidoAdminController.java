@@ -196,7 +196,24 @@ public class PedidoAdminController {
     @PutMapping("/{idPedido}")
     public ResponseEntity<PedidoCompletoDTOId> actualizarPedido(
             @Parameter(description = "ID del pedido", required = true) @PathVariable Long idPedido,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos para actualizar el pedido", required = true)
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos para actualizar el pedido",
+                    required = true,
+                    content = @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(implementation = AdminUpdatePedidoRequestDTO.class),
+                        examples = @ExampleObject(
+                            name = "Ejemplo de actualización de pedido",
+                            value = """
+                                    {
+                                      "estadoPedido": "PROCESANDO",
+                                      "estadoPago": "PENDIENTE",
+                                      "idMetodoPago": 2,
+                                      "comentarios": "Esto es otro comentario"
+                                    }
+                                    """
+                        )
+                    ))
             @RequestBody @Validated AdminUpdatePedidoRequestDTO datosActualizarPedido) {
         return ResponseEntity.ok().body(pedidoService.actualizarDatosPedido(idPedido, datosActualizarPedido));
     }
