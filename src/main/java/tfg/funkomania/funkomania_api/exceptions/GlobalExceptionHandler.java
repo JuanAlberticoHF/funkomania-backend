@@ -14,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.15.0
+ * @version 0.16.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -180,7 +180,7 @@ public class GlobalExceptionHandler {
     /**
      * Maneja la excepción {@code CarritoNotFoundException} que se lanza cuando no se encuentra el carrito del usuario creado en la base de datos.
      * @param ex Excepción de tipo {@code CarritoNotFoundException}.
-     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (NOT_FOUND).
      */
     @ExceptionHandler(CarritoNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -193,7 +193,7 @@ public class GlobalExceptionHandler {
     /**
      * Maneja la excepción {@code ProductoNotFoundInCarritoException} que se lanza cuando no se encuentra un producto en el carrito del usuario.
      * @param ex Excepción de tipo {@code ProductoNotFoundInCarritoException}.
-     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (NOT_FOUND).
      */
     @ExceptionHandler(ProductoNotFoundInCarritoException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -206,13 +206,26 @@ public class GlobalExceptionHandler {
     /**
      * Maneja la excepción {@code PedidoNotFoundException} que se lanza cuando no se encuentra un pedido concreto del usuario.
      * @param ex Excepción de tipo {@code PedidoNotFoundException}.
-     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (NOT_FOUND).
      */
     @ExceptionHandler(PedidoNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(PedidoNotFoundException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("Pedido no encontrado para el usuario.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code CarritoVacioException} que se lanza cuando el usuario intenta realizar un pedido con el carrito vacío.
+     * @param ex Excepción de tipo {@code CarritoVacioException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(CarritoVacioException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(CarritoVacioException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("No se puede realizar el pedido porque el carrito está vacío.");
         return problemDetail;
     }
 }
