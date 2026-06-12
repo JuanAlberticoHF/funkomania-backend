@@ -238,7 +238,9 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
                 throw new InsufficientStockException("No hay suficiente stock para el producto: " + producto.getNombre());
             }
             
+            DetallePedidoId id = new DetallePedidoId(nuevoPedido.getIdPedido(), producto.getId());
             DetallePedido detalle = DetallePedido.builder()
+                    .id(id)
                     .pedido(nuevoPedido)
                     .producto(producto)
                     .precioUnitario(producto.getPrecio())
@@ -269,7 +271,12 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
         // 2. Creamos o actualizamos el DetallePedido
         DetallePedidoId detalleId = new DetallePedidoId(pedido.getIdPedido(), producto.getId());
         DetallePedido detalle = detallePedidoRepository.findById(detalleId).orElse(
-                DetallePedido.builder().pedido(pedido).producto(producto).iva(producto.getIva()).build()
+                DetallePedido.builder()
+                        .id(detalleId)
+                        .pedido(pedido)
+                        .producto(producto)
+                        .iva(producto.getIva())
+                        .build()
         );
         
         detalle.setCantidad(detalle.getCantidad() == null ? datosAgregarLineaPedido.cantidad() : detalle.getCantidad() + datosAgregarLineaPedido.cantidad());
