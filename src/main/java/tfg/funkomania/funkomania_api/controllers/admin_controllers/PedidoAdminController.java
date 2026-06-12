@@ -67,12 +67,12 @@ public class PedidoAdminController {
             @Parameter(description = "ID del pedido a buscar") @RequestParam(required = false) Long idPedido,
             @Parameter(description = "Código del pedido a buscar") @RequestParam(required = false) String codigoPedido,
             @Parameter(description = "Nombre o email del usuario") @RequestParam(required = false) String usuario,
-            @Parameter(description = "Fecha del pedido") @RequestParam(required = false) LocalDateTime fechaPedido,
+//            @Parameter(description = "Fecha del pedido") @RequestParam(required = false) LocalDateTime fechaPedido, <- Deshabilitado
             @Parameter(description = "Estado del pedido") @RequestParam(required = false) EstadoPedidoEnum estadoPedido,
             @Parameter(description = "Estado del pago") @RequestParam(required = false) EstadoPagoEnum estadoPago,
             @Parameter(description = "Método de pago") @RequestParam(required = false) String metodoPago
     ) {
-        return ResponseEntity.ok().body(pedidoService.getAllPedidosAdmin(idPedido, codigoPedido, usuario, fechaPedido, estadoPedido, estadoPago, metodoPago));
+        return ResponseEntity.ok().body(pedidoService.getAllPedidosAdmin(idPedido, codigoPedido, usuario, null, estadoPedido, estadoPago, metodoPago));
     }
 
     @Operation(summary = "Obtener detalles de un pedido", description = "Obtiene los detalles completos de un pedido específico.")
@@ -102,7 +102,7 @@ public class PedidoAdminController {
     @GetMapping("/{idPedido}")
     public ResponseEntity<PedidoCompletoDTOId> obtenerPedidoUsuarioPorId(
             @Parameter(description = "ID del pedido", required = true) @PathVariable Long idPedido) {
-        return ResponseEntity.ok().body(pedidoService.obtenerPedidoUsuarioPorId(idPedido));
+        return ResponseEntity.ok().body(pedidoService.obtenerPedidoEnAdminPorId(idPedido));
     }
 
     @Operation(summary = "Crear nuevo pedido", description = "Crea un nuevo pedido manualmente por el administrador.")
