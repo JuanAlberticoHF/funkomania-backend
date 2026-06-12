@@ -18,7 +18,7 @@ import tfg.funkomania.funkomania_api.services.CarritoServiceImpl;
  * <p>Controlador REST para gestionar las operaciones relacionadas con el carrito de compras.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.7.0
  */
 @RestController
@@ -69,7 +69,7 @@ public class CarritoController {
                                     """
                     )
             )),
-            @ApiResponse(responseCode = "403", description = "Error desconocido o Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -124,7 +124,7 @@ public class CarritoController {
                                     """
                     )
             )),
-            @ApiResponse(responseCode = "403", description = "Error desconocido o Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -188,7 +188,7 @@ public class CarritoController {
                                     """
                     )
             )),
-            @ApiResponse(responseCode = "403", description = "Error desconocido o Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -253,7 +253,7 @@ public class CarritoController {
                                     """
                     )
             )),
-            @ApiResponse(responseCode = "403", description = "Error desconocido o Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -297,7 +297,7 @@ public class CarritoController {
                                     """
                     )
             )),
-            @ApiResponse(responseCode = "403", description = "Error desconocido o Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),

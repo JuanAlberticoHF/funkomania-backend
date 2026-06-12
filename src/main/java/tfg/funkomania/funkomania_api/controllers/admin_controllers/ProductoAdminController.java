@@ -25,7 +25,7 @@ import java.util.List;
  * <p>Controlador REST para manejar las solicitudes relacionadas con los productos del catálogo por parte del administrador.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.6.0
  */
 @RestController
@@ -75,7 +75,11 @@ public class ProductoAdminController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -99,7 +103,11 @@ public class ProductoAdminController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -147,7 +155,11 @@ public class ProductoAdminController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -200,7 +212,11 @@ public class ProductoAdminController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),

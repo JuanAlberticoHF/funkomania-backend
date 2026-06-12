@@ -21,7 +21,7 @@ import java.util.List;
  * <p>Controlador REST para manejar las solicitudes relacionadas con las notificaciones del cliente</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.5.0
  */
 @RestController
@@ -55,7 +55,7 @@ public class NotificacionController {
                                     """
                     )
             )),
-            @ApiResponse(responseCode = "403", description = "Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -77,7 +77,7 @@ public class NotificacionController {
     @Operation(summary = "Leer notificación del cliente", description = "Marca una notificación específica como leída para el cliente autenticado. Requiere que el usuario esté autenticado para acceder a esta información.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Notificaciones del cliente autenticado leída exitosamente"),
-            @ApiResponse(responseCode = "403", description = "Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),

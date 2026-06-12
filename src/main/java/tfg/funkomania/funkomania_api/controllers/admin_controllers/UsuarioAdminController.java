@@ -25,7 +25,7 @@ import java.util.List;
  * <p>Proporciona endpoints para el registro de un usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.1
+ * @version 1.0.2
  * @since 0.6.0
  */
 @RestController
@@ -46,7 +46,11 @@ public class UsuarioAdminController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = UsuarioDTOId.class)
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
