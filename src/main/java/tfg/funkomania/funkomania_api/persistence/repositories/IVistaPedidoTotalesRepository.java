@@ -12,5 +12,5 @@ import tfg.funkomania.funkomania_api.persistence.entities.VistaPedidoTotales;
  * @since 0.7.0
  */
 public interface IVistaPedidoTotalesRepository extends JpaRepository<VistaPedidoTotales, VistaDetallePedidoId> {
-    VistaPedidoTotales findByIdPedido(Long idPedido);
+    VistaPedidoTotales findByIdPedidoAndIdUsuario(Long idPedido, Long idUsuario);
 }
