@@ -341,7 +341,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
         entityManager.flush();
         entityManager.clear();
         
-        return obtenerPedidoUsuarioPorId(idPedido);
+        return obtenerPedidoEnAdminPorId(idPedido);
     }
 
     @Transactional
@@ -377,7 +377,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
         entityManager.clear();
 
         // 5. Retornamos el pedido actualizado
-        return obtenerPedidoUsuarioPorId(idPedido);
+        return obtenerPedidoEnAdminPorId(idPedido);
     }
 
     @Transactional
