@@ -367,19 +367,19 @@ SELECT
     n.tipo,
     n.estado,
     CASE
-        WHEN n.tipo = 'registro' THEN CONCAT('Hola, ', u.Nombre, '. Tu cuenta ha sido creada correctamente. Ya puedes iniciar sesión y empezar a explorar nuestros productos.')
+        WHEN n.tipo = 'REGISTRO' THEN CONCAT('Hola, ', u.Nombre, '. Tu cuenta ha sido creada correctamente. Ya puedes iniciar sesión y empezar a explorar nuestros productos.')
 
-        WHEN n.tipo = 'bienvenida' THEN  CONCAT('¡Bienvenido/a a Funkomanía, ', u.Nombre, '! Descubre nuestro catálogo, guarda tus favoritos y no te pierdas las novedades.')
+        WHEN n.tipo = 'BIENVENIDA' THEN  CONCAT('¡Bienvenido/a a Funkomanía, ', u.Nombre, '! Descubre nuestro catálogo, guarda tus favoritos y no te pierdas las novedades.')
 
-        WHEN n.tipo = 'compra' THEN  CONCAT('Hola, ', u.Nombre, '. Hemos recibido tu pedido correctamente y ya está siendo procesado. Te avisaremos cuando haya cambios en su estado.')
+        WHEN n.tipo = 'COMPRA' THEN  CONCAT('Hola, ', u.Nombre, '. Hemos recibido tu pedido correctamente y ya está siendo procesado. Te avisaremos cuando haya cambios en su estado.')
 
-        WHEN n.tipo = 'estado_pedido' THEN CONCAT('Hola, ', u.Nombre, '. El estado de tu pedido ha sido actualizado. Puedes consultar los detalles en tu área de usuario.')
+        WHEN n.tipo = 'ESTADO_PEDIDO' THEN CONCAT('Hola, ', u.Nombre, '. El estado de tu pedido ha sido actualizado. Puedes consultar los detalles en tu área de usuario.')
 
-        WHEN n.tipo = 'carrito_abandonado' THEN CONCAT('Hola, ', u.Nombre, '. Tienes productos en tu carrito pendientes de compra. ¡No te quedes sin ellos!')
+        WHEN n.tipo = 'CARRITO_ABANDONADO' THEN CONCAT('Hola, ', u.Nombre, '. Tienes productos en tu carrito pendientes de compra. ¡No te quedes sin ellos!')
 
-        WHEN n.tipo = 'pago_error' THEN CONCAT('Hola, ', u.Nombre, '. Se ha producido un error al procesar tu pago. Revisa los datos e inténtalo de nuevo.')
+        WHEN n.tipo = 'PAGO_ERROR' THEN CONCAT('Hola, ', u.Nombre, '. Se ha producido un error al procesar tu pago. Revisa los datos e inténtalo de nuevo.')
 
-        WHEN n.tipo = 'wishlist_stock' THEN CONCAT('Hola, ', u.Nombre, '. Uno de los productos de tu lista de deseos vuelve a estar disponible. ¡Aprovecha antes de que se agote!')
+        WHEN n.tipo = 'WISHLIST_STOCK' THEN CONCAT('Hola, ', u.Nombre, '. Uno de los productos de tu lista de deseos vuelve a estar disponible. ¡Aprovecha antes de que se agote!')
 
         ELSE
             CONCAT('Hola, ', u.Nombre, '. Tienes una nueva notificación en tu cuenta.')
