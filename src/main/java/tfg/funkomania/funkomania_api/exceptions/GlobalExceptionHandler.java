@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.20.0
+ * @version 0.20.1
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -290,7 +290,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja la excepción {@code CancelacionPedidoException} que se lanza cuando el admin intenta cancelar un pedido que no se puede cancelar.
+     * Maneja la excepción {@code CancelacionPedidoException} que se lanza cuando el usuario intenta cancelar un pedido que no se puede cancelar.
      * @param ex Excepción de tipo {@code CancelacionPedidoException}.
      * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (Conflict).
      */
