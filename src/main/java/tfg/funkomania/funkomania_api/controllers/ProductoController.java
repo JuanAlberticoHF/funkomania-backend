@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ import tfg.funkomania.funkomania_api.services.ProductoServiceImpl;
 @RestController
 @RequestMapping("/productos")
 @Tag(name = "Gestor de Productos", description = "Endpoints para gestionar los productos disponibles en el sistema.")
+@Slf4j
 public class ProductoController {
 
     /** Servicio productos. */
@@ -135,6 +137,7 @@ public class ProductoController {
             )
             @RequestParam(required = false) Boolean oferta
     ) {
+        log.info("Obteniendo catálogo de productos.");
         return ResponseEntity.status(HttpStatus.OK).body(productoService.getAllProductos(
                 search, idCategoria, precioMin, precioMax, oferta, pageable));
     }
@@ -229,6 +232,7 @@ public class ProductoController {
             )
             @RequestParam(required = false) Double precioMax
     ) {
+        log.info("Obteniendo catálogo de productos en oferta.");
         return ResponseEntity.status(HttpStatus.OK).body(productoService.getAllProductosEnOfertaActivos(
                 search, idCategoria, precioMin, precioMax, pageable));
     }
@@ -280,6 +284,7 @@ public class ProductoController {
             )
             @PathVariable long id
     ) {
+        log.info("Obteniendo producto con ID: {}.", id);
         return ResponseEntity.status(HttpStatus.OK).body(productoService.getProductoById(id));
     }
 }

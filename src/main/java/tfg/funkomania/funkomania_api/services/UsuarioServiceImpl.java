@@ -3,6 +3,7 @@ package tfg.funkomania.funkomania_api.services;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioDTOId;
 import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioUpdateRequestDTO;
 import tfg.funkomania.funkomania_api.dtos.usuario_dtos.VistaUsuarioPerfilClienteDTOId;
@@ -26,6 +27,7 @@ import java.util.List;
  * @since 0.4.0
  */
 @Service
+@Slf4j
 public class UsuarioServiceImpl implements UsuarioService {
 
     /** Repositorio para obtener la vista con los datos del perfil del cliente autenticado. */
@@ -42,6 +44,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public VistaUsuarioPerfilClienteDTOId obtenerPerfilClienteAutenticado() {
+        log.info("Obteniendo perfil del cliente autenticado.");
         // Obtenemos el email del usuario autenticado desde el contexto de seguridad de Spring Security
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -60,6 +63,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public void actualizarUsuarioAutenticado(UsuarioUpdateRequestDTO usuarioUpdateRequestDTO) {
+        log.info("Actualizando perfil del usuario autenticado.");
         // Comprobamos que todas los campos del DTO de actualización sean nulos.
         if (UsuarioUpdateRequestDTO.isNullOrEmpty(usuarioUpdateRequestDTO)) {
             throw new IllegalArgumentException("Todos los parámetros de actualización no pueden ser nulos o el nombre no puede estar vacío");
@@ -111,6 +115,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     public List<UsuarioDTOId> obtenerTodosLosUsuarios(String search) {
+        log.info("Obteniendo listado de usuarios.");
         // Creamos una especificación vacía para construir la consulta dinámica
         Specification<Usuario> spec = null;
 

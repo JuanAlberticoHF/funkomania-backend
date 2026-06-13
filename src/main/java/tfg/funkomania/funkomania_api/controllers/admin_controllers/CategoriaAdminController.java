@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -34,6 +35,7 @@ import java.util.List;
 @RequestMapping("/admin/categorias")
 @Validated
 @Tag(name = "[ADMIN] Gestor de Categorías", description = "Endpoints para gestionar todas las operaciones relacionadas con las categorías de productos. Solo administrador.")
+@Slf4j
 public class CategoriaAdminController {
 
     /** Servicio categorías. */
@@ -97,6 +99,7 @@ public class CategoriaAdminController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/")
     public ResponseEntity<List<CategoriaDTOIdProductosAsociados>> getAllCategoriasConProductosAsociados() {
+        log.info("Obteniendo todas las categorías con productos asociados para administrador.");
         return ResponseEntity.status(HttpStatus.OK).body(categoriaService.obtenerListadoCategoriasConProductosAsociados());
     }
 
@@ -149,6 +152,7 @@ public class CategoriaAdminController {
     public ResponseEntity<List<VistaProductosCatalogoDTOId>> getProductosAsociadosDeUnaCategorias(
             @Parameter(description = "ID de la categoría para obtener sus productos asociados", example = "2")
             @PathVariable Long idCategoria) {
+        log.info("Obteniendo productos asociados a la categoría con ID: {}.", idCategoria);
         return ResponseEntity.status(HttpStatus.OK).body(categoriaService.obtenerProductosAsociadosDeUnaCategoria(idCategoria));
     }
     
@@ -189,6 +193,7 @@ public class CategoriaAdminController {
                             )
                     ))
             @Valid @RequestBody CategoriaDTORequest categoriaDTORequest) {
+        log.info("Creando nueva categoría.");
         categoriaService.crearCategoria(categoriaDTORequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -230,6 +235,7 @@ public class CategoriaAdminController {
                             )
                     ))
             @Valid @RequestBody CategoriaDTORequest categoriaDTORequest) {
+        log.info("Actualizando categoría con ID: {}.", idCategoria);
         categoriaService.actualizarCategoria(idCategoria, categoriaDTORequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -259,6 +265,7 @@ public class CategoriaAdminController {
     public ResponseEntity<Void> eliminarUnaCategoria(
             @Parameter(description = "ID de la categoría a eliminar", required = true, examples = @ExampleObject(value = "10"))
             @Valid @PathVariable Long idCategoria) {
+        log.info("Eliminando categoría con ID: {}.", idCategoria);
         categoriaService.eliminarCategoria(idCategoria);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

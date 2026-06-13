@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,7 @@ import tfg.funkomania.funkomania_api.services.NotificacionServiceImpl;
 @RequestMapping("/auth")
 @Validated
 @Tag(name = "Gestor de Autenticación", description = "Endpoints para gestionar la autenticación de usuarios, incluyendo el registro.")
+@Slf4j
 public class AuthController {
 
     /** Servicio de autenticación */
@@ -88,6 +90,7 @@ public class AuthController {
                     )
             )
             @Valid @RequestBody UsuarioRegistroDTO usuarioRegistroDTO) {
+        log.info("Iniciando registro de usuario: {}", usuarioRegistroDTO.getEmail());
         // Registrar el nuevo usuario utilizando el servicio de autenticación
         Usuario usuario = authService.register(new Usuario(usuarioRegistroDTO));
         // Obtengo el identificador generado automáticamente para el nuevo usuario registrado y registro la notificación de registro.
@@ -143,6 +146,7 @@ public class AuthController {
                     )
             )
             @Valid @RequestBody LoginRequest loginRequest) {
+        log.info("Iniciando sesión para el usuario: {}", loginRequest.username());
         final TokenResponse tokenResponse = authService.login(loginRequest);
         return ResponseEntity.ok(tokenResponse);
     }

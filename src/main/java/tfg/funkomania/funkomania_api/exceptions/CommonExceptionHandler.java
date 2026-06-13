@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * <p>Manejador global de excepciones de la API de Funkomania para excepciones no controladas.</p>
@@ -22,6 +23,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
  * @since 0.1.0
  */
 @RestControllerAdvice
+@Slf4j
 public class CommonExceptionHandler {
     /**
      * Maneja la excepción {@code MethodArgumentNotValidException} cuando el argumento o parametro no es valido (capa web).
@@ -31,6 +33,7 @@ public class CommonExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ProblemDetail methodArgumentNotValidException(MethodArgumentNotValidException ex){
+        log.error("Excepción capturada: MethodArgumentNotValidException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
         problemDetail.setTitle("Argumento no válido");
         return problemDetail;
@@ -44,6 +47,7 @@ public class CommonExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ProblemDetail methodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex){
+        log.error("Excepción capturada: MethodArgumentTypeMismatchException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
         problemDetail.setTitle("Error de tipo de argumento");
         return problemDetail;
@@ -58,6 +62,7 @@ public class CommonExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ProblemDetail constraintViolationException(ConstraintViolationException ex){
+        log.error("Excepción capturada: ConstraintViolationException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
         problemDetail.setTitle("Error de validación");
         return problemDetail;
@@ -70,6 +75,7 @@ public class CommonExceptionHandler {
      */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail dataIntegrityViolationException(DataIntegrityViolationException ex){
+        log.error("Excepción capturada: DataIntegrityViolationException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
         problemDetail.setTitle("Error de integridad de datos");
         return problemDetail;
@@ -82,6 +88,7 @@ public class CommonExceptionHandler {
      */
     @ExceptionHandler(InvalidDataAccessResourceUsageException.class)
     public ProblemDetail invalidDataAccessResourceUsageException(InvalidDataAccessResourceUsageException ex){
+        log.error("Excepción capturada: InvalidDataAccessResourceUsageException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
         problemDetail.setTitle("Error de uso de recurso de acceso a datos");
         return problemDetail;
@@ -95,6 +102,7 @@ public class CommonExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ProblemDetail illegalArgumentException(IllegalArgumentException ex) {
+        log.error("Excepción capturada: IllegalArgumentException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
         problemDetail.setTitle("Argumento ilegal");
         return problemDetail;

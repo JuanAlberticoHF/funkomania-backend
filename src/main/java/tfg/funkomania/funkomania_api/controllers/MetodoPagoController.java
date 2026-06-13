@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/metodos-pago")
 @Tag(name = "Gestor de Métodos de Pago", description = "Endpoint para obtener los metodos de pago activos en el sistema")
+@Slf4j
 public class MetodoPagoController {
 
     /** Servicio de métodos de pago */
@@ -60,6 +62,7 @@ public class MetodoPagoController {
     })
     @GetMapping("/")
     public ResponseEntity<List<MetodoPagoDTOId>> obtenerMetodosPagoActivos() {
+        log.info("Obteniendo métodos de pago activos.");
         return ResponseEntity.ok(metodoPagoService.obtenerMetodosPagoActivos());
     }
 }

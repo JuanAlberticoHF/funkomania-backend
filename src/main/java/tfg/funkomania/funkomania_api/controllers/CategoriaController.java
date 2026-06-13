@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/categorias")
 @Tag(name = "Gestor de Categorías", description = "Endpoints para gestionar las categorías de productos disponibles en el sistema.")
+@Slf4j
 public class CategoriaController {
 
     /** Servicio categorías. */
@@ -68,6 +70,7 @@ public class CategoriaController {
     })
     @GetMapping("/")
     public ResponseEntity<List<CategoriaDTOId>> getAllCategorias() {
+        log.info("Obteniendo todas las categorías.");
         List<CategoriaDTOId> categorias = new ArrayList<>();
         categoriaService.getAllCategorias().forEach(categoria -> categorias.add(new CategoriaDTOId(categoria)));
         return ResponseEntity.status(HttpStatus.OK).body(categorias);

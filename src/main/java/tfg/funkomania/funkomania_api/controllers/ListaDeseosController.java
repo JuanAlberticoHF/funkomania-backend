@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/usuario/lista-deseos")
 @Tag(name = "Gestion Lista de Deseos", description = "Endpoints para gestionar la lista de deseos del cliente autenticado, incluyendo la obtención de su lista de deseos, la adición de productos a la lista y la eliminación de productos de la lista.")
+@Slf4j
 public class ListaDeseosController {
     /** Servicio de lista de deseos que contiene la lógica de negocio de todas las operaciones */
     private final ListaDeseosServiceImpl listaDeseosService;
@@ -75,6 +77,7 @@ public class ListaDeseosController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/")
     public ResponseEntity<List<ProductoDTOId>> obtenerListaDeseosDelUsuario() {
+        log.info("Obteniendo lista de deseos del usuario.");
         return ResponseEntity.ok(listaDeseosService.obtenerListaDeseosDelUsuario());
     }
 
@@ -101,6 +104,7 @@ public class ListaDeseosController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{idProducto}")
     public ResponseEntity<Void> addProductoAListaDeseos(@PathVariable Long idProducto) {
+        log.info("Añadiendo producto con ID: {} a la lista de deseos.", idProducto);
         listaDeseosService.agregarProductoListaDeseosDelUsuario(idProducto);
         return ResponseEntity.ok().build();
     }
@@ -124,6 +128,7 @@ public class ListaDeseosController {
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{idProducto}")
     public ResponseEntity<Void> eliminarProductoDeListaDeseos(@PathVariable Long idProducto) {
+        log.info("Eliminando producto con ID: {} de la lista de deseos.", idProducto);
         listaDeseosService.eliminarProductoListaDeseosDelUsuario(idProducto);
         return ResponseEntity.ok().build();
     }

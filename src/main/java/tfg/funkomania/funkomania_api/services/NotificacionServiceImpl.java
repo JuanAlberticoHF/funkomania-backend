@@ -1,6 +1,7 @@
 package tfg.funkomania.funkomania_api.services;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tfg.funkomania.funkomania_api.dtos.notificacion_dtos.VistaNotificacionUsuarioDTOId;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
@@ -25,6 +26,7 @@ import java.util.Objects;
  * @since 0.5.0
  */
 @Service
+@Slf4j
 public class NotificacionServiceImpl implements NotificacionService {
 
     /** Repositorio para gestionar notificaciones */
@@ -46,6 +48,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     @Override
     public List<VistaNotificacionUsuarioDTOId> obtenerTodasLasNotificacionesDelUsuario() {
+        log.info("Obteniendo todas las notificaciones del usuario.");
         // Obtenemos el email del usuario autenticado desde el contexto de seguridad de Spring Security
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -65,6 +68,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     @Override
     public void leerNotificacion(Long idNotificacion) {
+        log.info("Marcando notificación con ID: {} como leída.", idNotificacion);
         // Obtenemos el email del usuario autenticado desde el contexto de seguridad de Spring Security
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -99,6 +103,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     @Override
     public void generarNotificacion(Long idUsuario, TipoNotificacionEnum tipoNotificacion) {
+        log.info("Generando notificación de tipo {} para usuario ID: {}.", tipoNotificacion, idUsuario);
         // Buscamos el usuario en la base de datos utilizando el id del usuario obtenido
         Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(
                 () -> new UsuarioNotFoundException("No se encontró un usuario con el identificador: " + idUsuario));

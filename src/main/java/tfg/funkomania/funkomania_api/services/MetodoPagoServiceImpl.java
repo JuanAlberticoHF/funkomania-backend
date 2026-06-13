@@ -1,6 +1,7 @@
 package tfg.funkomania.funkomania_api.services;
 
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 import tfg.funkomania.funkomania_api.dtos.metodoPago_dtos.MetodoPagoDTOId;
 import tfg.funkomania.funkomania_api.persistence.repositories.IMetodoPagoRepository;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @since 0.5.0
  */
 @Service
+@Slf4j
 public class MetodoPagoServiceImpl implements MetodoPagoService {
 
     /** Repositorio para acceder a los datos de MetodoPago. */
@@ -27,6 +29,7 @@ public class MetodoPagoServiceImpl implements MetodoPagoService {
 
     @Override
     public List<MetodoPagoDTOId> obtenerMetodosPagoActivos() {
+        log.info("Obteniendo métodos de pago activos.");
         // Obtenemos los métodos de pago activos desde el repositorio, los convertimos a DTOs y los devolvemos como una lista.
         return metodoPagoRepository.findMetodoPagosByActivoIsTrue().stream()
                 .map(MetodoPagoDTOId::new)

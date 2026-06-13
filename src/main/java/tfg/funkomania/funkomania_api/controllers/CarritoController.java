@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.*;
 import tfg.funkomania.funkomania_api.dtos.carrito_dtos.VistaCarritoTotalesContenidoDTOId;
@@ -24,6 +25,7 @@ import tfg.funkomania.funkomania_api.services.CarritoServiceImpl;
 @RestController
 @RequestMapping("/carrito")
 @Tag(name = "Gestor de Carrito", description = "Endpoints para gestionar el carrito de compras del usuario, incluyendo agregar productos, eliminar productos y obtener el contenido del carrito.")
+@Slf4j
 public class CarritoController {
 
     /** Servicio para gestionar las operaciones del carrito de compras. */
@@ -85,6 +87,7 @@ public class CarritoController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/")
     public VistaCarritoTotalesContenidoDTOId obtenerCarritoDelUsuario() {
+        log.info("Obteniendo carrito del usuario.");
         return carritoService.obtenerCarritoCompletoUsuario();
     }
 
@@ -149,6 +152,7 @@ public class CarritoController {
                     description = "Cantidad del producto a agregar al carrito (opcional, por defecto es 1)",
                     schema = @Schema(type = "integer", format = "int64", minimum = "1"))
             @RequestParam(required = false) Integer cantidad) {
+        log.info("Agregando producto con ID: {} al carrito.", idProducto);
         return carritoService.agregarProductoAlCarrito(idProducto, cantidad);
     }
 
@@ -214,6 +218,7 @@ public class CarritoController {
                     description = "Cantidad del producto a actualizar en el carrito (opcional, por defecto es 1)",
                     schema = @Schema(type = "integer", format = "int64", minimum = "1"))
             @RequestParam Integer cantidad) {
+        log.info("Actualizando cantidad del producto con ID: {} en el carrito.", idProducto);
         return carritoService.actualizarCantidadProducto(idProducto, cantidad);
     }
 
@@ -275,6 +280,7 @@ public class CarritoController {
                     schema = @Schema(type = "integer", format = "int64", minimum = "1"),
                     examples = @ExampleObject(value = "1"))
             @PathVariable Long idProducto) {
+        log.info("Eliminando producto con ID: {} del carrito.", idProducto);
         return carritoService.eliminarProductoDelCarrito(idProducto);
     }
 
@@ -313,6 +319,7 @@ public class CarritoController {
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/")
     public VistaCarritoTotalesContenidoDTOId vaciarCarritoDelUsuario() {
+        log.info("Vaciando carrito de compras del usuario.");
         return carritoService.vaciarCarrito();
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import tfg.funkomania.funkomania_api.dtos.pedido_dtos.*;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
@@ -27,6 +28,7 @@ import java.util.Objects;
  * @since 0.7.0
  */
 @Service
+@Slf4j
 public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
 
     /** Repositorio para acceder a la vista de historial de pedidos del usuario. */
@@ -94,6 +96,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
     @Transactional
     @Override
     public CrearPedidoResponseDTO crearPedidoDesdeCarrito(CrearPedidoRequestDTO datosCrearPedido) {
+        log.info("Creando pedido desde el carrito para usuario autenticado.");
         // Obtenemos usuario autenticado desde el contexto de seguridad de Spring Security
         Usuario usuario = obtenerUsuarioAutenticado();
 
@@ -135,6 +138,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
 
     @Override
     public List<VistaHistorialPedidosUsuarioDTOId> obtenerPedidosUsuario() {
+        log.info("Obteniendo historial de pedidos del usuario autenticado.");
         // Obtenemos al usuario autenticado
         Usuario usuario = obtenerUsuarioAutenticado();
 
@@ -145,6 +149,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
 
     @Override
     public PedidoCompletoDTOId obtenerPedidoUsuarioPorId(Long idPedido) {
+        log.info("Obteniendo detalles del pedido con ID: {}.", idPedido);
         // Comprobamos que el pedido exista.
         pedidoRepository.findById(idPedido).orElseThrow(() -> new PedidoNotFoundException("El pedido no existe"));
 
@@ -163,7 +168,33 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
     }
 
     @Override
+    public void cancelarPedido(Long idPedido) {
+        log.info("Cancelando pedido con ID: {}.", idPedido);
+        // Comprobamos que el pedido exista.
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new PedidoNotFoundException("El pedido no existe"));
+
+        // Obtenemos al usuario autenticado
+        Usuario usuario = obtenerUsuarioAutenticado();
+
+        // Comprobamos que el pedido pertenezca al usuario autenticado
+        if (!pedido.getUsuario().getIdUsuario().equals(usuario.getIdUsuario())) {
+            throw new CancelacionPedidoException("El pedido no pertenece al usuario autenticado");
+        }
+
+        // Cancelamos el pedido
+        pedidoRepository.cancelarPedido(idPedido);
+
+        // Forzamos la ejecución de las operaciones pendientes en la base de datos para asegurar que los datos estén actualizados
+        entityManager.flush();
+        // Limpiamos el contexto de persistencia para evitar que se devuelvan datos obsoletos en la consulta.
+        entityManager.clear();
+
+    }
+
+    @Override
     public PedidoCompletoDTOId obtenerPedidoEnAdminPorId(Long idPedido) {
+        log.info("Obteniendo detalles del pedido con ID: {} para administrador.", idPedido);
         // Comprobamos que el pedido exista.
         pedidoRepository.findById(idPedido).orElseThrow(() -> new PedidoNotFoundException("El pedido no existe"));
 
@@ -182,6 +213,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
 
     @Override
     public List<VistaPedidosAdminDTOId> getAllPedidosAdmin(Long idPedido, String codigoPedido, String usuario, LocalDateTime fechaPedido, EstadoPedidoEnum estadoPedido, EstadoPagoEnum estadoPago, String metodoPago) {
+        log.info("Obteniendo listado de pedidos para administrador.");
         // Inicializar la especificación como null para construirla dinámicamente
         Specification<VistaPedidosAdmin> spec = Specification.anyOf();
 
@@ -215,6 +247,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
     @Transactional
     @Override
     public void crearPedidoParaUsuario(CrearPedidoAdminRequestDTO datosCrearPedido) {
+        log.info("Creando pedido para usuario por administrador.");
         // 1. Buscamos el usuario, la dirección y el metodo de pago necesarios
         Usuario usuario = usuarioRepository.findById(datosCrearPedido.idUsuario())
                 .orElseThrow(() -> new UsuarioNotFoundException("Usuario no encontrado"));
@@ -278,6 +311,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
     @Transactional
     @Override
     public PedidoCompletoDTOId agregarUnNuevoProductoAlPedido(Long idPedido, AdminAgregarLineaPedidoRequestDTO datosAgregarLineaPedido) {
+        log.info("Agregando producto al pedido con ID: {} por administrador.", idPedido);
         // 1. Buscamos el pedido y el producto
         Pedido pedido = pedidoRepository.findById(idPedido)
                 .orElseThrow(() -> new PedidoNotFoundException("Pedido no encontrado"));
@@ -327,6 +361,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
     @Transactional
     @Override
     public PedidoCompletoDTOId actualizarDatosPedido(Long idPedido, AdminUpdatePedidoRequestDTO datosActualizarPedido) {
+        log.info("Actualizando datos del pedido con ID: {} por administrador.", idPedido);
         // 1. Buscamos el pedido
         Pedido pedido = pedidoRepository.findById(idPedido)
                 .orElseThrow(() -> new PedidoNotFoundException("Pedido no encontrado"));
@@ -358,6 +393,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
     @Transactional
     @Override
     public PedidoCompletoDTOId actualizarDatosDetallePedido(Long idPedido, Long idProducto, AdminUpdateProductoPedidoRequestDTO datosActualizarDetallePedido) {
+        log.info("Actualizando detalle del pedido ID: {}, producto ID: {} por administrador.", idPedido, idProducto);
         // 1. Buscamos el detalle del pedido
         DetallePedidoId detalleId = new DetallePedidoId(idPedido, idProducto);
         DetallePedido detalle = detallePedidoRepository.findById(detalleId)
@@ -414,6 +450,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
     @Transactional
     @Override
     public void eliminarDetallePedido(Long idPedido, Long idProducto) {
+        log.info("Eliminando detalle del pedido ID: {}, producto ID: {} por administrador.", idPedido, idProducto);
         // 1. Buscamos el detalle del pedido
         DetallePedidoId detalleId = new DetallePedidoId(idPedido, idProducto);
         DetallePedido detalle = detallePedidoRepository.findById(detalleId)

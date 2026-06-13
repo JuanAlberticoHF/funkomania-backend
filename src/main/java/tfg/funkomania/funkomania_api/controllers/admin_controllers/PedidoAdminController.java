@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ import java.util.List;
 @RequestMapping("/admin/pedidos")
 @Validated
 @Tag(name = "[ADMIN] Gestor Pedidos", description = "Operaciones relacionadas con los pedidos para el administrador")
+@Slf4j
 public class PedidoAdminController {
 
     /** Servicio para manejar la lógica de negocio relacionada con los pedidos. */
@@ -72,6 +74,7 @@ public class PedidoAdminController {
             @Parameter(description = "Estado del pago") @RequestParam(required = false) EstadoPagoEnum estadoPago,
             @Parameter(description = "Método de pago") @RequestParam(required = false) String metodoPago
     ) {
+        log.info("Obteniendo listado de pedidos para administrador.");
         return ResponseEntity.ok().body(pedidoService.getAllPedidosAdmin(idPedido, codigoPedido, usuario, null, estadoPedido, estadoPago, metodoPago));
     }
 
@@ -102,6 +105,7 @@ public class PedidoAdminController {
     @GetMapping("/{idPedido}")
     public ResponseEntity<PedidoCompletoDTOId> obtenerPedidoUsuarioPorId(
             @Parameter(description = "ID del pedido", required = true) @PathVariable Long idPedido) {
+        log.info("Obteniendo detalles del pedido con ID: {} para administrador.", idPedido);
         return ResponseEntity.ok().body(pedidoService.obtenerPedidoEnAdminPorId(idPedido));
     }
 
@@ -161,6 +165,7 @@ public class PedidoAdminController {
                         )
                     ))
             @RequestBody @Validated CrearPedidoAdminRequestDTO datosCrearPedido) {
+        log.info("Creando nuevo pedido para usuario por administrador.");
         pedidoService.crearPedidoParaUsuario(datosCrearPedido);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -215,6 +220,7 @@ public class PedidoAdminController {
                         )
                     ))
             @RequestBody @Validated AdminUpdatePedidoRequestDTO datosActualizarPedido) {
+        log.info("Actualizando datos generales del pedido con ID: {} por administrador.", idPedido);
         return ResponseEntity.ok().body(pedidoService.actualizarDatosPedido(idPedido, datosActualizarPedido));
     }
 
@@ -267,6 +273,7 @@ public class PedidoAdminController {
                         )
                     ))
             @RequestBody @Validated AdminAgregarLineaPedidoRequestDTO datosAgregarLineaPedido) {
+        log.info("Agregando producto al pedido con ID: {} por administrador.", idPedido);
         return ResponseEntity.ok().body(pedidoService.agregarUnNuevoProductoAlPedido(idPedido, datosAgregarLineaPedido));
     }
 
@@ -319,6 +326,7 @@ public class PedidoAdminController {
                     ))
             @RequestBody @Validated AdminUpdateProductoPedidoRequestDTO datosActualizarLineaPedido
     ) {
+        log.info("Actualizando línea de pedido para pedido ID: {} y producto ID: {} por administrador.", idPedido, idProducto);
         return ResponseEntity.ok().body(pedidoService.actualizarDatosDetallePedido(idPedido, idProducto, datosActualizarLineaPedido));
     }
 
@@ -347,6 +355,7 @@ public class PedidoAdminController {
     public ResponseEntity<Void> eliminarDetallePedido(
             @Parameter(description = "ID del pedido", required = true) @PathVariable Long idPedido,
             @Parameter(description = "ID del producto", required = true) @PathVariable Long idProducto) {
+        log.info("Eliminando línea de pedido para pedido ID: {} y producto ID: {} por administrador.", idPedido, idProducto);
         pedidoService.eliminarDetallePedido(idPedido, idProducto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

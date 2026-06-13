@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * <p>Manejador global de excepciones controladas de la API de Funkomania.</p>
@@ -14,10 +15,11 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.19.0
+ * @version 0.20.0
  * @since 0.1.0
  */
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     /**
@@ -28,6 +30,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsuarioAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ProblemDetail handleException(UsuarioAlreadyExistsException ex) {
+        log.error("Excepción controlada: UsuarioAlreadyExistsException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("El usuario ya existe");
         return problemDetail;
@@ -41,6 +44,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductoNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(ProductoNotFoundException ex) {
+        log.error("Excepción controlada: ProductoNotFoundException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Producto no encontrado");
         return problemDetail;
@@ -54,6 +58,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NullEmailAutenticationException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ProblemDetail handleException(NullEmailAutenticationException ex) {
+        log.error("Excepción controlada: NullEmailAutenticationException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         problemDetail.setTitle("Error en la autenticación: email nulo");
         return problemDetail;
@@ -67,6 +72,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsuarioNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(UsuarioNotFoundException ex) {
+        log.error("Excepción controlada: UsuarioNotFoundException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Usuario no encontrado");
         return problemDetail;
@@ -80,6 +86,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DireccionNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(DireccionNotFoundException ex) {
+        log.error("Excepción controlada: DireccionNotFoundException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Direccion no encontrada");
         return problemDetail;
@@ -94,6 +101,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductoYaEnListaDeseadosException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ProblemDetail handleException(ProductoYaEnListaDeseadosException ex) {
+        log.error("Excepción controlada: ProductoYaEnListaDeseadosException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("Producto ya en lista de deseados");
         return problemDetail;
@@ -107,6 +115,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotificacionNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(NotificacionNotFoundException ex) {
+        log.error("Excepción controlada: NotificacionNotFoundException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Notificación no encontrada");
         return problemDetail;
@@ -120,6 +129,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotNotificationOwnerException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ProblemDetail handleException(NotNotificationOwnerException ex) {
+        log.error("Excepción controlada: NotNotificationOwnerException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("No eres el propietario de esta notificación");
         return problemDetail;
@@ -133,6 +143,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotificacionYaLeidaException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ProblemDetail handleException(NotificacionYaLeidaException ex) {
+        log.error("Excepción controlada: NotificacionYaLeidaException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("La notificación ya ha sido leída");
         return problemDetail;
@@ -146,6 +157,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CategoriaNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(CategoriaNotFoundException ex) {
+        log.error("Excepción controlada: CategoriaNotFoundException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Categoría no encontrada");
         return problemDetail;
@@ -159,6 +171,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CategoriaConProductosException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ProblemDetail handleException(CategoriaConProductosException ex) {
+        log.error("Excepción controlada: CategoriaConProductosException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("No se puede eliminar la categoría porque tiene productos asociados");
         return problemDetail;
@@ -172,6 +185,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductoNoEliminadoException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ProblemDetail handleException(ProductoNoEliminadoException ex) {
+        log.error("Excepción controlada: ProductoNoEliminadoException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("No se pudo eliminar el producto");
         return problemDetail;
@@ -185,6 +199,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CarritoNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(CarritoNotFoundException ex) {
+        log.error("Excepción controlada: CarritoNotFoundException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Carrito del usuario no existe.");
         return problemDetail;
@@ -198,6 +213,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductoNotFoundInCarritoException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(ProductoNotFoundInCarritoException ex) {
+        log.error("Excepción controlada: ProductoNotFoundInCarritoException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Producto no encontrado en el carrito del usuario.");
         return problemDetail;
@@ -211,6 +227,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PedidoNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(PedidoNotFoundException ex) {
+        log.error("Excepción controlada: PedidoNotFoundException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Pedido no encontrado para el usuario.");
         return problemDetail;
@@ -224,6 +241,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CarritoVacioException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ProblemDetail handleException(CarritoVacioException ex) {
+        log.error("Excepción controlada: CarritoVacioException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("No se puede realizar el pedido porque el carrito está vacío.");
         return problemDetail;
@@ -237,6 +255,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MetodoPagoNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(MetodoPagoNotFoundException ex) {
+        log.error("Excepción controlada: MetodoPagoNotFoundException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Metodo de pago no encontrado para el usuario.");
         return problemDetail;
@@ -250,6 +269,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DetallePedidoNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(DetallePedidoNotFoundException ex) {
+        log.error("Excepción controlada: DetallePedidoNotFoundException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Detalle de pedido no encontrado para el usuario.");
         return problemDetail;
@@ -263,8 +283,23 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InsufficientStockException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ProblemDetail handleException(InsufficientStockException ex) {
+        log.error("Excepción controlada: InsufficientStockException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("No se puede realizar el pedido porque no hay suficiente stock del producto.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code CancelacionPedidoException} que se lanza cuando el admin intenta cancelar un pedido que no se puede cancelar.
+     * @param ex Excepción de tipo {@code CancelacionPedidoException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (Conflict).
+     */
+    @ExceptionHandler(CancelacionPedidoException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(CancelacionPedidoException ex) {
+        log.error("Excepción controlada: CancelacionPedidoException - {}", ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("No se puede cancelar el pedido");
         return problemDetail;
     }
 }

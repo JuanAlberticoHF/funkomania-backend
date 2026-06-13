@@ -27,6 +27,7 @@ import java.util.List;
  * @since 0.5.0
  */
 @Service
+@Slf4j
 public class ListaDeseosServiceImpl implements ListaDeseosService {
 
     /** Repositorio de usuarios. */
@@ -44,6 +45,7 @@ public class ListaDeseosServiceImpl implements ListaDeseosService {
     @Transactional(readOnly = true)
     @Override
     public List<ProductoDTOId> obtenerListaDeseosDelUsuario() {
+        log.info("Obteniendo lista de deseos del usuario.");
         // Obtenemos usuario autenticado desde el contexto de seguridad de Spring Security con la lista de deseos
         final Usuario usuario = obtenerUsuarioAutenticadoConListaDeseados();
 
@@ -56,6 +58,7 @@ public class ListaDeseosServiceImpl implements ListaDeseosService {
 
     @Override
     public void agregarProductoListaDeseosDelUsuario(Long idProducto) {
+        log.info("Añadiendo producto con ID: {} a la lista de deseos.", idProducto);
         // Obtenemos usuario autenticado desde el contexto de seguridad de Spring Security con la lista de deseos
         Usuario usuario = obtenerUsuarioAutenticadoConListaDeseados();
 
@@ -78,6 +81,7 @@ public class ListaDeseosServiceImpl implements ListaDeseosService {
 
     @Override
     public void eliminarProductoListaDeseosDelUsuario(Long idProducto) {
+        log.info("Eliminando producto con ID: {} de la lista de deseos.", idProducto);
         // Obtenemos usuario autenticado desde el contexto de seguridad de Spring Security con la lista de deseos
         Usuario usuario = obtenerUsuarioAutenticadoConListaDeseados();
 

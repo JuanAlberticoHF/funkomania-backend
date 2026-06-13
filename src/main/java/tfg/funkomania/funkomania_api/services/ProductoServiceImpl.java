@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import tfg.funkomania.funkomania_api.dtos.producto_dtos.ProductoDTOIdCategoria;
 import tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId;
@@ -31,6 +32,7 @@ import java.util.List;
  * @since 0.2.0
  */
 @Service
+@Slf4j
 public class ProductoServiceImpl implements ProductoService {
 
     /** Repositorio para acceder a la vista de productos en el catálogo. */
@@ -52,7 +54,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public Page<VistaProductosCatalogoDTOId> getAllProductos(
             String search, Long idCategoria, Double precioMin, Double precioMax, Boolean oferta, Pageable pageable) {
-
+        log.info("Obteniendo catálogo de productos paginado.");
         Specification<VistaProductosCatalogo> spec = getVistaProductosCatalogoSpecifications
                 (search, idCategoria, precioMin, precioMax, oferta);
 
@@ -68,7 +70,7 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public List<VistaProductosCatalogoDTOId> getAllProductos(String search) {
-
+        log.info("Obteniendo listado de productos.");
         Specification<VistaProductosCatalogo> spec = getVistaProductosCatalogoSpecifications
                 (search, null, null, null, null);
 
@@ -85,7 +87,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public Page<VistaProductosCatalogoDTOId> getAllProductosEnOfertaActivos(
             String search, Long idCategoria, Double precioMin, Double precioMax, Pageable pageable) {
-
+        log.info("Obteniendo catálogo de productos en oferta.");
         Specification<VistaProductosCatalogo> spec = getVistaProductosCatalogoSpecifications
                 (search, idCategoria, precioMin, precioMax, null);
 
@@ -101,6 +103,7 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public VistaProductosCatalogoDTOId getProductoById(Long id) {
+        log.info("Obteniendo producto con ID: {}.", id);
         return vistaProductoRepository.findById(id)
                 .map(VistaProductosCatalogoDTOId::new)
                 .orElseThrow(() -> new ProductoNotFoundException("Producto solicitado no encontrado con ID: " + id));
@@ -109,6 +112,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Transactional
     @Override
     public void addProducto(ProductoDTOIdCategoria productoDTOIdCategoria) {
+        log.info("Creando nuevo producto: {}.", productoDTOIdCategoria.getNombre());
         // Verificar que la categoría existe, la obtenemos y si no lanzamos excepción
         Categoria categoria = categoriaRepository.findById(productoDTOIdCategoria.getIdCategoria()).orElseThrow(
                 () -> new CategoriaNotFoundException("Categoría no encontrada con ID: " + productoDTOIdCategoria.getIdCategoria())
@@ -125,6 +129,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Transactional
     @Override
     public void updateProducto(Long idProducto, ProductoDTOIdCategoria productoDTOIdCategoria) {
+        log.info("Actualizando producto con ID: {}.", idProducto);
         // Verificar si el producto existe
         if (!productoRepository.existsById(idProducto)) {
             throw new ProductoNotFoundException("No se puede actualizar el producto. Producto con ID " + idProducto + " no encontrado.");
@@ -147,6 +152,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Transactional
     @Override
     public void deleteProducto(Long idProducto) {
+        log.info("Eliminando producto con ID: {}.", idProducto);
         // Verificar si el producto existe
         if (!productoRepository.existsById(idProducto)) {
             throw new ProductoNotFoundException("No se puede actualizar el producto. Producto con ID " + idProducto + " no encontrado.");
