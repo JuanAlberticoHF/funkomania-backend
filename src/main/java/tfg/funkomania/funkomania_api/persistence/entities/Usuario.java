@@ -7,6 +7,7 @@ import tfg.funkomania.funkomania_api.dtos.usuario_dtos.UsuarioRegistroDTO;
 import tfg.funkomania.funkomania_api.persistence.enums.RoleEnum;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Set;
  * <p>La entidad mapea tabla {@code usuario} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.4.0
+ * @version 1.0.0
  * @since 0.1.0
  */
 @Entity
@@ -23,7 +24,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode
 @Table(name = "Usuario")
 public class Usuario {
@@ -88,6 +88,7 @@ public class Usuario {
     @Column(name = "Activo", nullable = false)
     private boolean activo;
 
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Set<Direccion> direcciones;
 
@@ -98,8 +99,17 @@ public class Usuario {
     @EqualsAndHashCode.Exclude
     Set<Producto> productosDeseados;
 
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private Set<Notificacion> notificaciones;
+
+    @EqualsAndHashCode.Exclude
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private Carrito carrito;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    private List<Pedido> pedidos;
 
     /**
      * Crea un nuevo usuario a partir de un DTO de registro. El ID se establece como {@code null} para que sea autogenerado por la base de datos.

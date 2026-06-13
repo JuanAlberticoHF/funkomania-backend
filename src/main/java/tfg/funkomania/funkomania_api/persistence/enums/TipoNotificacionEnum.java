@@ -11,15 +11,15 @@ package tfg.funkomania.funkomania_api.persistence.enums;
  * <li>{@code BIENVENIDA}: Notificación de bienvenida enviada a un nuevo usuario después de completar su registro.</li>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.2
  * @since 0.5.0
  */
 public enum TipoNotificacionEnum {
     REGISTRO,
     COMPRA,
     ESTADO_PEDIDO,
-    CARRITO_ABANDONADO,
-    PAGO_ERROR,
-    LISTADESEOS_STOCK,
+    CARRITO_ABANDONADO, // No implementado, reservado a futuro.
+    PAGO_ERROR, // No implementado, reservado a futuro.
+    LISTADESEOS_STOCK, // No implementado, reservado a futuro.
     BIENVENIDA
 }

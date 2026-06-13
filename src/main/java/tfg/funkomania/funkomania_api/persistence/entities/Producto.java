@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * <p>La entidad mapea tabla {@code producto} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.2.0
+ * @version 1.2.1
  * @since 0.2.0
  */
 @Entity
@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode
 @Table(name = "Producto")
 public class Producto {

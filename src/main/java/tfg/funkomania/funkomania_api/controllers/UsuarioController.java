@@ -24,7 +24,7 @@ import tfg.funkomania.funkomania_api.services.UsuarioServiceImpl;
  * <p>Proporciona endpoints para el registro de un usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.4.0
  */
 @RestController
@@ -45,7 +45,7 @@ public class UsuarioController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = VistaUsuarioPerfilClienteDTOId.class)
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición"),
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor al obtener el perfil del cliente autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
@@ -64,7 +64,7 @@ public class UsuarioController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición"),
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor al obtener el perfil del cliente autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)

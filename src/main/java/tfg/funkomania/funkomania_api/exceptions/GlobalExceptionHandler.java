@@ -14,7 +14,7 @@ import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.12.0
+ * @version 0.19.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -102,12 +102,12 @@ public class GlobalExceptionHandler {
     /**
      * Maneja la excepción {@code NotificacionNotFoundException} que se lanza cuando no se encuentra una notificación en la base de datos.
      * @param ex Excepción de tipo {@code NotificacionNotFoundException}.
-     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (Not Found)
      */
     @ExceptionHandler(NotificacionNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(NotificacionNotFoundException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Notificación no encontrada");
         return problemDetail;
     }
@@ -141,12 +141,12 @@ public class GlobalExceptionHandler {
     /**
      * Maneja la excepción {@code CategoriaNotFoundException} que se lanza cuando no se encuentra una categoria en la base de datos.
      * @param ex Excepción de tipo {@code CategoriaNotFoundException}.
-     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (Not Found)
      */
     @ExceptionHandler(CategoriaNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ProblemDetail handleException(CategoriaNotFoundException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Categoría no encontrada");
         return problemDetail;
     }
@@ -174,6 +174,97 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleException(ProductoNoEliminadoException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("No se pudo eliminar el producto");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code CarritoNotFoundException} que se lanza cuando no se encuentra el carrito del usuario creado en la base de datos.
+     * @param ex Excepción de tipo {@code CarritoNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (NOT_FOUND).
+     */
+    @ExceptionHandler(CarritoNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(CarritoNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Carrito del usuario no existe.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code ProductoNotFoundInCarritoException} que se lanza cuando no se encuentra un producto en el carrito del usuario.
+     * @param ex Excepción de tipo {@code ProductoNotFoundInCarritoException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (NOT_FOUND).
+     */
+    @ExceptionHandler(ProductoNotFoundInCarritoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(ProductoNotFoundInCarritoException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Producto no encontrado en el carrito del usuario.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code PedidoNotFoundException} que se lanza cuando no se encuentra un pedido concreto del usuario.
+     * @param ex Excepción de tipo {@code PedidoNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (NOT_FOUND).
+     */
+    @ExceptionHandler(PedidoNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(PedidoNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Pedido no encontrado para el usuario.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code CarritoVacioException} que se lanza cuando el usuario intenta realizar un pedido con el carrito vacío.
+     * @param ex Excepción de tipo {@code CarritoVacioException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(CarritoVacioException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(CarritoVacioException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("No se puede realizar el pedido porque el carrito está vacío.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code MetodoPagoNotFoundException} que se lanza cuando no se encuentra un metodo de pago concreto del usuario.
+     * @param ex Excepción de tipo {@code MetodoPagoNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (NOT_FOUND).
+     */
+    @ExceptionHandler(MetodoPagoNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(MetodoPagoNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Metodo de pago no encontrado para el usuario.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code DetallePedidoNotFoundException} que se lanza cuando no se encuentra un detalle de pedido concreto del usuario.
+     * @param ex Excepción de tipo {@code DetallePedidoNotFoundException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 404 (NOT_FOUND).
+     */
+    @ExceptionHandler(DetallePedidoNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProblemDetail handleException(DetallePedidoNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Detalle de pedido no encontrado para el usuario.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code InsufficientStockException} que se lanza cuando el admin intenta realizar un pedido con un producto que no tiene suficiente stock.
+     * @param ex Excepción de tipo {@code InsufficientStockException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (CONFLICT).
+     */
+    @ExceptionHandler(InsufficientStockException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(InsufficientStockException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("No se puede realizar el pedido porque no hay suficiente stock del producto.");
         return problemDetail;
     }
 }

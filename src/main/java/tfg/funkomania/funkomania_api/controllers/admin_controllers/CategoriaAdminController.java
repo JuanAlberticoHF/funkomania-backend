@@ -27,7 +27,7 @@ import java.util.List;
  * <p>Controlador REST para manejar las solicitudes relacionadas con las categorías de productos para administradores</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.1
+ * @version 1.0.2
  * @since 0.6.0
  */
 @RestController
@@ -85,7 +85,11 @@ public class CategoriaAdminController {
                                     """
                     )
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -127,7 +131,11 @@ public class CategoriaAdminController {
                                     """
                     )
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -147,7 +155,11 @@ public class CategoriaAdminController {
     @Operation(summary = "Crear una nueva categoría", description = "Crea una nueva categoría en el sistema con los datos proporcionados en el cuerpo de la solicitud.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Categoría creada exitosamente."),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -184,7 +196,11 @@ public class CategoriaAdminController {
     @Operation(summary = "Actualizar una categoría existente", description = "Actualiza una categoría existente en el sistema con los datos proporcionados en el cuerpo de la solicitud.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Categoría actualizada exitosamente."),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -221,7 +237,11 @@ public class CategoriaAdminController {
     @Operation(summary = "Eliminar una categoría existente", description = "Elimina una categoría existente en el sistema con el id proporcionado en la ruta de la solicitud.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Categoría eliminada exitosamente."),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),

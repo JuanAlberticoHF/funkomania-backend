@@ -12,14 +12,14 @@ import org.springframework.context.annotation.Configuration;
  * <p>Esta clase define la información general de la API y el esquema de seguridad para la autenticación y autorización JWT.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.5
+ * @version 1.0.6
  * @since 0.4.0
  */
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
                 title = "Funkomania API",
-                version = "0.6.0",
+                version = "0.7.0",
                 description = "Documentación de la API de Funkomania"
         )
 )

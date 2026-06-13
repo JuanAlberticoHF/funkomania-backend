@@ -5,11 +5,12 @@ incluye tanto el backend como el frontend, pero este repositorio se centra exclu
 
 ## ¿Qué incluye Funkomania Backend?
 
-Actualmente, Funkomania Backend `0.6.0` incluye las siguientes funcionalidades:
+Actualmente, Funkomania Backend `0.7.0` incluye las siguientes funcionalidades:
 
 - API REST con endpoints para registrar usuarios, inicio de sesión, cierre de sesión de un usuario, obtener el catálogo 
 de productos, ofertas, categorías, gestionar el perfil de usuario, direcciones, lista de deseado, notificaciones, 
-métodos de pago, y gestion usuarios, productos y categorías para usuarios con rol administrador.
+métodos de pago, gestion usuarios, productos y categorías para usuarios con rol administrador, gestion de carrito del usuario,
+gestión de pedidos, gestión de pedidos de usuarios y alertas stock para administradores.
 - Integración con MySQL para almacenamiento de datos.
 - Configuración de seguridad con Spring Security.
 - Documentación de la API con SpringDoc OpenAPI.

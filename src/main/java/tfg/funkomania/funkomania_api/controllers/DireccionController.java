@@ -23,7 +23,7 @@ import java.util.List;
  * <p>Controlador REST para manejar las solicitudes relacionadas con las direcciones de un usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.5.0
  */
 @RestController
@@ -61,7 +61,7 @@ public class DireccionController {
                                     """
                     )
             )),
-            @ApiResponse(responseCode = "403", description = "Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -83,7 +83,7 @@ public class DireccionController {
     @Operation(summary = "Registrar una nueva dirección para el usuario autenticado", description = "Registra una nueva dirección para el usuario autenticado.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "La dirección se ha creado exitosamente"),
-            @ApiResponse(responseCode = "403", description = "Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -129,7 +129,7 @@ public class DireccionController {
     @Operation(summary = "Actualizar una dirección existente del usuario autenticado", description = "Actualiza una dirección existente del usuario autenticado. El campo 'idUsuario' se ignora porque la dirección se asocia automáticamente al usuario autenticado.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Dirección actualizada exitosamente"),
-            @ApiResponse(responseCode = "403", description = "Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -177,7 +177,7 @@ public class DireccionController {
     @Operation(summary = "Activar una dirección existente del usuario autenticado", description = "Activa una dirección existente del usuario autenticado. Solo se puede activar una dirección a la vez, por lo que si se activa una nueva dirección, las demás se desactivan automáticamente.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "La dirección se ha activado exitosamente"),
-            @ApiResponse(responseCode = "403", description = "Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),

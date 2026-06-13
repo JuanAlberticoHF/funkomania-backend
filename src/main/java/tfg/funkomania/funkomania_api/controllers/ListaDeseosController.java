@@ -20,7 +20,7 @@ import java.util.List;
  * <p>Controlador REST para manejar las solicitudes relacionadas con los productos deseados del cliente</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.5.0
  */
 @RestController
@@ -59,7 +59,7 @@ public class ListaDeseosController {
                                     """
                     )
             )),
-            @ApiResponse(responseCode = "403", description = "Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -81,7 +81,7 @@ public class ListaDeseosController {
     @Operation(summary = "Añadir un producto a la lista de deseados del usuario", description = "Agrega un producto específico a la lista de deseos del cliente autenticado. Requiere que el usuario esté autenticado para realizar esta acción.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto añadido a la lista de deseos del cliente autenticado exitosamente"),
-            @ApiResponse(responseCode = "403", description = "Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -108,7 +108,7 @@ public class ListaDeseosController {
     @Operation(summary = "Eliminar un producto a la lista de deseados del usuario", description = "Elimina un producto específico de la lista de deseos del cliente autenticado. Requiere que el usuario esté autenticado para realizar esta acción.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto eliminado de la lista de deseos del cliente autenticado exitosamente"),
-            @ApiResponse(responseCode = "403", description = "Acceso denegado: El usuario no está autenticado o no tiene permisos para acceder a esta información", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),

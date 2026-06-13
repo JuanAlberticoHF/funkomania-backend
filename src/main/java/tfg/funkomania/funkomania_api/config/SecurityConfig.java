@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.TokenInvalidoException;
+import tfg.funkomania.funkomania_api.exceptions.security.CustomAccessDeniedHandler;
+import tfg.funkomania.funkomania_api.exceptions.security.CustomAuthenticationEntryPoint;
 import tfg.funkomania.funkomania_api.security.filters.JwtAuthorizationFilter;
 import tfg.funkomania.funkomania_api.services.InMemoryTokenBlackListService;
 import tfg.funkomania.funkomania_api.services.UserDetailServiceImpl;
@@ -26,7 +28,7 @@ import tfg.funkomania.funkomania_api.utils.JwtUtils;
  * <p>Esta clase define la configuración de seguridad utilizando Spring Security y el password encoder</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.4.0
+ * @version 1.5.0
  * @since 0.1.0
  */
 @Configuration
@@ -39,12 +41,18 @@ public class SecurityConfig {
     /** Bean de servicio para añadir tokens a la lista negra. */
     private final InMemoryTokenBlackListService tokenBlackListService;
     private final JwtUtils jwtUtils;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     public SecurityConfig(JwtAuthorizationFilter jwtAuthorizationFilter,
-                          InMemoryTokenBlackListService tokenBlackListService, JwtUtils jwtUtils) {
+                          InMemoryTokenBlackListService tokenBlackListService, JwtUtils jwtUtils,
+                          CustomAuthenticationEntryPoint authenticationEntryPoint,
+                          CustomAccessDeniedHandler accessDeniedHandler) {
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
         this.tokenBlackListService = tokenBlackListService;
         this.jwtUtils = jwtUtils;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     /**
@@ -80,6 +88,12 @@ public class SecurityConfig {
 
                 // Agrega el filtro de autorización JWT antes del filtro de autenticación de Spring Security.
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // Configura los manejadores de excepciones personalizados para devolver ProblemDetails.
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
 
                 // Configura el cierre de sesión para invalidar el token JWT y limpiar el contexto de seguridad.
                 .logout(logout ->

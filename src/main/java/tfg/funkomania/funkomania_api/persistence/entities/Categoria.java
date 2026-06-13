@@ -14,7 +14,7 @@ import java.util.Set;
  * <p>La entidad mapea tabla {@code categoria} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.2.0
  */
 @Entity
@@ -23,7 +23,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode
 @Table(name = "Categoria")
 public class Categoria {

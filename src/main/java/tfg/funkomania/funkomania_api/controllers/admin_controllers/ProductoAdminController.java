@@ -25,7 +25,7 @@ import java.util.List;
  * <p>Controlador REST para manejar las solicitudes relacionadas con los productos del catálogo por parte del administrador.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.2
  * @since 0.6.0
  */
 @RestController
@@ -44,38 +44,17 @@ public class ProductoAdminController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna un JSON con una lista de productos con los datos de cada producto", content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = VistaProductosCatalogoDTOId.class),
-                    examples = @ExampleObject(
-                            value = """
-                                    [
-                                        {
-                                            "activo": true,
-                                            "descripcion": "Figura Funko Pop Original de Funkomania",
-                                            "descuento": 10.00,
-                                            "enOferta": true,
-                                            "fechaFinOferta": "2026-12-31T00:00:00",
-                                            "id": 1,
-                                            "idCategoria": 1,
-                                            "imagen": "funko_funkomania.jpg",
-                                            "iva": 21.00,
-                                            "nombre": "Figura Funkomania",
-                                            "nombreCategoria": "Originales",
-                                            "nombreCategoriaPadre": null,
-                                            "precioFinalConIVA": 16.32,
-                                            "precioFinalSinIVA": 13.49,
-                                            "precioOriginalConIVA": 18.14,
-                                            "precioOriginalSinIVA": 14.99,
-                                            "stock": 120
-                                        }
-                                    ]
-                                    """
-                    )
+                    schema = @Schema(implementation = VistaProductosCatalogoDTOId.class)
             )),
             @ApiResponse(responseCode = "400", description = "Los parámetros de la solicitud no son validos", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -99,7 +78,11 @@ public class ProductoAdminController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -147,7 +130,11 @@ public class ProductoAdminController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -165,7 +152,7 @@ public class ProductoAdminController {
             )
             @Positive @PathVariable Long idProducto,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Datos del nuevo producto a agregar",
+                    description = "Datos del nuevo producto a actualizar",
                     required = true,
                     content = @Content(
                             mediaType = "application/json",
@@ -200,7 +187,11 @@ public class ProductoAdminController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
-            @ApiResponse(responseCode = "403", description = "El usuario no está autenticado o no esta autorizado para realizar la petición, necesario usuario con rol 'ADMIN'.", content = @Content(
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado: el usuario no tiene permiso para acceder al recurso", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
@@ -215,7 +206,7 @@ public class ProductoAdminController {
     })
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{idProducto}")
-    public ResponseEntity<Void> updateProducto(
+    public ResponseEntity<Void> deleteProducto(
             @Parameter(
                     description = "ID del producto a eliminar (lógicamente)",
                     required = true

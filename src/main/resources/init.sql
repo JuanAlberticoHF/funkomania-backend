@@ -2,6 +2,9 @@ CREATE DATABASE IF NOT EXISTS funkomania_db;
 
 USE funkomania_db;
 
+SET NAMES 'utf8mb4';
+SET CHARACTER SET utf8mb4;
+
 CREATE TABLE IF NOT EXISTS Usuario (
     idUsuario BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -21,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Carrito (
     idUsuario BIGINT UNSIGNED NOT NULL UNIQUE,
     FechaCreacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FechaActualizacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    Estado ENUM('activo', 'abandonado') NOT NULL DEFAULT 'activo',
+    Estado ENUM('ACTIVO', 'ABANDONADO') NOT NULL DEFAULT 'ACTIVO',
 
     CONSTRAINT fk_carrito_usuario FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario)  ON DELETE CASCADE
 );
@@ -53,8 +56,8 @@ CREATE TABLE IF NOT EXISTS Pedido (
     CodigoPedido VARCHAR(30) NOT NULL UNIQUE,
     idUsuario BIGINT UNSIGNED NOT NULL,
     FechaPedido DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    EstadoPedido ENUM('pendiente', 'procesando', 'enviado', 'entregado', 'cancelado') NOT NULL DEFAULT 'pendiente',
-    EstadoPago ENUM('pendiente', 'pagado', 'rechazado') NOT NULL DEFAULT 'pendiente',
+    EstadoPedido ENUM('PENDIENTE', 'PROCESANDO', 'ENVIADO', 'ENTREGADO', 'CANCELADO') NOT NULL DEFAULT 'PENDIENTE',
+    EstadoPago ENUM('PENDIENTE', 'PAGADO', 'RECHAZADO') NOT NULL DEFAULT 'PENDIENTE',
     idDireccion BIGINT UNSIGNED NOT NULL,
     idMetodoPago BIGINT UNSIGNED NOT NULL,
     Comentarios TEXT NULL,
@@ -237,7 +240,7 @@ SELECT
     idCarrito,
     idUsuario,
     COUNT(idProducto) AS Total_Articulos_Diferentes,
-    SUM(cantidad) AS Total_Unidades_Fisicas,
+    CAST(SUM(cantidad) AS UNSIGNED) AS Total_Unidades_Fisicas,
     ROUND(SUM(PrecioUnitario_SinIVA * cantidad), 2) AS Base_Imponible,
     ROUND(SUM(Subtotal_Posicion), 2) AS Total_A_Pagar
 FROM VCarrito_Contenido
@@ -291,7 +294,7 @@ SELECT
     p.idPedido,
     p.idUsuario,
     COUNT(dp.idProducto) AS Cantidad_Articulos_Diferentes,
-    SUM(dp.cantidad) AS Total_Unidades_Fisicas,
+    CAST(SUM(dp.cantidad) AS UNSIGNED) AS Total_Unidades_Fisicas,
     ROUND(SUM(dp.precioUnitario * dp.cantidad), 2) AS Base_Imponible,
     ROUND(SUM(fn_subtotal_linea(dp.precioUnitario, dp.cantidad, dp.iva)), 2) AS Total_Con_IVA
 FROM Pedido p
@@ -364,19 +367,19 @@ SELECT
     n.tipo,
     n.estado,
     CASE
-        WHEN n.tipo = 'registro' THEN CONCAT('Hola, ', u.Nombre, '. Tu cuenta ha sido creada correctamente. Ya puedes iniciar sesión y empezar a explorar nuestros productos.')
+        WHEN n.tipo = 'REGISTRO' THEN CONCAT('Hola, ', u.Nombre, '. Tu cuenta ha sido creada correctamente. Ya puedes iniciar sesión y empezar a explorar nuestros productos.')
 
-        WHEN n.tipo = 'bienvenida' THEN  CONCAT('¡Bienvenido/a a Funkomanía, ', u.Nombre, '! Descubre nuestro catálogo, guarda tus favoritos y no te pierdas las novedades.')
+        WHEN n.tipo = 'BIENVENIDA' THEN  CONCAT('¡Bienvenido/a a Funkomanía, ', u.Nombre, '! Descubre nuestro catálogo, guarda tus favoritos y no te pierdas las novedades.')
 
-        WHEN n.tipo = 'compra' THEN  CONCAT('Hola, ', u.Nombre, '. Hemos recibido tu pedido correctamente y ya está siendo procesado. Te avisaremos cuando haya cambios en su estado.')
+        WHEN n.tipo = 'COMPRA' THEN  CONCAT('Hola, ', u.Nombre, '. Hemos recibido tu pedido correctamente y ya está siendo procesado. Te avisaremos cuando haya cambios en su estado.')
 
-        WHEN n.tipo = 'estado_pedido' THEN CONCAT('Hola, ', u.Nombre, '. El estado de tu pedido ha sido actualizado. Puedes consultar los detalles en tu área de usuario.')
+        WHEN n.tipo = 'ESTADO_PEDIDO' THEN CONCAT('Hola, ', u.Nombre, '. El estado de tu pedido ha sido actualizado. Puedes consultar los detalles en tu área de usuario.')
 
-        WHEN n.tipo = 'carrito_abandonado' THEN CONCAT('Hola, ', u.Nombre, '. Tienes productos en tu carrito pendientes de compra. ¡No te quedes sin ellos!')
+        WHEN n.tipo = 'CARRITO_ABANDONADO' THEN CONCAT('Hola, ', u.Nombre, '. Tienes productos en tu carrito pendientes de compra. ¡No te quedes sin ellos!')
 
-        WHEN n.tipo = 'pago_error' THEN CONCAT('Hola, ', u.Nombre, '. Se ha producido un error al procesar tu pago. Revisa los datos e inténtalo de nuevo.')
+        WHEN n.tipo = 'PAGO_ERROR' THEN CONCAT('Hola, ', u.Nombre, '. Se ha producido un error al procesar tu pago. Revisa los datos e inténtalo de nuevo.')
 
-        WHEN n.tipo = 'wishlist_stock' THEN CONCAT('Hola, ', u.Nombre, '. Uno de los productos de tu lista de deseos vuelve a estar disponible. ¡Aprovecha antes de que se agote!')
+        WHEN n.tipo = 'WISHLIST_STOCK' THEN CONCAT('Hola, ', u.Nombre, '. Uno de los productos de tu lista de deseos vuelve a estar disponible. ¡Aprovecha antes de que se agote!')
 
         ELSE
             CONCAT('Hola, ', u.Nombre, '. Tienes una nueva notificación en tu cuenta.')
@@ -750,8 +753,13 @@ CREATE INDEX idx_notificacion_usuario_estado ON Notificacion(idUsuario, estado);
 INSERT INTO Usuario (email, passwordHash, Nombre, Apellido1, Apellido2, Telefono, FechaRegistro, UltimoLogin, Rol, Activo) VALUES
 ('JuanAlberticoHF@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Juan Alberto',
  'Hernandez', 'Fernandez', '123456789', '2026-06-04 18:41:12', '2026-06-04 18:41:13', 'ADMIN', 1),
-('UsuarioNormal@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Usuario',
+('Usuario@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Usuario',
  'Normal', 'Apellido2', '987654321', '2026-06-04 18:41:12', '2026-06-04 18:41:13', 'CLIENTE', 1);
+
+-- Insertar direcciones
+INSERT INTO Direccion (idUsuario, Calle, Numero, Ciudad, Municipio, Provincia, CP, Activo) VALUES
+(1, 'Calle Falsa', '123', 'Springfield', 'Springfield', 'Illinois', '62704', 1),
+(2, 'Avenida Siempre Viva', '742', 'Springfield', 'Springfield', 'Illinois', '62704', 1);
 
 -- Insertar notificaciones
 INSERT INTO Notificacion (idUsuario, tipo, estado) VALUES
@@ -760,12 +768,15 @@ INSERT INTO Notificacion (idUsuario, tipo, estado) VALUES
 (2, 'REGISTRO', 'ENVIADA'),
 (2, 'BIENVENIDA', 'ENVIADA');
 
--- Insertar metodos de pago
+-- Insertar métodos de pago
 INSERT INTO Metodo_Pago (Nombre, Activo) VALUES
-('Tarjeta de Crédito', 1),
+('Tarjeta bancaria', 1),
 ('PayPal', 1),
-('Transferencia Bancaria', 1),
-('Efectivo', 0);
+('Bizum', 1),
+('Transferencia bancaria', 1),
+('Contra reembolso', 1),
+('Google Pay', 1),
+('Apple Pay', 1);
 
 -- Insertar Categorías
 INSERT INTO Categoria (Nombre) VALUES ('Anime');
@@ -802,3 +813,12 @@ INSERT INTO Producto
 ('Funko Pop Doctor Strange', 17.84, 3, NULL, 'Figura de Doctor Strange dentro de la colección Avengers de Marvel.', 9, 21, 1, 1, 15, NULL),
 ('Funko Pop Spider-Man Edición Antigua', 24.99, 7, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/spiderman.png', 'Producto con oferta caducada para comprobar que el descuento no se aplica.', 6, 21, 1, 1, 30, '2024-12-31'),
 ('Funko Pop Loki Archivado', 18.49, 2, 'https://wrtuusxnsyvmzrdzrbmj.supabase.co/storage/v1/object/public/productos/iron-man.png', 'Producto inactivo para comprobar que no aparece en el catálogo público.', 5, 21, 0, 0, 0, NULL);
+
+-- Insertar Carritos
+INSERT INTO Carrito (idUsuario, FechaCreacion, FechaActualizacion, Estado) VALUES
+(2, '2026-06-04 18:41:12', '2026-06-04 18:41:12', 'ACTIVO');
+
+-- Insertar Detalles de Carrito
+INSERT INTO Detalle_Carrito (idCarrito, idProducto, cantidad) VALUES
+(1, 1, 2),
+(1, 2, 1);
