@@ -26,7 +26,7 @@ import java.util.List;
  * <p>Controlador REST para manejar las operaciones relacionadas con los pedidos desde la perspectiva del administrador.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.6
  * @since 0.7.0
  */
 @RestController
@@ -248,8 +248,24 @@ public class PedidoAdminController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{idPedido}/lineas")
     public ResponseEntity<PedidoCompletoDTOId> agregarUnNuevoProductoAlPedido(
-            @Parameter(description = "ID del pedido", required = true) @PathVariable Long idPedido,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos de la línea a agregar", required = true)
+            @Parameter(description = "ID del pedido", required = true, examples = @ExampleObject(name = "Ejemplo de ID de pedido", value = "1"))
+            @PathVariable Long idPedido,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos de la línea a agregar o sumar", required = true, content = @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(implementation = AdminAgregarLineaPedidoRequestDTO.class),
+                        examples = @ExampleObject(
+                            name = "Ejemplo de agregar línea de pedido",
+                            value = """
+                                    {
+                                      "idProducto": 1,
+                                      "cantidad": 1,
+                                      "precioUnitarioSinIVA": 20,
+                                      "IVA": 21
+                                    }
+                                    """
+                        )
+                    ))
             @RequestBody @Validated AdminAgregarLineaPedidoRequestDTO datosAgregarLineaPedido) {
         return ResponseEntity.ok().body(pedidoService.agregarUnNuevoProductoAlPedido(idPedido, datosAgregarLineaPedido));
     }
