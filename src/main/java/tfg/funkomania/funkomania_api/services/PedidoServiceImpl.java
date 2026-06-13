@@ -283,7 +283,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
                 .orElseThrow(() -> new PedidoNotFoundException("Pedido no encontrado"));
         Producto producto = productoRepository.findById(datosAgregarLineaPedido.idProducto())
                 .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado"));
-        
+
         // 2. Creamos o actualizamos el DetallePedido
         DetallePedidoId detalleId = new DetallePedidoId(pedido.getIdPedido(), producto.getId());
         DetallePedido detalle = detallePedidoRepository.findById(detalleId).orElse(
@@ -294,14 +294,25 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
                         .iva(producto.getIva())
                         .build()
         );
+
+        // 3. Balanceamos el stock al agregar el nuevo pedido.
+
+        // Comprobamos que exista suficiente stock
+        if (producto.getStock() < datosAgregarLineaPedido.cantidad()) {
+            throw new InsufficientStockException("No hay suficiente stock para el producto: " + producto.getNombre());
+        }
         
         detalle.setCantidad(detalle.getCantidad() == null ? datosAgregarLineaPedido.cantidad() : detalle.getCantidad() + datosAgregarLineaPedido.cantidad());
         detalle.setPrecioUnitario(producto.getPrecio());
+
+        producto.setStock(producto.getStock() - datosAgregarLineaPedido.cantidad());
         
-        // 3. Guardamos el detalle
+        // 4. Guardamos el detalle y el stock del producto
         detallePedidoRepository.save(detalle);
-        
-        // 4. Actualizamos la fecha de modificación del pedido
+
+        productoRepository.save(producto);
+
+        // 5. Actualizamos la fecha de modificación del pedido
         pedido.setUltimaModificacion(LocalDateTime.now());
         pedidoRepository.save(pedido);
 
@@ -309,8 +320,8 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
         entityManager.flush();
         entityManager.clear();
         
-        // 5. Retornamos el pedido actualizado
-        return obtenerPedidoUsuarioPorId(pedido.getIdPedido());
+        // 6. Retornamos el pedido actualizado
+        return obtenerPedidoEnAdminPorId(pedido.getIdPedido());
     }
 
     @Transactional
@@ -407,9 +418,14 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
         DetallePedidoId detalleId = new DetallePedidoId(idPedido, idProducto);
         DetallePedido detalle = detallePedidoRepository.findById(detalleId)
                 .orElseThrow(() -> new DetallePedidoNotFoundException("Línea de pedido no encontrada"));
-        
-        // 2. Eliminamos la línea
+
+        // 2. Actualizamos el stock del producto y eliminamos la línea
+        Producto producto = detalle.getProducto();
+        producto.setStock(producto.getStock() + detalle.getCantidad());
+
         detallePedidoRepository.delete(detalle);
+
+        productoRepository.save(producto);
         
         // 3. Actualizamos la fecha de modificación del pedido
         Pedido pedido = pedidoRepository.findById(idPedido).orElseThrow(() -> new PedidoNotFoundException("Pedido no encontrado"));
