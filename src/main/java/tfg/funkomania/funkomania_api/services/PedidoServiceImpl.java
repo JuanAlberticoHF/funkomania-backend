@@ -23,7 +23,7 @@ import java.util.Objects;
  * <p>Esta clase implementa la interfaz {@link PedidoService} y {@link PedidoAdminService}.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.10
  * @since 0.7.0
  */
 @Service
