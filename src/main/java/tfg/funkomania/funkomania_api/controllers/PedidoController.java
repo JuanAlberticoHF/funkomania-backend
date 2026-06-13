@@ -30,7 +30,7 @@ import java.util.List;
  * historial de pedidos de un usuario y obtener los detalles de un pedido específico.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.1.0
  * @since 0.7.0
  */
 @RestController
@@ -146,6 +146,39 @@ public class PedidoController {
             @Positive @PathVariable Long idPedido) {
         log.info("Obteniendo detalles del pedido con ID: {}.", idPedido);
         return ResponseEntity.ok(pedidoService.obtenerPedidoUsuarioPorId(idPedido));
+    }
+
+    @Operation(summary = "Cancelar un pedido específico", description = "Cancela un pedido específico realizado por el usuario autenticado, utilizando el ID del pedido para identificar cuál pedido se desea cancelar. Una vez cancelado, el pedido no podrá ser procesado ni entregado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Éxito, pedido cancelado satisfactoriamente", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = PedidoCompletoDTOId.class)
+            )),
+            @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "404", description = "No se encontró el usuario o el pedido no existe", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "409", description = "El pedido no puede ser cancelado.", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor al obtener el perfil del cliente autenticado", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ProblemDetail.class)
+            ))
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
+    @DeleteMapping("/usuario/pedidos/{idPedido}")
+    public ResponseEntity<Void> cancelarPedido(
+            @Parameter(description = "ID del pedido a cancelar")
+            @Positive @PathVariable Long idPedido) {
+        log.info("Cancelando pedido con ID: {}.", idPedido);
+        pedidoService.cancelarPedido(idPedido);
+        return ResponseEntity.ok().build();
     }
 }
 

@@ -34,4 +34,10 @@ public interface PedidoService {
      * @return Un DTO que contiene los detalles completos del pedido, incluyendo los totales y las líneas de pedido.
      */
     PedidoCompletoDTOId obtenerPedidoUsuarioPorId(Long idPedido);
+
+    /**
+     * Cancela un pedido específico realizado por el usuario autenticado, utilizando el ID del pedido para identificar cuál pedido se desea cancelar.
+     * @param idPedido El ID del pedido que se desea cancelar.
+     */
+    void cancelarPedido(Long idPedido);
 }

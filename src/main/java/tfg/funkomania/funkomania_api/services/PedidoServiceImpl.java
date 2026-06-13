@@ -168,6 +168,31 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
     }
 
     @Override
+    public void cancelarPedido(Long idPedido) {
+        log.info("Cancelando pedido con ID: {}.", idPedido);
+        // Comprobamos que el pedido exista.
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new PedidoNotFoundException("El pedido no existe"));
+
+        // Obtenemos al usuario autenticado
+        Usuario usuario = obtenerUsuarioAutenticado();
+
+        // Comprobamos que el pedido pertenezca al usuario autenticado
+        if (!pedido.getUsuario().getIdUsuario().equals(usuario.getIdUsuario())) {
+            throw new CancelacionPedidoException("El pedido no pertenece al usuario autenticado");
+        }
+
+        // Cancelamos el pedido
+        pedidoRepository.cancelarPedido(idPedido);
+
+        // Forzamos la ejecución de las operaciones pendientes en la base de datos para asegurar que los datos estén actualizados
+        entityManager.flush();
+        // Limpiamos el contexto de persistencia para evitar que se devuelvan datos obsoletos en la consulta.
+        entityManager.clear();
+
+    }
+
+    @Override
     public PedidoCompletoDTOId obtenerPedidoEnAdminPorId(Long idPedido) {
         log.info("Obteniendo detalles del pedido con ID: {} para administrador.", idPedido);
         // Comprobamos que el pedido exista.
