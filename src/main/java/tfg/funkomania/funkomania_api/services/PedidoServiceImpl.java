@@ -249,7 +249,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
             Producto producto = productoRepository.findById(productoDTO.getIdProducto())
                     .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado"));
 
-            // Comprobamos que el producto esté activo
+            // Comprobamos que exista suficiente stock
             if (productoDTO.getCantidad() > producto.getStock()) {
                 throw new InsufficientStockException("No hay suficiente stock para el producto: " + producto.getNombre());
             }
@@ -352,8 +352,28 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
         DetallePedido detalle = detallePedidoRepository.findById(detalleId)
                 .orElseThrow(() -> new DetallePedidoNotFoundException("Línea de pedido no encontrada"));
 
-        // 2. Actualizamos los campos permitidos
+        // 2. Obtenemos el producto para verificar stock si se va a aumentar la cantidad
+        Producto producto = detalle.getProducto();
+
+        // 3. Actualizamos los campos permitidos
         if (datosActualizarDetallePedido.cantidad() != null) {
+            boolean stockInsuficiente = datosActualizarDetallePedido.cantidad() > producto.getStock();
+            boolean aumentoCantidad = datosActualizarDetallePedido.cantidad() < detalle.getCantidad();
+
+            // Comprobamos que exista suficiente stock
+            if (stockInsuficiente && !aumentoCantidad) {
+                throw new InsufficientStockException("No hay suficiente stock para el producto: " + producto.getStock());
+            }
+
+            // Si la cantidad nueva es inferior a la cantidad anterior añadimos stock
+            if (aumentoCantidad) {
+                producto.setStock(producto.getStock() + detalle.getCantidad() - datosActualizarDetallePedido.cantidad());
+            } else {
+                // Si la cantidad a actualizar es mayor, restamos el stock adicional
+                producto.setStock(producto.getStock() - datosActualizarDetallePedido.cantidad());
+                productoRepository.save(producto);
+            }
+
             detalle.setCantidad(datosActualizarDetallePedido.cantidad());
         }
         if (datosActualizarDetallePedido.PrecioUnitario_SinIVA() != null) {
@@ -363,10 +383,10 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
             detalle.setIva(datosActualizarDetallePedido.IVA());
         }
 
-        // 3. Guardamos el detalle actualizado
+        // 4. Guardamos el detalle actualizado
         detallePedidoRepository.save(detalle);
 
-        // 4. Actualizamos la fecha de modificación del pedido asociado
+        // 5. Actualizamos la fecha de modificación del pedido asociado
         Pedido pedido = pedidoRepository.findById(idPedido)
                 .orElseThrow(() -> new PedidoNotFoundException("Pedido no encontrado"));
         pedido.setUltimaModificacion(LocalDateTime.now());
