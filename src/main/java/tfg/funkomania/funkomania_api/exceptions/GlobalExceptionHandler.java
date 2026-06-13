@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.19.0
+ * @version 0.20.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -286,6 +286,20 @@ public class GlobalExceptionHandler {
         log.error("Excepción controlada: InsufficientStockException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("No se puede realizar el pedido porque no hay suficiente stock del producto.");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code CancelacionPedidoException} que se lanza cuando el admin intenta cancelar un pedido que no se puede cancelar.
+     * @param ex Excepción de tipo {@code CancelacionPedidoException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 409 (Conflict).
+     */
+    @ExceptionHandler(CancelacionPedidoException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleException(CancelacionPedidoException ex) {
+        log.error("Excepción controlada: CancelacionPedidoException - {}", ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("No se puede cancelar el pedido");
         return problemDetail;
     }
 }
