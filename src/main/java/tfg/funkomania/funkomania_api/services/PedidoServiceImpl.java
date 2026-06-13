@@ -167,6 +167,7 @@ public class PedidoServiceImpl implements PedidoService, PedidoAdminService {
         return new PedidoCompletoDTOId(pedidoTotales, lineas);
     }
 
+    @Transactional
     @Override
     public void cancelarPedido(Long idPedido) {
         log.info("Cancelando pedido con ID: {}.", idPedido);

@@ -1,6 +1,6 @@
 FROM eclipse-temurin:21-jre-alpine
 
-COPY ./target/funkomania-api-0.8.0.jar app.jar
+COPY ./target/funkomania-api-0.8.1.jar app.jar
 
 EXPOSE 8080
 
