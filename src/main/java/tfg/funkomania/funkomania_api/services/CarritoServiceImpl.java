@@ -3,6 +3,7 @@ package tfg.funkomania.funkomania_api.services;
 import jakarta.persistence.EntityManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import tfg.funkomania.funkomania_api.dtos.carrito_dtos.VistaCarritoContenidoDTOId;
 import tfg.funkomania.funkomania_api.dtos.carrito_dtos.VistaCarritoTotalesContenidoDTOId;
@@ -24,6 +25,7 @@ import java.util.List;
  * @since 0.7.0
  */
 @Service
+@Slf4j
 public class CarritoServiceImpl implements CarritoService {
 
     /** Repositorio de operaciones para la entidad Carrito */
@@ -66,6 +68,7 @@ public class CarritoServiceImpl implements CarritoService {
     @Transactional
     @Override
     public VistaCarritoTotalesContenidoDTOId obtenerCarritoCompletoUsuario() {
+        log.info("Obteniendo carrito completo del usuario.");
         // Obtenemos usuario autenticado desde el contexto de seguridad de Spring Security
         Usuario usuario = obtenerUsuarioAutenticado();
 
@@ -83,6 +86,7 @@ public class CarritoServiceImpl implements CarritoService {
     @Transactional
     @Override
     public VistaCarritoTotalesContenidoDTOId agregarProductoAlCarrito(Long idProducto, Integer cantidad) {
+        log.info("Agregando producto con ID: {} al carrito.", idProducto);
         // Comprobamos primero que el producto exista
         Producto producto = productoRepository.findById(idProducto).orElseThrow(() -> new ProductoNotFoundException(
                 "Producto deseado no encontrado"));
@@ -135,6 +139,7 @@ public class CarritoServiceImpl implements CarritoService {
     @Transactional
     @Override
     public VistaCarritoTotalesContenidoDTOId actualizarCantidadProducto(Long idProducto, Integer cantidad) {
+        log.info("Actualizando cantidad del producto con ID: {} en el carrito.", idProducto);
         // Comprobamos primero que el producto exista
         productoRepository.findById(idProducto).orElseThrow(() -> new ProductoNotFoundException(
                 "Producto deseado no encontrado"));
@@ -174,6 +179,7 @@ public class CarritoServiceImpl implements CarritoService {
     @Transactional
     @Override
     public VistaCarritoTotalesContenidoDTOId eliminarProductoDelCarrito(Long idProducto) {
+        log.info("Eliminando producto con ID: {} del carrito.", idProducto);
         // Comprobamos primero que el producto exista
         productoRepository.findById(idProducto)
                 .orElseThrow(() -> new ProductoNotFoundException("Producto deseado no encontrado"));
@@ -213,7 +219,7 @@ public class CarritoServiceImpl implements CarritoService {
     @Transactional
     @Override
     public VistaCarritoTotalesContenidoDTOId vaciarCarrito() {
-
+        log.info("Vaciando carrito de compras del usuario.");
         // Obtenemos usuario autenticado desde el contexto de seguridad de Spring Security
         Usuario usuario = obtenerUsuarioAutenticado();
 

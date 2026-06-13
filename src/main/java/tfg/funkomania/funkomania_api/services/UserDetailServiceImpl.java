@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
 import tfg.funkomania.funkomania_api.persistence.repositories.IUsuarioRepository;
 
@@ -24,6 +25,7 @@ import java.util.List;
  * @since 0.1.0
  */
 @Service
+@Slf4j
 public class UserDetailServiceImpl implements UserDetailsService {
 
     /** Repositorio de usuarios para acceder a la información de los usuarios en la base de datos. */
@@ -44,7 +46,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     @NullMarked
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
+        log.info("Cargando detalles de usuario para: {}.", username);
         // Obtener el usuario de la base de datos, si no lanzar excepción.
         Usuario usuario = usuarioRepository.findUsuarioByEmail(username).orElseThrow(
                 () -> new UsernameNotFoundException("Usuario con email "+username+" no encontrado en el sistema.")

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.constraints.Size;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import java.util.List;
 @RequestMapping("/admin/usuarios")
 @Validated
 @Tag(name = "[ADMIN] Gestor de Usuarios", description = "Endpoints para obtener todos los datos de los usuarios registrados en el sistema. Solo accesible para administradores.")
+@Slf4j
 public class UsuarioAdminController {
     /** Servicio de usuario que contiene la lógica de negocio de todas las operaciones */
     private final UsuarioServiceImpl usuarioService;
@@ -61,6 +63,7 @@ public class UsuarioAdminController {
             @Parameter(description = "Email del usuario para filtrar por coincidencia parcial (opcional)", example = "Juan")
             @Size(max = 255)
             @RequestParam(required = false) String search) {
+        log.info("Obteniendo listado de usuarios por administrador.");
         return ResponseEntity.ok(usuarioService.obtenerTodosLosUsuarios(search));
     }
 }

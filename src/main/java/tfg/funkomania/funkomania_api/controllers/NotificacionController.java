@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/usuario/notificaciones")
 @Tag(name = "Gestor de Notificaciones", description = "Endpoints para gestionar las notificaciones de los usuarios, incluyendo la visualización y actualización del estado de las notificaciones.")
+@Slf4j
 public class NotificacionController {
 
     /** Servicio de notificaciones */
@@ -71,6 +73,7 @@ public class NotificacionController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/")
     public ResponseEntity<List<VistaNotificacionUsuarioDTOId>> obtenerTodasLasNotificacionesDelCliente () {
+        log.info("Obteniendo todas las notificaciones del usuario.");
         return ResponseEntity.ok(notificacionService.obtenerTodasLasNotificacionesDelUsuario());
     }
 
@@ -97,6 +100,7 @@ public class NotificacionController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/{idNotificacion}/leer")
     public ResponseEntity<Void> leerNotificacion (@PathVariable Long idNotificacion) {
+        log.info("Marcando notificación con ID: {} como leída.", idNotificacion);
         notificacionService.leerNotificacion(idNotificacion);
         return ResponseEntity.ok().build();
     }

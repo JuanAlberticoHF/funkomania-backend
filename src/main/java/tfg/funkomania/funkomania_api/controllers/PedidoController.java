@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -36,6 +37,7 @@ import java.util.List;
 @RequestMapping("/")
 @Validated
 @Tag(name = "Gestor Pedidos", description = "Endpoints relacionados con la gestión de pedidos de los usuarios.")
+@Slf4j
 public class PedidoController {
 
     /** Servicio para gestionar las operaciones relacionadas con los pedidos. */
@@ -88,6 +90,7 @@ public class PedidoController {
                             )
                     ))
             @RequestBody CrearPedidoRequestDTO datosCrearPedido) {
+        log.info("Creando pedido desde el carrito.");
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.crearPedidoDesdeCarrito(datosCrearPedido));
     }
 
@@ -113,6 +116,7 @@ public class PedidoController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/usuario/pedidos")
     public ResponseEntity<List<VistaHistorialPedidosUsuarioDTOId>> obtenerPedidosUsuario() {
+        log.info("Obteniendo historial de pedidos del usuario.");
         return ResponseEntity.ok(pedidoService.obtenerPedidosUsuario());
     }
 
@@ -140,6 +144,7 @@ public class PedidoController {
     public ResponseEntity<PedidoCompletoDTOId> obtenerPedidosUsuario(
             @Parameter(description = "ID del pedido a obtener")
             @Positive @PathVariable Long idPedido) {
+        log.info("Obteniendo detalles del pedido con ID: {}.", idPedido);
         return ResponseEntity.ok(pedidoService.obtenerPedidoUsuarioPorId(idPedido));
     }
 }

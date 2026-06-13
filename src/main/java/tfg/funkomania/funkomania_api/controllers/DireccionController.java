@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.Valid;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/usuario/direcciones")
 @Tag(name = "Gestor de Direcciones", description = "Endpoints para gestionar las direcciones del usuario autenticado, incluyendo la creación, actualización y activación de direcciones.")
+@Slf4j
 public class DireccionController {
     /** Servicio de direcciones que contiene la lógica de negocio de todas las operaciones */
     private final DireccionServiceImpl direccionService;
@@ -77,6 +79,7 @@ public class DireccionController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/")
     public ResponseEntity<List<DireccionDTOId>> getAllDirecciones() {
+        log.info("Obteniendo direcciones del usuario autenticado.");
         return ResponseEntity.ok(direccionService.getDirecciones());
     }
 
@@ -122,6 +125,7 @@ public class DireccionController {
                     )
             ))
             @Valid @RequestBody DireccionDTO direccionDTO) {
+        log.info("Registrando nueva dirección para el usuario.");
         direccionService.addDireccion(direccionDTO);
         return ResponseEntity.ok().build();
     }
@@ -170,6 +174,7 @@ public class DireccionController {
                             )
                     ))
             @Valid @RequestBody DireccionDTO direccionDTO) {
+        log.info("Actualizando dirección con ID: {}.", idDireccion);
         direccionService.updateDireccion(idDireccion, direccionDTO);
         return ResponseEntity.ok().build();
     }
@@ -199,6 +204,7 @@ public class DireccionController {
                     schema = @Schema(type = "integer", format = "int64", minimum = "1"),
                     examples = @ExampleObject(value = "1"))
             @PathVariable Long idDireccion) {
+        log.info("Activando dirección con ID: {}.", idDireccion);
         direccionService.activarDireccion(idDireccion);
         return ResponseEntity.ok().build();
     }

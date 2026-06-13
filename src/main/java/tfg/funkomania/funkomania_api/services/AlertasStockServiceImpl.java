@@ -1,6 +1,7 @@
 package tfg.funkomania.funkomania_api.services;
 
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 import tfg.funkomania.funkomania_api.persistence.entities.VistaAdminAlertasStockDTOId;
 import tfg.funkomania.funkomania_api.persistence.repositories.IVistaAdminAlertasStockRepository;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * @since 0.7.0
  */
 @Service
+@Slf4j
 public class AlertasStockServiceImpl implements AlertasStockService {
 
     /** Repositorio para acceder a los datos de las alertas de stock. */
@@ -25,6 +27,7 @@ public class AlertasStockServiceImpl implements AlertasStockService {
 
     @Override
     public List<VistaAdminAlertasStockDTOId> obtenerAlertasStock() {
+        log.info("Obteniendo alertas de stock en servicio.");
         // Obtener todas las alertas de stock desde el repositorio y mapearlas a DTOs
         return vistaAdminAlertasStockRepository.findAll().stream()
                 .map(VistaAdminAlertasStockDTOId::new).toList();

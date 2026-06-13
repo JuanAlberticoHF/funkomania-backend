@@ -3,6 +3,7 @@ package tfg.funkomania.funkomania_api.services;
 import jakarta.persistence.EntityManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import tfg.funkomania.funkomania_api.dtos.direccion_dtos.DireccionDTO;
 import tfg.funkomania.funkomania_api.dtos.direccion_dtos.DireccionDTOId;
@@ -26,6 +27,7 @@ import java.util.List;
  * @since 0.5.0
  */
 @Service
+@Slf4j
 public class DireccionServiceImpl implements DireccionService {
 
     /** Repositorio de direcciones. */
@@ -47,6 +49,7 @@ public class DireccionServiceImpl implements DireccionService {
 
     @Override
     public List<DireccionDTOId> getDirecciones() {
+        log.info("Obteniendo direcciones del usuario.");
         // Obtenemos el email del usuario autenticado desde el contexto de seguridad de Spring Security
         final String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -66,6 +69,7 @@ public class DireccionServiceImpl implements DireccionService {
     @Transactional
     @Override
     public void addDireccion(DireccionDTO direccionDTO) {
+        log.info("Añadiendo nueva dirección para el usuario.");
         // Obtenemos el email del usuario autenticado desde el contexto de seguridad de Spring Security
         final String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -95,6 +99,7 @@ public class DireccionServiceImpl implements DireccionService {
 
     @Override
     public void updateDireccion(Long idDireccion, DireccionDTO direccionDTO) {
+        log.info("Actualizando dirección con ID: {}.", idDireccion);
         // Obtenemos la dirección desde la base de datos
         Direccion direccion = direccionRepository.findById(idDireccion)
                 .orElseThrow(() -> new DireccionNotFoundException(
@@ -118,6 +123,7 @@ public class DireccionServiceImpl implements DireccionService {
     @Transactional()
     @Override
     public void activarDireccion(Long idDireccion) {
+        log.info("Activando dirección con ID: {}.", idDireccion);
         // Obtenemos la dirección desde la base de datos para validar que existe
         if (!direccionRepository.existsDireccionById(idDireccion))
             throw new DireccionNotFoundException("No se encontró una dirección con el id: " + idDireccion);

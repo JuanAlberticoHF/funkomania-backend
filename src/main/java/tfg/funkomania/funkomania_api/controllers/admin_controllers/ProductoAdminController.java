@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/productos")
 @Tag(name = "[ADMIN] Gestor de Productos", description = "Endpoints para gestionar los productos disponibles en el sistema.")
+@Slf4j
 public class ProductoAdminController {
 
     /** Servicio productos */
@@ -68,6 +70,7 @@ public class ProductoAdminController {
             )
             @RequestParam(required = false) String search
     ) {
+        log.info("Obteniendo listado de productos para administrador.");
         return ResponseEntity.status(HttpStatus.OK).body(productoService.getAllProductos(search));
     }
 
@@ -119,6 +122,7 @@ public class ProductoAdminController {
                             )
                     ))
             @Valid @RequestBody ProductoDTOIdCategoria producto) {
+        log.info("Creando nuevo producto.");
         productoService.addProducto(producto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -176,6 +180,7 @@ public class ProductoAdminController {
                             )
                     ))
             @Valid @RequestBody ProductoDTOIdCategoria producto) {
+        log.info("Actualizando producto con ID: {} por administrador.", idProducto);
         productoService.updateProducto(idProducto, producto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -212,6 +217,7 @@ public class ProductoAdminController {
                     required = true
             )
             @Positive @PathVariable Long idProducto) {
+        log.info("Eliminando producto con ID: {} por administrador.", idProducto);
         productoService.deleteProducto(idProducto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

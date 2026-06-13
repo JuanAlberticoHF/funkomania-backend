@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.Valid;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ import tfg.funkomania.funkomania_api.services.UsuarioServiceImpl;
 @RequestMapping("/usuario")
 @Validated
 @Tag(name = "Gestion Perfil de Usuario", description = "Endpoints para gestionar el perfil del usuario autenticado, incluyendo la obtención de su perfil y la actualización de sus datos.")
+@Slf4j
 public class UsuarioController {
     /** Servicio de usuario que contiene la lógica de negocio de todas las operaciones */
     private final UsuarioServiceImpl usuarioService;
@@ -54,6 +56,7 @@ public class UsuarioController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/perfil")
     public ResponseEntity<VistaUsuarioPerfilClienteDTOId> obtenerPerfilClienteAutenticado() {
+        log.info("Obteniendo perfil del usuario autenticado.");
         return ResponseEntity.ok(usuarioService.obtenerPerfilClienteAutenticado());
     }
 
@@ -92,6 +95,7 @@ public class UsuarioController {
                     )
             )
             @Valid @RequestBody UsuarioUpdateRequestDTO usuarioUpdateRequestDTO) {
+        log.info("Actualizando perfil del usuario autenticado.");
         usuarioService.actualizarUsuarioAutenticado(usuarioUpdateRequestDTO);
         return ResponseEntity.ok().build();
     }
