@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(
                 title = "Funkomania API",
-                version = "0.8.4",
+                version = "0.8.5",
                 description = "Documentación de la API de Funkomania"
         )
 )
