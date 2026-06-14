@@ -488,7 +488,7 @@ WHERE idCarrito = v_idCarrito;
 
 -- Crear notificacion
 INSERT INTO Notificacion ( idUsuario, tipo, estado)
-VALUES ( p_idUsuario, 'COMPRA', 'PENDIENTE');
+VALUES ( p_idUsuario, 'COMPRA', 'ENVIADA');
 
 COMMIT;
 
