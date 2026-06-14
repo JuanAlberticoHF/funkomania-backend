@@ -205,9 +205,9 @@ SELECT
     (SELECT ROUND(IFNULL(SUM(fn_subtotal_linea(dp.precioUnitario, dp.cantidad, dp.iva)), 0), 2)
      FROM Detalle_Pedido dp
      JOIN Pedido p ON dp.idPedido = p.idPedido
-     WHERE p.idUsuario = u.idUsuario AND p.EstadoPago = 'pagado') AS TotalGastado
+     WHERE p.idUsuario = u.idUsuario AND p.EstadoPago = 'PAGADO') AS TotalGastado
 FROM Usuario u
-WHERE u.Activo = 1 AND u.Rol = 'cliente';
+WHERE u.Activo = 1 AND u.Rol = 'CLIENTE';
 
 -- ---------------Carrito------------------
 
@@ -232,7 +232,7 @@ SELECT
 FROM Detalle_Carrito dc
          JOIN Producto p ON dc.idProducto = p.idProducto
          JOIN Carrito c ON dc.idCarrito = c.idCarrito
-WHERE c.Estado = 'activo';
+WHERE c.Estado = 'ACTIVO';
 
 
 CREATE OR REPLACE VIEW VCarrito_Totales AS
@@ -379,7 +379,7 @@ SELECT
 
         WHEN n.tipo = 'PAGO_ERROR' THEN CONCAT('Hola, ', u.Nombre, '. Se ha producido un error al procesar tu pago. Revisa los datos e inténtalo de nuevo.')
 
-        WHEN n.tipo = 'WISHLIST_STOCK' THEN CONCAT('Hola, ', u.Nombre, '. Uno de los productos de tu lista de deseos vuelve a estar disponible. ¡Aprovecha antes de que se agote!')
+        WHEN n.tipo = 'LISTADESEOS_STOCK' THEN CONCAT('Hola, ', u.Nombre, '. Uno de los productos de tu lista de deseos vuelve a estar disponible. ¡Aprovecha antes de que se agote!')
 
         ELSE
             CONCAT('Hola, ', u.Nombre, '. Tienes una nueva notificación en tu cuenta.')
@@ -439,7 +439,7 @@ IF v_existe = 0 THEN
 END IF;
 
     -- Buscar carrito activo
-SELECT idCarrito INTO v_idCarrito FROM Carrito WHERE idUsuario = p_idUsuario AND Estado = 'activo'
+SELECT idCarrito INTO v_idCarrito FROM Carrito WHERE idUsuario = p_idUsuario AND Estado = 'ACTIVO'
     LIMIT 1;
 
 IF v_idCarrito IS NULL THEN
@@ -467,7 +467,7 @@ END IF;
 
     -- Crear pedido
 INSERT INTO Pedido ( CodigoPedido, idUsuario, idDireccion, idMetodoPago, Comentarios, EstadoPedido, EstadoPago)
-VALUES ( v_codigoPedido, p_idUsuario, p_idDireccion, p_idMetodoPago, p_comentarios, 'pendiente', 'pendiente');
+VALUES ( v_codigoPedido, p_idUsuario, p_idDireccion, p_idMetodoPago, p_comentarios, 'PENDIENTE', 'PENDIENTE');
 
 SET v_idPedido = LAST_INSERT_ID();
 
@@ -488,7 +488,7 @@ WHERE idCarrito = v_idCarrito;
 
 -- Crear notificacion
 INSERT INTO Notificacion ( idUsuario, tipo, estado)
-VALUES ( p_idUsuario, 'compra', 'pendiente');
+VALUES ( p_idUsuario, 'COMPRA', 'PENDIENTE');
 
 COMMIT;
 
@@ -526,23 +526,23 @@ SELECT idUsuario, EstadoPedido INTO v_idUsuario, v_estadoActual FROM Pedido
 WHERE idPedido = p_idPedido
     LIMIT 1;
 
-IF v_estadoActual = 'cancelado' THEN
+IF v_estadoActual = 'CANCELADO' THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'El pedido ya fue cancelado.';
 END IF;
 
-    IF v_estadoActual = 'entregado' THEN
+    IF v_estadoActual = 'ENTREGADO' THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'No se puede cancelar un pedido ya entregado.';
 END IF;
 
-    IF v_estadoActual = 'enviado' THEN
+    IF v_estadoActual = 'ENVIADO' THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'No se puede cancelar un pedido ya enviado.';
 END IF;
 
 UPDATE Pedido
-SET EstadoPedido = 'cancelado', UltimaModif = CURRENT_TIMESTAMP
+SET EstadoPedido = 'CANCELADO', UltimaModif = CURRENT_TIMESTAMP
 WHERE idPedido = p_idPedido;
 
 UPDATE Producto p
@@ -551,13 +551,13 @@ UPDATE Producto p
 WHERE dp.idPedido = p_idPedido;
 
 INSERT INTO Notificacion ( idUsuario, tipo, estado)
-VALUES (v_idUsuario, 'estado_pedido', 'pendiente');
+VALUES (v_idUsuario, 'ESTADO_PEDIDO', 'PENDIENTE');
 
 COMMIT;
 
 SELECT
     p_idPedido AS idPedidoCancelado,
-    'cancelado' AS NuevoEstado,
+    'CANCELADO' AS NuevoEstado,
     'Stock devuelto correctamente' AS Mensaje;
 END //
 
@@ -680,13 +680,13 @@ WHERE idUsuario = p_idUsuario
 -- Si no existe, crearlo
 IF v_idCarrito IS NULL THEN
         INSERT INTO Carrito ( idUsuario, Estado)
-        VALUES ( p_idUsuario, 'activo');
+        VALUES ( p_idUsuario, 'ACTIVO');
 
         SET v_idCarrito = LAST_INSERT_ID();
 ELSE
         -- Si existe con estado abandonado - activarlo
 UPDATE Carrito
-SET Estado = 'activo', FechaActualizacion = CURRENT_TIMESTAMP
+SET Estado = 'ACTIVO', FechaActualizacion = CURRENT_TIMESTAMP
 WHERE idCarrito = v_idCarrito;
 END IF;
 
