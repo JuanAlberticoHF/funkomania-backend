@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tfg.funkomania.funkomania_api.dtos.security_dtos.LoginRequest;
 import tfg.funkomania.funkomania_api.dtos.security_dtos.TokenResponse;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioNotFoundException;
 import tfg.funkomania.funkomania_api.persistence.enums.RoleEnum;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioAlreadyExistsException;
@@ -24,7 +25,7 @@ import java.time.LocalDateTime;
  * <p>Implementa la anotación @Slf4j para habilitar el registro de eventos y errores en el servicio.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
+ * @version 1.1.2
  * @since 0.1.0
  */
 @Service
@@ -107,7 +108,7 @@ public class AuthServiceImpl implements AuthService{
 
         // Obtener el usuario autenticado
         Usuario usuario = IUsuarioRepository.findUsuarioByEmail(loginRequest.username())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + loginRequest.username()));
+                .orElseThrow(() -> new UsuarioNotFoundException("Usuario no encontrado con email: " + loginRequest.username()));
 
         // Generar el token JWT
         String tokenJWT = jwtUtils.generateAccessToken(usuario.getEmail());
@@ -124,6 +125,6 @@ public class AuthServiceImpl implements AuthService{
         IUsuarioRepository.save(usuario);
 
         // Devolver el token y los datos del usuario
-        return new TokenResponse(tokenJWT, usuario.getEmail(), usuario.getNombre());
+        return new TokenResponse(tokenJWT, usuario.getEmail(), usuario.getNombre(), usuario.getRol());
     }
 }
