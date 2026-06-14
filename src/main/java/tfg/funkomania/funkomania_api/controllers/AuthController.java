@@ -32,7 +32,7 @@ import tfg.funkomania.funkomania_api.services.NotificacionServiceImpl;
  * <p>Proporciona endpoints para el registro de un usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.3.1
+ * @version 0.3.2
  * @since 0.1.0
  */
 @RestController
@@ -109,7 +109,8 @@ public class AuthController {
                                     {
                                         "token": "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
                                         "username": "Funkomania@gmail.com",
-                                        "name": "Funkomania"
+                                        "name": "Funkomania",
+                                        "role": "CLIENTE"
                                     }
                                     """
                     )
