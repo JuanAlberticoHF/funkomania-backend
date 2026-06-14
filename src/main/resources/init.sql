@@ -767,7 +767,8 @@ INSERT INTO Notificacion (idUsuario, tipo, estado) VALUES
 (1, 'REGISTRO', 'ENVIADA'),
 (1, 'BIENVENIDA', 'ENVIADA'),
 (2, 'REGISTRO', 'ENVIADA'),
-(2, 'BIENVENIDA', 'ENVIADA');
+(2, 'BIENVENIDA', 'ENVIADA'),
+(3, 'REGISTRO', 'ENVIADA');
 
 -- Insertar métodos de pago
 INSERT INTO Metodo_Pago (Nombre, Activo) VALUES
