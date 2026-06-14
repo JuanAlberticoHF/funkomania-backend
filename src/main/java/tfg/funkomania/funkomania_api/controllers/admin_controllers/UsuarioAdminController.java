@@ -3,6 +3,7 @@ package tfg.funkomania.funkomania_api.controllers.admin_controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -30,7 +31,7 @@ import java.util.List;
  * <p>Proporciona endpoints obtener todos los usuarios registrados y sus direcciones.
  *
  * @author JuanAlbeticoHF
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.6.0
  */
 @RestController
@@ -80,7 +81,25 @@ public class UsuarioAdminController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Listado de direcciones del usuario obtenido exitosamente", content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = DireccionDTOId.class)
+                    schema = @Schema(implementation = DireccionDTOId.class),
+                    examples = @ExampleObject(
+                            value = """
+                                    [
+                                        {
+                                            "idDireccion": 1,
+                                            "calle": "Calle Funkomania",
+                                            "numero": "2",
+                                            "piso": "",
+                                            "puerta": "",
+                                            "ciudad": "Funkopolis",
+                                            "municipio": "Funkotown",
+                                            "provincia": "Funkovincia",
+                                            "codigoPostal": "54321",
+                                            "activo": true
+                                        }
+                                    ]
+                                    """
+                    )
             )),
             @ApiResponse(responseCode = "401", description = "No autorizado - el usuario no está autenticado", content = @Content(
                     mediaType = "application/json",
