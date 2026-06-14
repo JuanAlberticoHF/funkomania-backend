@@ -23,12 +23,12 @@ import java.util.List;
  * relacionadas con las direcciones.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.1.0
  * @since 0.5.0
  */
 @Service
 @Slf4j
-public class DireccionServiceImpl implements DireccionService {
+public class DireccionServiceImpl implements DireccionService, DireccionAdminService {
 
     /** Repositorio de direcciones. */
     private final IDireccionRepository direccionRepository;
@@ -142,5 +142,17 @@ public class DireccionServiceImpl implements DireccionService {
 
         // Activamos la dirección del usuario autenticado utilizando el identificador del usuario y el identificador de la dirección
         direccionRepository.activarDireccion(idDireccion, idUsuario);
+    }
+
+    @Override
+    public List<DireccionDTOId> getDireccionesByUsuarioId(Long idUsuario) {
+        log.info("Obteniendo direcciones del usuario con ID: {}.", idUsuario);
+
+        // Validamos que el usuario exista antes de obtener sus direcciones
+        if (!usuarioRepository.existsById(idUsuario))
+            throw new UsuarioNotFoundException("No se encontró un usuario con el id: " + idUsuario);
+
+        // Obtenemos las direcciones del usuario autenticado utilizando el identificador del usuario
+        return direccionRepository.findDireccionsByUsuario_IdUsuario(idUsuario).stream().map(DireccionDTOId::new).toList();
     }
 }

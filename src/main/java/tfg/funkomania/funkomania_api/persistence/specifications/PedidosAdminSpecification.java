@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * Clase de especificación para construir consultas dinámicas sobre la entidad {@link VistaPedidosAdmin}
  *
  * @author JuanAlbeticoHF
- * @version 1.0.0
+ * @version 1.0.1
  * @since 0.7.0
  */
 public class PedidosAdminSpecification {
@@ -37,7 +37,7 @@ public class PedidosAdminSpecification {
      * @return Una especificación que filtra por ID de pedido
      */
     public static Specification<VistaPedidosAdmin> busquedaPorIdPedido(Long idPedido) {
-        return (root, query, criteriaBuilder) -> idPedido == null ? null : criteriaBuilder.equal(root.get("idPedido"), idPedido);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("idPedido"), idPedido);
     }
 
     /**
@@ -46,7 +46,7 @@ public class PedidosAdminSpecification {
      * @return Una especificación que filtra por código de pedido
      */
     public static Specification<VistaPedidosAdmin> busquedaPorCodigoPedido(String codigoPedido) {
-        return (root, query, criteriaBuilder) -> (codigoPedido == null || codigoPedido.isEmpty()) ? null : criteriaBuilder.equal(root.get("codigoPedido"), codigoPedido);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("codigoPedido"), codigoPedido);
     }
 
     /**
@@ -55,7 +55,7 @@ public class PedidosAdminSpecification {
      * @return Una especificación que filtra por fecha de pedido
      */
     public static Specification<VistaPedidosAdmin> busquedaPorFechaPedido(LocalDateTime fechaPedido) {
-        return (root, query, criteriaBuilder) -> fechaPedido == null ? null : criteriaBuilder.equal(root.get("fechaPedido"), fechaPedido);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("fechaPedido"), fechaPedido);
     }
 
     /**
@@ -64,7 +64,7 @@ public class PedidosAdminSpecification {
      * @return Una especificación que filtra por estado de pedido
      */
     public static Specification<VistaPedidosAdmin> busquedaPorEstadoPedido(EstadoPedidoEnum estadoPedido) {
-        return (root, query, criteriaBuilder) -> estadoPedido == null ? null : criteriaBuilder.equal(root.get("estadoPedido"), estadoPedido);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("estadoPedido"), estadoPedido);
     }
 
     /**
@@ -73,7 +73,7 @@ public class PedidosAdminSpecification {
      * @return Una especificación que filtra por estado de pago
      */
     public static Specification<VistaPedidosAdmin> busquedaPorEstadoPago(EstadoPagoEnum estadoPago) {
-        return (root, query, criteriaBuilder) -> estadoPago == null ? null : criteriaBuilder.equal(root.get("estadoPago"), estadoPago);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("estadoPago"), estadoPago);
     }
 
     /**
@@ -82,6 +82,6 @@ public class PedidosAdminSpecification {
      * @return Una especificación que filtra por metodo de pago
      */
     public static Specification<VistaPedidosAdmin> busquedaPorMetodoPago(String metodoPago) {
-        return (root, query, criteriaBuilder) -> (metodoPago == null || metodoPago.isEmpty()) ? null : criteriaBuilder.like(criteriaBuilder.lower(root.get("metodoPago")), "%" + metodoPago.toLowerCase() + "%");
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(criteriaBuilder.lower(root.get("metodoPago")), "%" + metodoPago.toLowerCase() + "%");
     }
 }

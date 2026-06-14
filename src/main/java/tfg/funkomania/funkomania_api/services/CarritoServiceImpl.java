@@ -21,7 +21,7 @@ import java.util.List;
  * <p>Esta clase implementa la interfaz {@link CarritoService}.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.1
+ * @version 1.0.2
  * @since 0.7.0
  */
 @Service
@@ -141,7 +141,7 @@ public class CarritoServiceImpl implements CarritoService {
     public VistaCarritoTotalesContenidoDTOId actualizarCantidadProducto(Long idProducto, Integer cantidad) {
         log.info("Actualizando cantidad del producto con ID: {} en el carrito.", idProducto);
         // Comprobamos primero que el producto exista
-        productoRepository.findById(idProducto).orElseThrow(() -> new ProductoNotFoundException(
+        Producto producto = productoRepository.findById(idProducto).orElseThrow(() -> new ProductoNotFoundException(
                 "Producto deseado no encontrado"));
 
         // Obtenemos usuario autenticado desde el contexto de seguridad de Spring Security
@@ -158,21 +158,24 @@ public class CarritoServiceImpl implements CarritoService {
                 ).orElseThrow(() -> new ProductoNotFoundInCarritoException(
                         "El producto con id " + idProducto + " no se encuentra en el carrito del usuario"));
 
-        // Establecemos la nueva cantidad al producto.
-        detalleCarrito.setCantidad(cantidad);
+        // Si la cantidad a actualizar es mayor o igual que el stock que existe, no se actualiza el carrito.
+        if (producto.getStock() >= cantidad) {
+            // Establecemos la nueva cantidad al producto.
+            detalleCarrito.setCantidad(cantidad);
 
-        // Guardamos el detalle del carrito actualizado
-        detalleCarritoRepository.save(detalleCarrito);
+            // Guardamos el detalle del carrito actualizado
+            detalleCarritoRepository.save(detalleCarrito);
 
-        // Actualizamos la última fecha de modificación
-        carritoRepository.updateFechaActualizacionByIdCarrito(carritoUsuario.getIdCarrito());
+            // Actualizamos la última fecha de modificación
+            carritoRepository.updateFechaActualizacionByIdCarrito(carritoUsuario.getIdCarrito());
 
-        // Forzamos la ejecución de las operaciones pendientes en la base de datos para asegurar que los datos estén actualizados antes de obtener el carrito completo
-        entityManager.flush();
-        // Limpiamos el contexto de persistencia para evitar que se devuelvan datos obsoletos en la consulta del carrito completo.
-        entityManager.clear();
+            // Forzamos la ejecución de las operaciones pendientes en la base de datos para asegurar que los datos estén actualizados antes de obtener el carrito completo
+            entityManager.flush();
+            // Limpiamos el contexto de persistencia para evitar que se devuelvan datos obsoletos en la consulta del carrito completo.
+            entityManager.clear();
+        }
 
-        // Devolvemos el carrito completo del usuario con el producto actualizado
+        // Devolvemos el carrito completo del usuario con el producto actualizado o sin actualizar
         return obtenerCarritoCompletoDelUsuario(usuario.getIdUsuario(), carritoUsuario.getIdCarrito());
     }
 
