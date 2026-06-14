@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.naming.AuthenticationException;
-
 /**
  * <p>Manejador global de excepciones controladas de la API de Funkomania.</p>
  *
@@ -314,7 +312,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ProblemDetail handleException(AutenticacionFallidaException ex) {
         log.error("Excepción controlada: AutenticacionFallidaException - {}", ex.getMessage());
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
         problemDetail.setTitle("No se pudo autenticar el usuario");
         return problemDetail;
     }
