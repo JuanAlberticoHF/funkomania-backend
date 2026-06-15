@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  * <p>La entidad mapea tabla {@code DetallePedido} de la base de datos</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.1
+ * @version 1.0.2
  * @since 0.7.0
  */
 @Entity
@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 public class DetallePedido {
 
     @EmbeddedId
-    private DetallePedidoId id;
+    private DetallePedidoId id = new DetallePedidoId();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idPedido") // Extrae el ID del Producto y lo mete en id.idPedido
