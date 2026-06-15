@@ -12,7 +12,7 @@ import java.util.Optional;
  * Interfaz de repositorio para la entidad Usuario.
  *
  * @author JuanAlbeticoHF
- * @version 0.3.1
+ * @version 1.0.0
  * @since 0.1.0
  */
 public interface IUsuarioRepository extends JpaRepository<Usuario, Long>, JpaSpecificationExecutor<Usuario> {
