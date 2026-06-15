@@ -751,11 +751,10 @@ CREATE INDEX idx_notificacion_usuario_estado ON Notificacion(idUsuario, estado);
 -- --------------------------REGISTROS---------------------------
 -- Insertar usuarios de prueba
 INSERT INTO Usuario (email, passwordHash, Nombre, Apellido1, Apellido2, Telefono, FechaRegistro, UltimoLogin, Rol, Activo) VALUES
-('JuanAlberticoHF@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Juan Alberto',
- 'Hernandez', 'Fernandez', '123456789', '2026-06-04 18:41:12', '2026-06-04 18:41:13', 'ADMIN', 1),
-('Usuario@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Usuario',
- 'Normal', 'Apellido2', '987654321', '2026-06-04 18:41:12', '2026-06-04 18:41:13', 'CLIENTE', 1),
-('viktoriia@gmail.com', '$2a$10$Y/RpQn.rfnV0E6hUD.g3gOpiiE4kdZmhwCrWVPkHvLOhz6soOQqyu', 'Admin', NULL, NULL, NULL, '2026-06-14 10:58', NULL, 'ADMIN', 1);
+('juanalberticohf@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Juan Alberto','Hernandez', 'Fernandez', '123456789', '2026-06-04 18:41:12', '2026-06-04 18:41:13', 'ADMIN', 1),
+('usuario@gmail.com', '$2a$10$UHmTYSha7cOKReLUdKZEWOSewYrx7MfzcWSPJCY4aXERgKUmTzjL2', 'Usuario','Normal', 'Apellido2', '987654321', '2026-06-04 18:41:12', '2026-06-04 18:41:13', 'CLIENTE', 1),
+('viktoriia@gmail.com', '$2a$10$Y/RpQn.rfnV0E6hUD.g3gOpiiE4kdZmhwCrWVPkHvLOhz6soOQqyu', 'Admin', NULL, NULL, NULL, '2026-06-14 10:58', NULL, 'ADMIN', 1),
+('ivan@gmail.com', '$2a$10$YoFfwWZc4AbrQWqqBRoiNeUtUgVoQexcd9/a4F9SH7ZXZOSqWG4m6', 'Ivan', NULL, NULL, NULL, '2026-06-15 13:02', NULL, 'ADMIN', 1);
 
 -- Insertar direcciones
 INSERT INTO Direccion (idUsuario, Calle, Numero, Ciudad, Municipio, Provincia, CP, Activo) VALUES
@@ -768,7 +767,8 @@ INSERT INTO Notificacion (idUsuario, tipo, estado) VALUES
 (1, 'BIENVENIDA', 'ENVIADA'),
 (2, 'REGISTRO', 'ENVIADA'),
 (2, 'BIENVENIDA', 'ENVIADA'),
-(3, 'REGISTRO', 'ENVIADA');
+(3, 'REGISTRO', 'ENVIADA'),
+(4, 'REGISTRO', 'ENVIADA');
 
 -- Insertar métodos de pago
 INSERT INTO Metodo_Pago (Nombre, Activo) VALUES

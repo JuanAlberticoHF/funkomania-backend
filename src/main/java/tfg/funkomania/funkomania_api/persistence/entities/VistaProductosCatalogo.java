@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * <p>Entidad que representa una vista de productos en el catálogo de Funkomania.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.0.5
+ * @version 1.0.6
  * @since 0.2.0
  */
 @Entity
@@ -152,7 +152,6 @@ public class VistaProductosCatalogo {
     /**
      * Nombre de la categoría padre a la que pertenece el producto.
      */
-    @NotNull(message = "El nombre de la categoria padre del producto no puede ser nula.")
-    @Column(name = "NombreCategoriaPadre", nullable = false)
+    @Column(name = "NombreCategoriaPadre")
     private String nombreCategoriaPadre;
 }

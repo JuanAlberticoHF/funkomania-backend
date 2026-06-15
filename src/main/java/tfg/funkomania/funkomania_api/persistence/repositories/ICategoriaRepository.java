@@ -12,7 +12,7 @@ import java.util.Optional;
  * Interfaz de repositorio para la entidad Categoria.
  *
  * @author JuanAlbeticoHF
- * @version 0.4.0
+ * @version 1.0.0
  * @since 0.2.0
  */
 public interface ICategoriaRepository extends JpaRepository<Categoria,Long> {

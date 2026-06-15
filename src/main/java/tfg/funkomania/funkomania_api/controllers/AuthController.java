@@ -32,7 +32,7 @@ import tfg.funkomania.funkomania_api.services.NotificacionServiceImpl;
  * <p>Proporciona endpoints para el registro de un usuario.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.3.2
+ * @version 1.0.0
  * @since 0.1.0
  */
 @RestController
@@ -119,7 +119,7 @@ public class AuthController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),
-            @ApiResponse(responseCode = "403", description = "Credenciales incorrectas: El correo electrónico o la contraseña proporcionados son incorrectos. (BadCredentialsException o UsernameNotFoundException", content = @Content(
+            @ApiResponse(responseCode = "403", description = "Credenciales incorrectas o cuenta de usuario no registrada: El correo electrónico o la contraseña proporcionados son incorrectos. (BadCredentialsException o UsernameNotFoundException o AutenticacionFallidaException)", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ProblemDetail.class)
             )),

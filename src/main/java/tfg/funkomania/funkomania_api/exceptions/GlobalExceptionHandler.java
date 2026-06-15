@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  * utilizando el formato ProblemDetail.</p>
  *
  * @author JuanAlbeticoHF
- * @version 0.20.1
+ * @version 1.0.0
  * @since 0.1.0
  */
 @RestControllerAdvice
@@ -300,6 +300,20 @@ public class GlobalExceptionHandler {
         log.error("Excepción controlada: CancelacionPedidoException - {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("No se puede cancelar el pedido");
+        return problemDetail;
+    }
+
+    /**
+     * Maneja la excepción {@code AutenticacionFallidaException} que se lanza cuando el usuario intenta autenticarse con credenciales incorrectas.
+     * @param ex Excepción de tipo {@code AutenticacionFallidaException}.
+     * @return Un objeto ProblemDetails con el mensaje de error y un código de estado HTTP 403 (FORBIDDEN).
+     */
+    @ExceptionHandler(AutenticacionFallidaException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ProblemDetail handleException(AutenticacionFallidaException ex) {
+        log.error("Excepción controlada: AutenticacionFallidaException - {}", ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+        problemDetail.setTitle("No se pudo autenticar el usuario");
         return problemDetail;
     }
 }

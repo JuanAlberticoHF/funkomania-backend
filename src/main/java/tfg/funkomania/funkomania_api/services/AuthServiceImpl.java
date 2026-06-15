@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tfg.funkomania.funkomania_api.dtos.security_dtos.LoginRequest;
 import tfg.funkomania.funkomania_api.dtos.security_dtos.TokenResponse;
+import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.AutenticacionFallidaException;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.UsuarioNotFoundException;
 import tfg.funkomania.funkomania_api.persistence.enums.RoleEnum;
 import tfg.funkomania.funkomania_api.persistence.entities.Usuario;
@@ -25,7 +26,7 @@ import java.time.LocalDateTime;
  * <p>Implementa la anotación @Slf4j para habilitar el registro de eventos y errores en el servicio.</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.1.2
+ * @version 1.1.4
  * @since 0.1.0
  */
 @Service
@@ -102,13 +103,14 @@ public class AuthServiceImpl implements AuthService{
         } catch (AuthenticationException e) {
             log.error("Error de autenticación para el usuario: {}", loginRequest.username(), e);
             log.error(e.getMessage());
+            throw new AutenticacionFallidaException("Credenciales inválidas para el usuario: " + loginRequest.username());
         }
-
-        log.info("Autenticación exitosa para el usuario: {}", loginRequest.username());
 
         // Obtener el usuario autenticado
         Usuario usuario = IUsuarioRepository.findUsuarioByEmail(loginRequest.username())
-                .orElseThrow(() -> new UsuarioNotFoundException("Usuario no encontrado con email: " + loginRequest.username()));
+                .orElseThrow(() -> new UsuarioNotFoundException("El usuario con username '" + loginRequest.username() + "' no esta registrado en el sistema"));
+
+        log.info("Autenticación exitosa para el usuario: {}", loginRequest.username());
 
         // Generar el token JWT
         String tokenJWT = jwtUtils.generateAccessToken(usuario.getEmail());
