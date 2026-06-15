@@ -28,7 +28,7 @@ import tfg.funkomania.funkomania_api.utils.JwtUtils;
  * <p>Esta clase define la configuración de seguridad utilizando Spring Security y el password encoder</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.5.0
+ * @version 1.5.1
  * @since 0.1.0
  */
 @Configuration
@@ -69,15 +69,18 @@ public class SecurityConfig {
                 // Restricciones endpoints
                 .authorizeHttpRequests(auth -> auth
                         // Permite el acceso a los endpoints de autenticación sin necesidad de autenticación previa.
-                        .requestMatchers("/auth/**").permitAll()
+                        // - Endpoints de documentación
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        // - Endpoints de acceso libre
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/productos/**").permitAll()
                         .requestMatchers("/categorias/**").permitAll()
-                        .requestMatchers("/usuario/perfil").authenticated()
-                        .requestMatchers("/usuario/direcciones/**").authenticated()
-                        .requestMatchers("/usuario/notificaciones/**").authenticated()
-                        .requestMatchers("/usuario/lista-deseos/**").authenticated()
                         .requestMatchers("/metodos-pago/**").permitAll()
+                        // - Endpoints para usuarios autenticados
+                        .requestMatchers("/usuario/**").authenticated()
+                        .requestMatchers("/pedidos/crear-desde-pedido").authenticated()
+                        .requestMatchers("/carrito/**").authenticated()
+                        // - Endpoints para admin
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         // El acceso a los endpoints para cualquier otra solicitud necesita autenticación.
                         .anyRequest().authenticated()
