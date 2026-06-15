@@ -3,24 +3,21 @@ package tfg.funkomania.funkomania_api.controllers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
+import jakarta.persistence.EntityManager;
 import tfg.funkomania.funkomania_api.persistence.repositories.ICategoriaRepository;
+import tfg.funkomania.funkomania_api.persistence.repositories.IProductoRepository;
+import tfg.funkomania.funkomania_api.persistence.entities.Categoria;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Pruebas de integración para el controlador de categorías.
- *
- * <p>Ejecuta peticiones HTTP simuladas con MockMvc y valida respuestas JSON y códigos HTTP
- * contra el contexto real de Spring Boot.</p>
- *
- * @version 1.0.0
- * @since 0.2.0
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,31 +29,70 @@ class CategoriaControllerIntegrationTest {
     @Autowired
     private ICategoriaRepository categoriaRepository;
 
+    @Autowired
+    private IProductoRepository productoRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
     @BeforeEach
     void limpiarBaseDeDatos() {
+        productoRepository.deleteAll();
         categoriaRepository.deleteAll();
+        entityManager.clear();
     }
 
-    // Debe retornar una lista de todas las categorías disponibles en el sistema, incluyendo su categoría padre si la tienen.
     @Test
-    void obtenerTodasLasCategorias_DeberiaDevolverTodasLasCategorias() {
-        // Crear categoria padre y categoria hija
-        tfg.funkomania.funkomania_api.persistence.entities.Categoria padre = tfg.funkomania.funkomania_api.persistence.entities.Categoria.builder()
-                .nombre("Padre")
+    void obtenerTodasLasCategorias_DeberiaDevolverListaCuandoExistenDatos() {
+        Categoria padre = Categoria.builder()
+                .nombre("Electrónica")
                 .build();
         padre = categoriaRepository.save(padre);
 
-        tfg.funkomania.funkomania_api.persistence.entities.Categoria hija = tfg.funkomania.funkomania_api.persistence.entities.Categoria.builder()
-                .nombre("Hija")
+        Categoria hija = Categoria.builder()
+                .nombre("Móviles")
                 .categoriaPadre(padre)
                 .build();
         categoriaRepository.save(hija);
 
         try {
-            mockMvc.perform(get("/categorias/").contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+            mockMvc.perform(get("/categorias/")
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].nombre").isNotEmpty())
-                    .andExpect(jsonPath("$[1].nombre").isNotEmpty());
+                    .andExpect(jsonPath("$.length()").value(2))
+                    .andExpect(jsonPath("$[?(@.nombre == 'Móviles')].categoriaPadre.nombre").value("Electrónica"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void obtenerTodasLasCategorias_DeberiaDevolverListaVaciaCuandoNoHayDatos() {
+        try {
+            mockMvc.perform(get("/categorias/")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isEmpty());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void obtenerTodasLasCategorias_DeberiaDevolverCategoriaSimple() {
+        Categoria cat = Categoria.builder()
+                .nombre("Categoria Simple")
+                .build();
+        categoriaRepository.save(cat);
+        entityManager.clear();
+
+        try {
+            mockMvc.perform(get("/categorias/")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1))
+                    .andExpect(jsonPath("$[0].nombre").value("Categoria Simple"))
+                    .andExpect(jsonPath("$[0].categoriaPadre").isEmpty());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

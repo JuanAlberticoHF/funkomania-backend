@@ -1,35 +1,28 @@
- package tfg.funkomania.funkomania_api.exceptions;
+package tfg.funkomania.funkomania_api.exceptions;
 
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.MethodParameter;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.core.MethodParameter;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Pruebas unitarias para CommonExceptionHandler.
- *
- * @version 1.0.1
- * @since 0.1.0
- */
 class CommonExceptionHandlerTest {
 
-    /**
-     * Debe devolver un ProblemDetail para argumentos no validos.
-     */
+    private final CommonExceptionHandler handler = new CommonExceptionHandler();
+
     @Test
     void methodArgumentNotValidException_deberiaDevolverProblemDetail() throws Exception {
-        CommonExceptionHandler handler = new CommonExceptionHandler();
         MethodParameter parameter = obtenerParametroMetodo();
         BindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "target");
         MethodArgumentNotValidException exception = new MethodArgumentNotValidException(parameter, bindingResult);
@@ -40,12 +33,8 @@ class CommonExceptionHandlerTest {
         assertThat(problemDetail.getTitle()).isEqualTo("Argumento no válido");
     }
 
-    /**
-     * Debe devolver un ProblemDetail para tipo de argumento incorrecto.
-     */
     @Test
     void methodArgumentTypeMismatchException_deberiaDevolverProblemDetail() throws Exception {
-        CommonExceptionHandler handler = new CommonExceptionHandler();
         MethodParameter parameter = obtenerParametroMetodo();
         MethodArgumentTypeMismatchException exception = new MethodArgumentTypeMismatchException(
                 "abc",
@@ -61,12 +50,8 @@ class CommonExceptionHandlerTest {
         assertThat(problemDetail.getTitle()).isEqualTo("Error de tipo de argumento");
     }
 
-    /**
-     * Debe devolver un ProblemDetail para errores de validacion.
-     */
     @Test
     void constraintViolationException_deberiaDevolverProblemDetail() {
-        CommonExceptionHandler handler = new CommonExceptionHandler();
         ConstraintViolationException exception = new ConstraintViolationException(
                 "validation error",
                 Collections.emptySet()
@@ -78,18 +63,34 @@ class CommonExceptionHandlerTest {
         assertThat(problemDetail.getTitle()).isEqualTo("Error de validación");
     }
 
-    /**
-     * Debe devolver un ProblemDetail para errores de integridad de datos.
-     */
     @Test
     void dataIntegrityViolationException_deberiaDevolverProblemDetail() {
-        CommonExceptionHandler handler = new CommonExceptionHandler();
         DataIntegrityViolationException exception = new DataIntegrityViolationException("db error");
 
         ProblemDetail problemDetail = handler.dataIntegrityViolationException(exception);
 
         assertThat(problemDetail.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(problemDetail.getTitle()).isEqualTo("Error de integridad de datos");
+    }
+
+    @Test
+    void invalidDataAccessResourceUsageException_deberiaDevolverProblemDetail() {
+        InvalidDataAccessResourceUsageException exception = new InvalidDataAccessResourceUsageException("db error");
+
+        ProblemDetail problemDetail = handler.invalidDataAccessResourceUsageException(exception);
+
+        assertThat(problemDetail.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(problemDetail.getTitle()).isEqualTo("Error de uso de recurso de acceso a datos");
+    }
+
+    @Test
+    void illegalArgumentException_deberiaDevolverProblemDetail() {
+        IllegalArgumentException exception = new IllegalArgumentException("arg error");
+
+        ProblemDetail problemDetail = handler.illegalArgumentException(exception);
+
+        assertThat(problemDetail.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(problemDetail.getTitle()).isEqualTo("Argumento ilegal");
     }
 
     private MethodParameter obtenerParametroMetodo() throws Exception {

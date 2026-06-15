@@ -49,7 +49,7 @@ public class PedidoController {
 
     @Operation(summary = "Crear pedido base al contenido del carrito", description = "Crea un nuevo pedido a partir del carrito de compras del usuario autenticado. El pedido se genera utilizando la información del carrito, incluyendo los productos seleccionados y sus cantidades.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pedido creado satisfactoriamente", content = @Content(
+            @ApiResponse(responseCode = "201", description = "Pedido creado satisfactoriamente", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = CrearPedidoResponseDTO.class)
             )),

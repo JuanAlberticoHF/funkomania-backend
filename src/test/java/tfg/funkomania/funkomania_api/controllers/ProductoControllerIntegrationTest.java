@@ -2,42 +2,28 @@ package tfg.funkomania.funkomania_api.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import jakarta.persistence.EntityManager;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
-import tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId;
 import tfg.funkomania.funkomania_api.persistence.entities.Categoria;
 import tfg.funkomania.funkomania_api.persistence.entities.Producto;
 import tfg.funkomania.funkomania_api.persistence.repositories.ICategoriaRepository;
 import tfg.funkomania.funkomania_api.persistence.repositories.IProductoRepository;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import tfg.funkomania.funkomania_api.services.ProductoServiceImpl;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Pruebas de integración para el controlador de productos.
- *
- * <p>Ejecuta peticiones HTTP simuladas con MockMvc y valida respuestas JSON y códigos HTTP
- * contra el contexto real de Spring Boot.</p>
- *
- * @version 1.0.0
- * @since 0.2.0
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -57,49 +43,44 @@ class ProductoControllerIntegrationTest {
 
     @BeforeEach
     void limpiarBaseDeDatos() {
-        System.out.println("Limpiando base de datos antes de cada prueba...");
         productoRepository.deleteAll();
         categoriaRepository.deleteAll();
+        entityManager.clear();
     }
 
-    /**
-     * Debe devolver el catalogo de productos sin aplicar filtros
-     */
-    @Test
-    void obtenerCatalogoSinFiltros_deberiaDevolverCatalogoCompleto() {
-        Categoria categoria = Categoria.builder()
-                .nombre("Cat1")
+    private Long crearCategoria(String nombre) {
+        Categoria cat = Categoria.builder().nombre(nombre).build();
+        cat = categoriaRepository.saveAndFlush(cat);
+        return cat.getId();
+    }
+
+    private void crearProducto(String nombre, BigDecimal precio, Integer stock, boolean activo, boolean oferta, BigDecimal descuento, LocalDateTime fechaFin, Long catId) {
+        Producto p = Producto.builder()
+                .nombre(nombre)
+                .precio(precio)
+                .stock(stock)
+                .iva(BigDecimal.valueOf(21))
+                .activo(activo)
+                .enOferta(oferta)
+                .descuento(descuento)
+                .fechaFinOferta(fechaFin)
+                .categoria(categoriaRepository.findById(catId).orElseThrow())
                 .build();
-        categoria = categoriaRepository.save(categoria);
+        productoRepository.saveAndFlush(p);
+    }
 
-        List<Producto> productos = new ArrayList<>();
-        productos.add(Producto.builder()
-                .nombre("P1")
-                .precio(BigDecimal.valueOf(10))
-                .stock(5)
-                .iva(BigDecimal.valueOf(21))
-                .activo(true)
-                .enOferta(false)
-                .descuento(BigDecimal.ZERO)
-                .categoria(categoria)
-                .build());
-        productos.add(Producto.builder()
-                .nombre("P2")
-                .precio(BigDecimal.valueOf(20))
-                .stock(3)
-                .iva(BigDecimal.valueOf(21))
-                .activo(true)
-                .enOferta(false)
-                .descuento(BigDecimal.ZERO)
-                .categoria(categoria)
-                .build());
-
-        // saveAllAndFlush obliga a Hibernate a sincronizar inmediatamente la memoria con la base de datos, haciendo que cualquier consulta posterior (como la del controlador) encuentre los registros.
-        productoRepository.saveAllAndFlush(productos);
-        // Asegurar que la entidad manager limpia el contexto para forzar lecturas desde la BD (y que la vista refleje los cambios)
+    @Test
+    void getAllProductos_SinFiltros_DeberiaDevolverTodosLosActivos() {
+        Long catId = crearCategoria("Cat1");
+        crearProducto("Prod1", BigDecimal.valueOf(10), 5, true, false, BigDecimal.ZERO, null, catId);
+        crearProducto("Prod2", BigDecimal.valueOf(20), 3, true, false, BigDecimal.ZERO, null, catId);
+        crearProducto("ProdInactivo", BigDecimal.valueOf(30), 2, false, false, BigDecimal.ZERO, null, catId);
+        
         entityManager.clear();
+
         try {
-            mockMvc.perform(get("/productos/").contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+            mockMvc.perform(get("/productos/")
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.totalElements").value(2));
         } catch (Exception e) {
@@ -107,459 +88,163 @@ class ProductoControllerIntegrationTest {
         }
     }
 
-    /**
-     * Debe devolver el catalogo de productos con todos los filtros
-     */
     @Test
-    void obtenerCatalogoConFiltros_deberiaDevolverCatalogoFiltrado() {
-        tfg.funkomania.funkomania_api.persistence.entities.Categoria categoria = tfg.funkomania.funkomania_api.persistence.entities.Categoria.builder()
-                .nombre("CatFilter")
-                .build();
-        categoria = categoriaRepository.save(categoria);
-
-        productoRepository.saveAndFlush(Producto.builder()
-                .nombre("AlphaProduct")
-                .precio(BigDecimal.valueOf(11))
-                .stock(2)
-                .iva(BigDecimal.valueOf(21))
-                .activo(true)
-                .enOferta(false)
-                .descuento(BigDecimal.ZERO)
-                .categoria(categoria)
-                .build());
-
-        productoRepository.saveAndFlush(Producto.builder()
-                .nombre("BetaProduct")
-                .precio(BigDecimal.valueOf(22))
-                .stock(3)
-                .iva(BigDecimal.valueOf(21))
-                .activo(true)
-                .enOferta(false)
-                .descuento(BigDecimal.ZERO)
-                .categoria(categoria)
-                .build());
-
-        // Forzar que el contexto JPA se limpie y que las lecturas a la vista se realicen desde la BD
+    void getAllProductos_ConFiltros_DeberiaFiltrarCorrectamente() {
+        Long cat1 = crearCategoria("Cat1");
+        Long cat2 = crearCategoria("Cat2");
+        
+        crearProducto("Alpha", BigDecimal.valueOf(10), 5, true, false, BigDecimal.ZERO, null, cat1);
+        crearProducto("Beta", BigDecimal.valueOf(50), 5, true, false, BigDecimal.ZERO, null, cat1);
+        crearProducto("Gamma", BigDecimal.valueOf(100), 5, true, false, BigDecimal.ZERO, null, cat2);
+        
         entityManager.clear();
 
         try {
             mockMvc.perform(get("/productos/")
                             .param("search", "Alpha")
-                            .contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.totalElements").value(1));
+                    .andExpect(jsonPath("$.totalElements").value(1))
+                    .andExpect(jsonPath("$.content[0].nombre").value("Alpha"));
+
+            mockMvc.perform(get("/productos/")
+                            .param("idCategoria", cat2.toString())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.totalElements").value(1))
+                    .andExpect(jsonPath("$.content[0].nombre").value("Gamma"));
+
+            mockMvc.perform(get("/productos/")
+                            .param("precioMin", "40")
+                            .param("precioMax", "60")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.totalElements").value(1))
+                    .andExpect(jsonPath("$.content[0].nombre").value("Beta"));
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * Debe devolver el catalogo de productos en la pagina 2
-     */
     @Test
-    void obtenerCatalogoPagina2_deberiaDevolverCatalogoPagina2() {
-       Categoria cat = Categoria.builder()
-                .nombre("PagCat")
-                .build();
-        cat = categoriaRepository.save(cat);
-
-        // crear 25 productos para forzar paginación
-        List<Producto> lista = new ArrayList<>();
-        Categoria finalCat = cat;
-        IntStream.rangeClosed(1, 25).forEach(i -> lista.add(
-                Producto.builder()
-                        .nombre("Prod" + i)
-                        .precio(BigDecimal.valueOf(5 + i))
-                        .stock(10)
-                        .iva(BigDecimal.valueOf(21))
-                        .activo(true)
-                        .enOferta(false)
-                        .descuento(BigDecimal.ZERO)
-                        .categoria(finalCat)
-                        .build()
-        ));
-        productoRepository.saveAllAndFlush(lista);
+    void getAllProductos_PaginacionYOrden_DeberiaFuncionar() {
+        Long catId = crearCategoria("Cat");
+        for (int i = 1; i <= 15; i++) {
+            crearProducto("Prod" + String.format("%02d", i), BigDecimal.valueOf(10), 5, true, false, BigDecimal.ZERO, null, catId);
+        }
         entityManager.clear();
 
         try {
             mockMvc.perform(get("/productos/")
-                            .param("page", "1")
-                            .param("size", "20")
-                            .contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+                            .param("page", "0")
+                            .param("size", "5")
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.number").value(1))
-                    .andExpect(jsonPath("$.numberOfElements").value(5));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+                    .andExpect(jsonPath("$.numberOfElements").value(5))
+                    .andExpect(jsonPath("$.totalElements").value(15));
 
-    /**
-     * Debe devolver el catalogo de productos cambiando el tamaño de página a 10
-     */
-    @Test
-    void obtenerCatalogoTamanoPagina10_deberiaDevolverCatalogoTamanoPagina10() {
-        Categoria cat = Categoria.builder()
-                .nombre("SizeCat")
-                .build();
-        cat = categoriaRepository.save(cat);
-
-        List<Producto> lista = new ArrayList<>();
-        Categoria finalCat = cat;
-        IntStream.rangeClosed(1, 15).forEach(i -> lista.add(
-                Producto.builder()
-                        .nombre("SProd" + i)
-                        .precio(BigDecimal.valueOf(10 + i))
-                        .stock(10)
-                        .iva(BigDecimal.valueOf(21))
-                        .activo(true)
-                        .enOferta(false)
-                        .descuento(BigDecimal.ZERO)
-                        .categoria(finalCat)
-                        .build()
-        ));
-        productoRepository.saveAllAndFlush(lista);
-        entityManager.clear();
-
-        try {
-            mockMvc.perform(get("/productos/")
-                            .param("size", "10")
-                            .contentType(String.valueOf(MediaType.APPLICATION_JSON)))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.size").value(10));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Debe devolver el catalogo de productos ordenando por nombre ascendente
-     */
-    @Test
-    void obtenerCatalogoOrdenadoNombreAsc_deberiaDevolverCatalogoOrdenadoNombreAsc() {
-        Categoria cat = Categoria.builder()
-                .nombre("SortCat")
-                .build();
-        cat = categoriaRepository.save(cat);
-
-        productoRepository.saveAndFlush(Producto.builder()
-                .nombre("BName")
-                .precio(BigDecimal.valueOf(10))
-                .stock(3)
-                .iva(BigDecimal.valueOf(21))
-                .activo(true)
-                .enOferta(false)
-                .descuento(BigDecimal.ZERO)
-                .categoria(cat)
-                .build());
-
-        productoRepository.saveAndFlush(Producto.builder()
-                .nombre("AName")
-                .precio(BigDecimal.valueOf(12))
-                .stock(2)
-                .iva(BigDecimal.valueOf(21))
-                .activo(true)
-                .enOferta(false)
-                .descuento(BigDecimal.ZERO)
-                .categoria(cat)
-                .build());
-
-        entityManager.clear();
-
-        try {
-            mockMvc.perform(get("/productos/")
-                            .param("sort", "nombre,asc")
-                            .contentType(String.valueOf(MediaType.APPLICATION_JSON)))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.content[0].nombre").value("AName"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    /**
-     * Debe devolver el catalogo de productos ordenando por nombre descendente
-     */
-    @Test
-    void obtenerCatalogoOrdenadoNombreDesc_deberiaDevolverCatalogoOrdenadoNombreDesc() {
-        tfg.funkomania.funkomania_api.persistence.entities.Categoria cat = tfg.funkomania.funkomania_api.persistence.entities.Categoria.builder()
-                .nombre("SortCat2")
-                .build();
-        cat = categoriaRepository.save(cat);
-
-        productoRepository.saveAndFlush(Producto.builder()
-                .nombre("AName2")
-                .precio(BigDecimal.valueOf(10))
-                .stock(3)
-                .iva(BigDecimal.valueOf(21))
-                .activo(true)
-                .enOferta(false)
-                .descuento(BigDecimal.ZERO)
-                .categoria(cat)
-                .build());
-
-        productoRepository.saveAndFlush(Producto.builder()
-                .nombre("ZName2")
-                .precio(BigDecimal.valueOf(12))
-                .stock(2)
-                .iva(BigDecimal.valueOf(21))
-                .activo(true)
-                .enOferta(false)
-                .descuento(BigDecimal.ZERO)
-                .categoria(cat)
-                .build());
-
-        entityManager.clear();
-
-        try {
             mockMvc.perform(get("/productos/")
                             .param("sort", "nombre,desc")
-                            .contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.content[0].nombre").value("ZName2"));
+                    .andExpect(jsonPath("$.content[0].nombre").value("Prod15"));
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * Debe devolver el catalogo de productos de ofertas sin filtros
-     */
     @Test
-    void obtenerCatalogoOfertasSinFiltros_deberiaDevolverCatalogoOfertasCompleto() {
-        tfg.funkomania.funkomania_api.persistence.entities.Categoria cat = tfg.funkomania.funkomania_api.persistence.entities.Categoria.builder()
-                .nombre("OfferCat")
-                .build();
-        cat = categoriaRepository.save(cat);
-
-        productoRepository.save(Producto.builder()
-                .nombre("Offer1")
-                .precio(BigDecimal.valueOf(100))
-                .stock(1)
-                .iva(BigDecimal.valueOf(21))
-                .activo(true)
-                .enOferta(true)
-                .descuento(BigDecimal.valueOf(10))
-                .fechaFinOferta(LocalDateTime.now().plusDays(10))
-                .categoria(cat)
-                .build());
-
-        try {
-            mockMvc.perform(get("/productos/ofertas")
-                            .contentType(String.valueOf(MediaType.APPLICATION_JSON)))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.totalElements").value(1));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Debe devolver el catalogo de productos de ofertas con todos los filtros
-     */
-    @Test
-    void obtenerCatalogoOfertasConFiltros_deberiaDevolverCatalogoOfertasFiltrado() {
-        Categoria cat = Categoria.builder()
-                .nombre("OfferCat2")
-                .build();
-        cat = categoriaRepository.save(cat);
-
-        productoRepository.saveAndFlush(Producto.builder()
-                .nombre("OfertaAlpha")
-                .precio(BigDecimal.valueOf(50))
-                .stock(1)
-                .iva(BigDecimal.valueOf(21))
-                .activo(true)
-                .enOferta(true)
-                .descuento(BigDecimal.valueOf(20))
-                .fechaFinOferta(LocalDateTime.now().plusDays(5))
-                .categoria(cat)
-                .build());
-
-        productoRepository.saveAndFlush(Producto.builder()
-                .nombre("NoMatch")
-                .precio(BigDecimal.valueOf(60))
-                .stock(1)
-                .iva(BigDecimal.valueOf(21))
-                .activo(true)
-                .enOferta(false)
-                .descuento(BigDecimal.ZERO)
-                .categoria(cat)
-                .build());
-
+    void getAllProductosOfertas_DeberiaRetornarSoloOfertasVigentesYActivas() {
+        Long catId = crearCategoria("Cat");
+        
+        crearProducto("OfertaOk", BigDecimal.valueOf(10), 5, true, true, BigDecimal.valueOf(10), LocalDateTime.now().plusDays(1), catId);
+        crearProducto("OfertaCaducada", BigDecimal.valueOf(10), 5, true, true, BigDecimal.valueOf(10), LocalDateTime.now().minusDays(1), catId);
+        crearProducto("NoOferta", BigDecimal.valueOf(10), 5, true, false, BigDecimal.ZERO, null, catId);
+        crearProducto("OfertaInactivo", BigDecimal.valueOf(10), 5, false, true, BigDecimal.valueOf(10), LocalDateTime.now().plusDays(1), catId);
+        
         entityManager.clear();
 
         try {
             mockMvc.perform(get("/productos/ofertas")
-                            .param("search", "OfertaAlpha")
-                            .contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.totalElements").value(1));
+                    .andExpect(jsonPath("$.totalElements").value(1))
+                    .andExpect(jsonPath("$.content[0].nombre").value("OfertaOk"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * Debe devolver el producto solicitado por su ID exitosamente
-     */
     @Test
-    void obtenerProductoPorSuIdentificadorExitoso() {
-        // Crear categoria y producto en BD
-        Categoria cat = Categoria.builder()
-                .nombre("SingleCat")
-                .build();
-        cat = categoriaRepository.save(cat);
+    void getAllProductos_ParametrosInvalidos_DeberiaRetornar400() {
+        try {
+            mockMvc.perform(get("/productos/")
+                            .param("idCategoria", "abc")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest());
 
+            mockMvc.perform(get("/productos/")
+                            .param("precioMin", "abc")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest());
+
+            mockMvc.perform(get("/productos/")
+                            .param("precioMax", "abc")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void getProductoById_Exitoso_DeberiaRetornarProducto() {
+        Long catId = crearCategoria("Cat");
         Producto p = Producto.builder()
-                .nombre("SingleProd")
-                .precio(BigDecimal.valueOf(99))
+                .nombre("UniqueProd")
+                .precio(BigDecimal.valueOf(10))
                 .stock(5)
                 .iva(BigDecimal.valueOf(21))
                 .activo(true)
                 .enOferta(false)
                 .descuento(BigDecimal.ZERO)
-                .categoria(cat)
+                .categoria(categoriaRepository.findById(catId).orElseThrow())
                 .build();
         p = productoRepository.saveAndFlush(p);
-
-        // Limpiar contexto JPA para forzar lectura desde BD
         entityManager.clear();
 
         try {
-            mockMvc.perform(get("/productos/{id}", p.getId()).contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+            mockMvc.perform(get("/productos/{id}", p.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(p.getId().intValue()))
-                    .andExpect(jsonPath("$.nombre").value("SingleProd"));
+                    .andExpect(jsonPath("$.nombre").value("UniqueProd"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * Debe no devolver el producto solicitado por su ID y lanzar excepción de producto no encontrado
-     */
     @Test
-    void obtenerProductoPorSuIdentificadorFallido() {
-        // Usar un id que no existe
-        long notFoundId = 999999L;
+    void getProductoById_NoEncontrado_DeberiaRetornar404() {
         try {
-            mockMvc.perform(get("/productos/{id}", notFoundId).contentType(String.valueOf(MediaType.APPLICATION_JSON)))
+            mockMvc.perform(get("/productos/{id}", 999999L)
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    @TestConfiguration
-    static class TestConfig {
-        // Provide a ProductoServiceImpl bean (controller depends on the implementation class)
-        @Bean
-        public ProductoServiceImpl productoServiceImpl(IProductoRepository productoRepository) {
-            class TestProductoServiceImpl extends tfg.funkomania.funkomania_api.services.ProductoServiceImpl {
-                private final IProductoRepository prodRepo;
-
-                public TestProductoServiceImpl(IProductoRepository prodRepo) {
-                    super(null, null, null); // pass null because we override methods that use the view repository
-                    this.prodRepo = prodRepo;
-                }
-
-                @Override
-                public Page<VistaProductosCatalogoDTOId> getAllProductos(String search, Long idCategoria, Double precioMin, Double precioMax, Boolean oferta, Pageable pageable) {
-                    List<Producto> all = prodRepo.findAll();
-                    List<Producto> filtered = all.stream()
-                            .filter(p -> (search == null || p.getNombre().contains(search)))
-                            .filter(p -> (oferta == null || p.isEnOferta() == oferta))
-                            .toList();
-                    // Aplicar ordenamiento a la lista filtrada según pageable.sort
-                    pageable.getSort();
-                    if (pageable.getSort().isSorted()) {
-                        List<Producto> mutable = new java.util.ArrayList<>(filtered);
-                        pageable.getSort().forEach(order -> {
-                            if ("nombre".equals(order.getProperty())) {
-                                mutable.sort((a, b) -> order.isAscending() ? a.getNombre().compareTo(b.getNombre()) : b.getNombre().compareTo(a.getNombre()));
-                            }
-                        });
-                        filtered = mutable;
-                    }
-                    int start = (int) pageable.getOffset();
-                    int end = Math.min(start + pageable.getPageSize(), filtered.size());
-                    List<VistaProductosCatalogoDTOId> content = filtered.subList(Math.max(0, start), Math.max(0, end)).stream().map(p ->
-                            VistaProductosCatalogoDTOId.builder()
-                                    .id(p.getId())
-                                    .nombre(p.getNombre())
-                                    .activo(p.isActivo())
-                                    .enOferta(p.isEnOferta())
-                                    .descuento(p.getDescuento())
-                                    .idCategoria(p.getCategoria() != null ? p.getCategoria().getId() : null)
-                                    .nombreCategoria(p.getCategoria() != null ? p.getCategoria().getNombre() : null)
-                                    .build()
-                    ).toList();
-                    return new PageImpl<>(content, pageable, filtered.size());
-                }
-
-                @Override
-                public tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId getProductoById(Long id) {
-                    java.util.Optional<Producto> opt = prodRepo.findById(id);
-                    Producto p = opt.orElseThrow(() -> new tfg.funkomania.funkomania_api.exceptions.custom_exceptions.ProductoNotFoundException("Producto solicitado no encontrado con ID: " + id));
-                    return VistaProductosCatalogoDTOId.builder()
-                            .id(p.getId())
-                            .nombre(p.getNombre())
-                            .precioOriginalSinIVA(p.getPrecio())
-                            .precioOriginalConIVA(p.getPrecio())
-                            .enOferta(p.isEnOferta())
-                            .descuento(p.getDescuento())
-                            .fechaFinOferta(p.getFechaFinOferta())
-                            .precioFinalSinIVA(p.getPrecio())
-                            .precioFinalConIVA(p.getPrecio())
-                            .iva(p.getIva())
-                            .stock(p.getStock())
-                            .imagen(p.getImagen())
-                            .descripcion(p.getDescripcion())
-                            .activo(p.isActivo())
-                            .idCategoria(p.getCategoria() != null ? p.getCategoria().getId() : null)
-                            .nombreCategoria(p.getCategoria() != null ? p.getCategoria().getNombre() : null)
-                            .nombreCategoriaPadre(p.getCategoria() != null && p.getCategoria().getCategoriaPadre() != null ? p.getCategoria().getCategoriaPadre().getNombre() : null)
-                            .build();
-                }
-
-                @Override
-                public Page<VistaProductosCatalogoDTOId> getAllProductosEnOfertaActivos(String search, Long idCategoria, Double precioMin, Double precioMax, Pageable pageable) {
-                    List<Producto> all = prodRepo.findAll();
-                    List<Producto> filtered = all.stream()
-                            .filter(Producto::isEnOferta)
-                            .filter(Producto::isActivo)
-                            .filter(p -> (search == null || p.getNombre().contains(search)))
-                            .toList();
-                    pageable.getSort();
-                    if (pageable.getSort().isSorted()) {
-                        List<Producto> mutable = new java.util.ArrayList<>(filtered);
-                        pageable.getSort().forEach(order -> {
-                            if ("nombre".equals(order.getProperty())) {
-                                mutable.sort((a, b) -> order.isAscending() ? a.getNombre().compareTo(b.getNombre()) : b.getNombre().compareTo(a.getNombre()));
-                            }
-                        });
-                        filtered = mutable;
-                    }
-                    int start = (int) pageable.getOffset();
-                    int end = Math.min(start + pageable.getPageSize(), filtered.size());
-                    List<tfg.funkomania.funkomania_api.dtos.producto_dtos.VistaProductosCatalogoDTOId> content = filtered.subList(Math.max(0, start), Math.max(0, end)).stream().map(p ->
-                            VistaProductosCatalogoDTOId.builder()
-                                    .id(p.getId())
-                                    .nombre(p.getNombre())
-                                    .activo(p.isActivo())
-                                    .enOferta(p.isEnOferta())
-                                    .descuento(p.getDescuento())
-                                    .idCategoria(p.getCategoria() != null ? p.getCategoria().getId() : null)
-                                    .nombreCategoria(p.getCategoria() != null ? p.getCategoria().getNombre() : null)
-                                    .build()
-                    ).toList();
-                    return new PageImpl<>(content, pageable, filtered.size());
-                }
-            }
-
-            return new TestProductoServiceImpl(productoRepository);
+    @Test
+    void getProductoById_IdInvalido_DeberiaRetornar400() {
+        try {
+            mockMvc.perform(get("/productos/{id}", "abc")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

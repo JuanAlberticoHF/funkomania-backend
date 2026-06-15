@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import tfg.funkomania.funkomania_api.exceptions.custom_exceptions.TokenInvalidoException;
 import tfg.funkomania.funkomania_api.exceptions.security.CustomAccessDeniedHandler;
 import tfg.funkomania.funkomania_api.exceptions.security.CustomAuthenticationEntryPoint;
@@ -23,12 +27,15 @@ import tfg.funkomania.funkomania_api.services.InMemoryTokenBlackListService;
 import tfg.funkomania.funkomania_api.services.UserDetailServiceImpl;
 import tfg.funkomania.funkomania_api.utils.JwtUtils;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Configuración de seguridad para la API de Funkomania.
  * <p>Esta clase define la configuración de seguridad utilizando Spring Security y el password encoder</p>
  *
  * @author JuanAlbeticoHF
- * @version 1.5.1
+ * @version 1.6.0
  * @since 0.1.0
  */
 @Configuration
@@ -65,6 +72,9 @@ public class SecurityConfig {
         return httpSecurity
                 // Desactiva la protección contra ataques CSRF.
                 .csrf(AbstractHttpConfigurer::disable)
+
+                // Activa el CORS usando el Bean de cors.
+                .cors(Customizer.withDefaults())
 
                 // Restricciones endpoints
                 .authorizeHttpRequests(auth -> auth
@@ -171,5 +181,34 @@ public class SecurityConfig {
 
         // Agrega el token JWT a la lista negra para invalidarlo.
         tokenBlackListService.addToken(jwt);
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // 1. ¿A quién le permitimos el paso?
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:4200",
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "http://funkomania-web:5173",
+                "http://funkomania-web:4200",
+                "http://funkomania-web:3000"
+        ));
+
+        // 2. ¿Qué métodos HTTP permitimos?
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // 3. ¿Qué cabeceras permitimos que nos envíen?
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+
+        // 4. ¿Permitimos el envío de cookies/credenciales?
+        configuration.setAllowCredentials(true);
+
+        // Aplicamos esta configuración a TODAS las rutas de nuestra API
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
