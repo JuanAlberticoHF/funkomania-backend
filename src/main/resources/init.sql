@@ -293,12 +293,12 @@ CREATE OR REPLACE VIEW VPedido_Totales AS
 SELECT
     p.idPedido,
     p.idUsuario,
-    COUNT(dp.idProducto) AS Cantidad_Articulos_Diferentes,
-    CAST(SUM(dp.cantidad) AS UNSIGNED) AS Total_Unidades_Fisicas,
-    ROUND(SUM(dp.precioUnitario * dp.cantidad), 2) AS Base_Imponible,
-    ROUND(SUM(fn_subtotal_linea(dp.precioUnitario, dp.cantidad, dp.iva)), 2) AS Total_Con_IVA
+    COUNT(vdp.idProducto) AS Cantidad_Articulos_Diferentes,
+    CAST(SUM(vdp.cantidad) AS UNSIGNED) AS Total_Unidades_Fisicas,
+    ROUND(SUM(vdp.precioUnitario * vdp.cantidad), 2) AS Base_Imponible,
+    ROUND(SUM(vdp.Subtotal_Linea), 2) AS Total_Con_IVA
 FROM Pedido p
-         JOIN Detalle_Pedido dp ON p.idPedido = dp.idPedido
+         JOIN VDetalle_Pedido vdp ON p.idPedido = vdp.idPedido
 GROUP BY p.idPedido, p.idUsuario;
 
 CREATE OR REPLACE VIEW VPedidos_Admin AS

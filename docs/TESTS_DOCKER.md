@@ -33,7 +33,7 @@ Guia para ejecutar tests usando un MySQL levantado con Docker Compose y un scrip
 
 ## 1) Levantar MySQL para tests (con inicializacion)
 
-```powershell
+```bash
 docker compose -f docker-compose.test.yml up -d
 ```
 
@@ -41,19 +41,19 @@ El script `init.sql` solo se ejecuta la primera vez que se crea el volumen de la
 
 ## 2) Ejecutar tests
 
-```powershell
+```bash
 .\mvnw -q test
 ```
 
 ## 3) Detener Docker sin borrar datos
 
-```powershell
+```bash
 docker compose -f docker-compose.test.yml down
 ```
 
 ## 4) Detener Docker y borrar volumenes (reinicializa la base de datos)
 
-```powershell
+```bash
 docker compose -f docker-compose.test.yml down -v
 ```
 
