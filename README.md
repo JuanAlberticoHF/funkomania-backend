@@ -9,9 +9,7 @@ Enlaces a otros repositorios:
 - [Repositorio Frontend](https://github.com/ViciBh/funkomania-frontend)
 - [Repositorio Global](https://github.com/JuanAlberticoHF/funkomania)
 
-## Funcionalidades principales
-
-Actualmente, Funkomania Backend `1.0.1` incluye las siguientes funcionalidades:
+## Funcionalidades & Características
 
 - Autenticación de usuarios:
     - Registro de usuarios, login y logout.
