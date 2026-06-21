@@ -80,13 +80,13 @@ Para descargar y ejecutar el proyecto, sigue estos pasos:
    ```
    - Este archivo es necesario para configurar la conexión a la base de datos MySQL y la clave secreta para JWT, tanto
    en el IDE como en Docker. 
-### 3. Generar el archivo JAR del proyecto usando Maven:
+### 3. Generar el JAR del proyecto
    ```bash
    ./mvnw package -D maven.test.skip
    ```
    - Esto compilará el proyecto y generará un archivo JAR en el directorio `target/`.
    - El flag `-D maven.test.skip` omitirá la ejecución de pruebas durante el proceso de empaquetado.
-### 4. Ejecutar el proyecto usando Docker Compose:
+### 4. Levantar los contenedores con Docker Compose
    ```bash
    docker-compose up --build
    ```
