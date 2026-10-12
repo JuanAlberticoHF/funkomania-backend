@@ -1,5 +1,7 @@
 # Funkomania Backend
 
+![Banner Funkomania Backend.png](banner.png)
+
 > Versión: 1.0.1
 
 Funkomania es proyecto de e-commerce de figuras Funko Pop! desarrollado con Spring Boot y MySQL. El proyecto en general
