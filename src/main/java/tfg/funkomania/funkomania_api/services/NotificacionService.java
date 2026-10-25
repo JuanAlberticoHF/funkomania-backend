@@ -10,7 +10,7 @@ import java.util.List;
  * Define los métodos para realizar operaciones relacionadas con las notificaciones del usuario.
  *
  * @author JuanAlbeticoHF
- * @version 1.0.1
+ * @version 1.0.2
  * @since 0.5.0
  */
 public interface NotificacionService {
@@ -21,7 +21,7 @@ public interface NotificacionService {
     List<VistaNotificacionUsuarioDTOId> obtenerTodasLasNotificacionesDelUsuario();
 
     /**
-     * Obtiene todas las notificaciones del usuario autenticado.
+     * Cambia el estado de una notificación a leída para el usuario autenticado.
      * @param idNotificacion ID de la notificación a marcar como leída.
      */
     void leerNotificacion(Long idNotificacion);
